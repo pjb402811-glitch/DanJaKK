@@ -13,8 +13,6 @@ interface DashboardProps {
   totalWordsLearned: number;
   wordsLearnedToday: number;
   wordsLearnedThisWeek: number;
-  onBackupData: () => void;
-  onRestoreData: () => void;
   allWordsCount: number;
 }
 
@@ -51,7 +49,7 @@ const ActionButton: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   );
 
 
-const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, userWordCount, userAddedWordsCount, onSetDailyGoal, onSetWeeklyGoal, totalWordsLearned, wordsLearnedToday, wordsLearnedThisWeek, onBackupData, onRestoreData, allWordsCount }) => {
+const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, userWordCount, userAddedWordsCount, onSetDailyGoal, onSetWeeklyGoal, totalWordsLearned, wordsLearnedToday, wordsLearnedThisWeek, allWordsCount }) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(stats.dailyGoal);
   
@@ -112,17 +110,17 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
         <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label="학습한 단어" value={totalWordsLearned} color="bg-green-500"/>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <ActionButton 
           icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-          title="나만의 단어 추가하기"
+          title="단어추가 하기"
           subtitle="학습 목록에 새 단어 등록"
           onClick={() => onNavigate(AppView.ADD_WORD)}
           color="bg-gradient-to-br from-gray-700 to-gray-800"
         />
         <ActionButton 
           icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-          title="나만의 단어 학습"
+          title="플래시 카드 학습"
           subtitle="내가 추가한 단어 배우기"
           onClick={() => onNavigate(AppView.USER_WORD_FLASHCARDS)}
           color="bg-gradient-to-br from-teal-500 to-teal-600"
@@ -162,20 +160,6 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
           color="bg-gradient-to-br from-green-500 to-green-600"
           count={reviewCount}
           disabled={reviewCount === 0}
-        />
-         <ActionButton 
-          icon={<ArrowDownTrayIcon className="w-8 h-8 text-white/50" />}
-          title="데이터 백업하기"
-          subtitle="학습 기록을 파일로 저장"
-          onClick={onBackupData}
-          color="bg-gradient-to-br from-indigo-500 to-indigo-600"
-        />
-        <ActionButton 
-          icon={<ArrowUpTrayIcon className="w-8 h-8 text-white/50" />}
-          title="데이터 가져오기"
-          subtitle="파일에서 학습 기록 복원"
-          onClick={onRestoreData}
-          color="bg-gradient-to-br from-rose-500 to-rose-600"
         />
       </div>
     </div>

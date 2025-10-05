@@ -53,7 +53,7 @@ const AddWordView: React.FC<AddWordViewProps> = ({ onAddWord, onBack }) => {
             </button>
         </div>
         <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl">
-            <h2 className="text-3xl font-extrabold text-center mb-6 text-white">나만의 단어 추가하기</h2>
+            <h2 className="text-3xl font-extrabold text-center mb-6 text-white">단어추가 하기</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <InputField label="영어 단어" value={word} onChange={e => setWord(e.target.value)} placeholder="예: adventure" required />
                 <InputField label="한국어 뜻" value={meaning} onChange={e => setMeaning(e.target.value)} placeholder="예: 모험" required />

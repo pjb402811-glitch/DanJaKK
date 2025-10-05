@@ -40,7 +40,7 @@ const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, on
                 <div key={word.id} className="bg-slate-700/50 p-4 rounded-lg flex items-center gap-4 justify-between">
                   <div className="flex-1 flex items-baseline gap-4">
                     <p className="font-bold text-2xl text-white basis-2/5 truncate">{word.word}</p>
-                    <p className="text-lg text-slate-300 basis-3/5">{word.meaning}</p>
+                    <p className="text-xl text-slate-300 basis-3/5">{word.meaning}</p>
                   </div>
                   
                   {word.isUserAdded && (

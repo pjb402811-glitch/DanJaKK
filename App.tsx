@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard';
 import FlashcardView from './components/FlashcardView';
 import QuizGame from './components/QuizGame';
 import useWordData from './hooks/useWordData';
-import { SparklesIcon } from './components/icons/Icons';
+import { SparklesIcon, ArrowDownTrayIcon, ArrowUpTrayIcon } from './components/icons/Icons';
 import AddWordView from './components/AddWordView';
 import SpellingBeeGame from './components/SpellingBeeGame';
 import WordListView from './components/WordListView';
@@ -156,10 +156,29 @@ const App: React.FC = () => {
 
   const renderHeader = (stats: UserStats) => (
     <header className="bg-slate-800/80 backdrop-blur-sm shadow-md sticky top-0 z-10 p-4">
-      <div className="max-w-7xl mx-auto flex justify-center items-center">
-        <div className="flex items-center gap-2">
+      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center">
+        <div>{/* Spacer */}</div>
+        <div className="flex items-center gap-2 justify-center whitespace-nowrap">
           <SparklesIcon className="w-8 h-8 text-blue-500" />
           <h1 className="text-xl md:text-2xl font-extrabold text-white">단짝-단어 암기 친구</h1>
+        </div>
+        <div className="flex items-center gap-2 justify-self-end">
+            <button 
+                onClick={handleBackupData}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-white bg-indigo-500 rounded-md shadow-sm hover:bg-indigo-600 transition-colors"
+                title="데이터 백업하기"
+            >
+                <ArrowDownTrayIcon className="w-4 h-4" />
+                <span className="hidden md:inline">데이터 백업</span>
+            </button>
+            <button 
+                onClick={handleRestoreData}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-white bg-rose-500 rounded-md shadow-sm hover:bg-rose-600 transition-colors"
+                title="데이터 가져오기"
+            >
+                <ArrowUpTrayIcon className="w-4 h-4" />
+                <span className="hidden md:inline">데이터 가져오기</span>
+            </button>
         </div>
       </div>
     </header>
@@ -212,8 +231,6 @@ const App: React.FC = () => {
           totalWordsLearned={totalWordsLearned}
           wordsLearnedToday={wordsLearnedToday}
           wordsLearnedThisWeek={wordsLearnedThisWeek}
-          onBackupData={handleBackupData}
-          onRestoreData={handleRestoreData}
           allWordsCount={allWords.length}
         />;
     }
