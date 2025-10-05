@@ -7,48 +7,100 @@ const NEW_WORDS_PER_LESSON = 5;
 // Simple forgetting curve intervals (in days)
 const STREAK_INTERVALS = [1, 2, 4, 8, 16, 32, 64];
 
+const LOCAL_STORAGE_KEYS = {
+  WORDS: 'danzzak-words',
+  PROGRESS: 'danzzak-progress',
+  STATS: 'danzzak-stats',
+};
+
 const useWordData = () => {
-  const [allWords, setAllWords] = useState<Word[]>([]);
-  const [wordProgress, setWordProgress] = useState<Record<number, WordProgress>>({});
-  const [userStats, setUserStats] = useState<UserStats>({
-    level: 1,
-    xp: 0,
-    xpToNextLevel: 100,
-    coins: 50,
-    dailyGoal: 10,
-    weeklyGoal: 50,
+  const [allWords, setAllWords] = useState<Word[]>(() => {
+    try {
+      const savedWords = window.localStorage.getItem(LOCAL_STORAGE_KEYS.WORDS);
+      if (savedWords) {
+        return JSON.parse(savedWords);
+      }
+    } catch (error) {
+      console.error('Error loading words from localStorage', error);
+    }
+    return generateInitialWords();
   });
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const loadInitialData = useCallback(() => {
-    setIsInitialLoading(true);
-    const words = generateInitialWords();
-    setAllWords(words);
-    // In a real app, progress would be loaded from a server. Here we initialize it.
+  const [wordProgress, setWordProgress] = useState<Record<number, WordProgress>>(() => {
+    try {
+      const savedProgress = window.localStorage.getItem(LOCAL_STORAGE_KEYS.PROGRESS);
+      if (savedProgress) {
+        const parsed = JSON.parse(savedProgress);
+        // Revive date strings into Date objects
+        Object.values(parsed).forEach((progress: any) => {
+          if (progress.lastReviewed) progress.lastReviewed = new Date(progress.lastReviewed);
+          if (progress.nextReview) progress.nextReview = new Date(progress.nextReview);
+        });
+        return parsed;
+      }
+    } catch (error) {
+      console.error('Error loading progress from localStorage', error);
+    }
+    // Initialize progress for initial words if none is saved
     const initialProgress: Record<number, WordProgress> = {};
-    words.forEach(word => {
-      initialProgress[word.id] = {
-        wordId: word.id,
-        streak: 0,
-        lastReviewed: null,
-        nextReview: new Date(0), // Set to epoch to make it "new"
-        correct: 0,
-        incorrect: 0,
-      };
-    });
-    setWordProgress(initialProgress);
-    setIsInitialLoading(false);
-  }, []);
+      allWords.forEach(word => {
+        if (!initialProgress[word.id]) {
+            initialProgress[word.id] = {
+            wordId: word.id,
+            streak: 0,
+            lastReviewed: null,
+            nextReview: new Date(0),
+            correct: 0,
+            incorrect: 0,
+            };
+        }
+      });
+      return initialProgress;
+  });
+  
+  const [userStats, setUserStats] = useState<UserStats>(() => {
+    try {
+      const savedStats = window.localStorage.getItem(LOCAL_STORAGE_KEYS.STATS);
+      if (savedStats) {
+        return JSON.parse(savedStats);
+      }
+    } catch (error) {
+      console.error('Error loading stats from localStorage', error);
+    }
+    return {
+      level: 1,
+      xp: 0,
+      xpToNextLevel: 100,
+      coins: 50,
+      dailyGoal: 10,
+      weeklyGoal: 50,
+    };
+  });
 
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   useEffect(() => {
-    loadInitialData();
-  }, [loadInitialData]);
+    try {
+      window.localStorage.setItem(LOCAL_STORAGE_KEYS.WORDS, JSON.stringify(allWords));
+      window.localStorage.setItem(LOCAL_STORAGE_KEYS.PROGRESS, JSON.stringify(wordProgress));
+      window.localStorage.setItem(LOCAL_STORAGE_KEYS.STATS, JSON.stringify(userStats));
+    } catch (error) {
+      console.error('Error saving to localStorage', error);
+    }
+  }, [allWords, wordProgress, userStats]);
 
 
   const updateWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
     setWordProgress(prev => {
-      const progress = { ...prev[wordId] };
+      const progress = { ...(prev[wordId] || {
+        wordId: wordId,
+        streak: 0,
+        lastReviewed: null,
+        nextReview: new Date(0),
+        correct: 0,
+        incorrect: 0,
+      }) };
       const now = new Date();
       
       progress.lastReviewed = now;
