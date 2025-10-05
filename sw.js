@@ -19,6 +19,7 @@ const urlsToCache = [
   '/components/AddWordView.tsx',
   '/components/SpellingBeeGame.tsx',
   '/components/WordListView.tsx',
+  '/components/EditWordView.tsx',
   '/components/icons/Icons.tsx'
 ];
 

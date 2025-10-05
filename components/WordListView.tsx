@@ -1,22 +1,16 @@
 import React from 'react';
 import { Word, WordProgress } from '../types';
-import { ChevronLeftIcon, BookOpenIcon } from './icons/Icons';
+import { ChevronLeftIcon, BookOpenIcon, PencilIcon, TrashIcon } from './icons/Icons';
 
 interface WordListViewProps {
   words: Word[];
   progress: Record<number, WordProgress>;
   onBack: () => void;
+  onEdit: (wordId: number) => void;
+  onDelete: (wordId: number) => void;
 }
 
-const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack }) => {
-
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('ko-KR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    }).format(date);
-  }
+const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, onEdit, onDelete }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -43,21 +37,22 @@ const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack }) 
               if (!wordProgress) return null;
 
               return (
-                <div key={word.id} className="bg-slate-700/50 p-4 rounded-lg flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                  <div className="flex-1">
-                    <p className="font-bold text-lg text-white">{word.word}</p>
-                    <p className="text-sm text-slate-300">{word.meaning}</p>
+                <div key={word.id} className="bg-slate-700/50 p-4 rounded-lg flex items-center gap-4 justify-between">
+                  <div className="flex-1 flex items-baseline gap-4">
+                    <p className="font-bold text-2xl text-white basis-2/5 truncate">{word.word}</p>
+                    <p className="text-lg text-slate-300 basis-3/5">{word.meaning}</p>
                   </div>
-                  <div className="flex items-center gap-6 text-left md:text-center mt-2 md:mt-0">
-                     <div>
-                        <p className="text-xs text-slate-400">연속 정답</p>
-                        <p className="font-bold text-blue-500">{wordProgress.streak}일</p>
-                     </div>
-                      <div>
-                        <p className="text-xs text-slate-400">다음 복습</p>
-                        <p className="font-bold text-green-500">{formatDate(wordProgress.nextReview)}</p>
-                     </div>
-                  </div>
+                  
+                  {word.isUserAdded && (
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => onEdit(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 수정">
+                        <PencilIcon className="w-5 h-5 text-yellow-500" />
+                      </button>
+                      <button onClick={() => onDelete(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 삭제">
+                        <TrashIcon className="w-5 h-5 text-red-500" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

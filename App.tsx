@@ -8,9 +8,12 @@ import { SparklesIcon } from './components/icons/Icons';
 import AddWordView from './components/AddWordView';
 import SpellingBeeGame from './components/SpellingBeeGame';
 import WordListView from './components/WordListView';
+import EditWordView from './components/EditWordView';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+  const [wordToEdit, setWordToEdit] = useState<Word | null>(null);
+
   const { 
     userStats, 
     wordsForUserLesson,
@@ -20,6 +23,7 @@ const App: React.FC = () => {
     wordsLearnedToday,
     wordsLearnedThisWeek,
     userAddedWords,
+    allWords,
     updateWordProgress,
     addXpAndCoins,
     isInitialLoading,
@@ -27,6 +31,8 @@ const App: React.FC = () => {
     addUserWord,
     setDailyGoal,
     setWeeklyGoal,
+    deleteUserWord,
+    updateUserWord,
   } = useWordData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -46,6 +52,102 @@ const App: React.FC = () => {
     addUserWord(word);
     setCurrentView(AppView.DASHBOARD);
   }, [addUserWord]);
+
+  const handleNavigateToEdit = useCallback((wordId: number) => {
+    const word = allWords.find(w => w.id === wordId);
+    if (word) {
+      setWordToEdit(word);
+      setCurrentView(AppView.EDIT_WORD);
+    }
+  }, [allWords]);
+
+  const handleWordUpdated = useCallback((word: Word) => {
+    updateUserWord(word);
+    setCurrentView(AppView.WORD_LIST);
+  }, [updateUserWord]);
+
+  const handleBackToWordList = useCallback(() => {
+    setCurrentView(AppView.WORD_LIST);
+  }, []);
+
+  const handleDeleteWord = useCallback((wordId: number) => {
+    if (window.confirm('이 단어를 정말로 삭제하시겠습니까? 학습 기록도 함께 사라집니다.')) {
+        deleteUserWord(wordId);
+    }
+  }, [deleteUserWord]);
+
+  const handleBackupData = useCallback(() => {
+    try {
+      const words = localStorage.getItem('danzzak-words');
+      const progress = localStorage.getItem('danzzak-progress');
+      const stats = localStorage.getItem('danzzak-stats');
+
+      if (!words || !progress || !stats) {
+        alert('백업할 데이터가 없습니다.');
+        return;
+      }
+
+      const backupData = {
+        words: JSON.parse(words),
+        progress: JSON.parse(progress),
+        stats: JSON.parse(stats),
+      };
+
+      const dataStr = JSON.stringify(backupData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      const date = new Date().toISOString().slice(0, 10);
+      link.download = `danzzak_backup_${date}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('백업 실패:', e);
+      alert('데이터 백업 중 오류가 발생했습니다.');
+    }
+  }, []);
+
+  const handleRestoreData = useCallback(() => {
+    if (!window.confirm('데이터를 가져오면 현재 학습 기록이 모두 교체됩니다. 계속하시겠습니까?')) {
+      return;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const result = event.target?.result as string;
+          const restoredData = JSON.parse(result);
+
+          if (restoredData.words && restoredData.progress && restoredData.stats) {
+            localStorage.setItem('danzzak-words', JSON.stringify(restoredData.words));
+            localStorage.setItem('danzzak-progress', JSON.stringify(restoredData.progress));
+            localStorage.setItem('danzzak-stats', JSON.stringify(restoredData.stats));
+            alert('데이터를 성공적으로 가져왔습니다. 앱을 새로고침합니다.');
+            window.location.reload();
+          } else {
+            alert('선택한 파일이 올바른 백업 파일이 아닙니다.');
+          }
+        } catch (err) {
+          console.error('복원 실패:', err);
+          alert('데이터 복원 중 오류가 발생했습니다.');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }, []);
+
 
   const gameWordsForUser = useMemo(() => {
     return [...userAddedWords].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -84,7 +186,19 @@ const App: React.FC = () => {
       case AppView.SPELLING_BEE:
         return <SpellingBeeGame words={gameWordsForUser} onComplete={handleSessionComplete} onBack={handleBack} />;
       case AppView.WORD_LIST:
-        return <WordListView words={learnedWords} progress={wordProgress} onBack={handleBack} />;
+        return <WordListView 
+          words={allWords} 
+          progress={wordProgress} 
+          onBack={handleBack}
+          onEdit={handleNavigateToEdit}
+          onDelete={handleDeleteWord}
+        />;
+      case AppView.EDIT_WORD:
+        return wordToEdit ? <EditWordView 
+          wordToEdit={wordToEdit}
+          onUpdateWord={handleWordUpdated}
+          onBack={handleBackToWordList}
+        /> : null;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
@@ -98,6 +212,9 @@ const App: React.FC = () => {
           totalWordsLearned={totalWordsLearned}
           wordsLearnedToday={wordsLearnedToday}
           wordsLearnedThisWeek={wordsLearnedThisWeek}
+          onBackupData={handleBackupData}
+          onRestoreData={handleRestoreData}
+          allWordsCount={allWords.length}
         />;
     }
   };

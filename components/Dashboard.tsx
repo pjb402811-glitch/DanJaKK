@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AppView, UserStats } from '../types';
-import { BookOpenIcon, SparklesIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon } from './icons/Icons';
+import { BookOpenIcon, SparklesIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon, ArrowDownTrayIcon, ArrowUpTrayIcon } from './icons/Icons';
 
 interface DashboardProps {
   stats: UserStats;
@@ -13,6 +13,9 @@ interface DashboardProps {
   totalWordsLearned: number;
   wordsLearnedToday: number;
   wordsLearnedThisWeek: number;
+  onBackupData: () => void;
+  onRestoreData: () => void;
+  allWordsCount: number;
 }
 
 const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string; children?: React.ReactNode; }> = ({ icon, label, value, color, children }) => (
@@ -48,7 +51,7 @@ const ActionButton: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   );
 
 
-const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, userWordCount, userAddedWordsCount, onSetDailyGoal, onSetWeeklyGoal, totalWordsLearned, wordsLearnedToday, wordsLearnedThisWeek }) => {
+const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, userWordCount, userAddedWordsCount, onSetDailyGoal, onSetWeeklyGoal, totalWordsLearned, wordsLearnedToday, wordsLearnedThisWeek, onBackupData, onRestoreData, allWordsCount }) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(stats.dailyGoal);
   
@@ -109,7 +112,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
         <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label="학습한 단어" value={totalWordsLearned} color="bg-green-500"/>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <ActionButton 
           icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
           title="나만의 단어 추가하기"
@@ -148,8 +151,8 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
           subtitle="내 단어장 전체 보기"
           onClick={() => onNavigate(AppView.WORD_LIST)}
           color="bg-gradient-to-br from-sky-500 to-sky-600"
-          count={totalWordsLearned}
-          disabled={totalWordsLearned === 0}
+          count={allWordsCount}
+          disabled={allWordsCount === 0}
         />
         <ActionButton 
           icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
@@ -159,6 +162,20 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
           color="bg-gradient-to-br from-green-500 to-green-600"
           count={reviewCount}
           disabled={reviewCount === 0}
+        />
+         <ActionButton 
+          icon={<ArrowDownTrayIcon className="w-8 h-8 text-white/50" />}
+          title="데이터 백업하기"
+          subtitle="학습 기록을 파일로 저장"
+          onClick={onBackupData}
+          color="bg-gradient-to-br from-indigo-500 to-indigo-600"
+        />
+        <ActionButton 
+          icon={<ArrowUpTrayIcon className="w-8 h-8 text-white/50" />}
+          title="데이터 가져오기"
+          subtitle="파일에서 학습 기록 복원"
+          onClick={onRestoreData}
+          color="bg-gradient-to-br from-rose-500 to-rose-600"
         />
       </div>
     </div>

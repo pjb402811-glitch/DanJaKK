@@ -18,7 +18,9 @@ const useWordData = () => {
     try {
       const savedWords = window.localStorage.getItem(LOCAL_STORAGE_KEYS.WORDS);
       if (savedWords) {
-        return JSON.parse(savedWords);
+        const parsedWords: Word[] = JSON.parse(savedWords);
+        // Filter out default words, keeping only user-added ones.
+        return parsedWords.filter(word => word.isUserAdded);
       }
     } catch (error) {
       console.error('Error loading words from localStorage', error);
@@ -41,21 +43,7 @@ const useWordData = () => {
     } catch (error) {
       console.error('Error loading progress from localStorage', error);
     }
-    // Initialize progress for initial words if none is saved
-    const initialProgress: Record<number, WordProgress> = {};
-      allWords.forEach(word => {
-        if (!initialProgress[word.id]) {
-            initialProgress[word.id] = {
-            wordId: word.id,
-            streak: 0,
-            lastReviewed: null,
-            nextReview: new Date(0),
-            correct: 0,
-            incorrect: 0,
-            };
-        }
-      });
-      return initialProgress;
+    return {};
   });
   
   const [userStats, setUserStats] = useState<UserStats>(() => {
@@ -89,6 +77,22 @@ const useWordData = () => {
       console.error('Error saving to localStorage', error);
     }
   }, [allWords, wordProgress, userStats]);
+
+  useEffect(() => {
+    const userWordIds = new Set(allWords.map(w => w.id));
+    const newProgress: Record<number, WordProgress> = {};
+    let progressChanged = false;
+    for (const wordId in wordProgress) {
+      if (userWordIds.has(Number(wordId))) {
+        newProgress[wordId] = wordProgress[wordId];
+      } else {
+        progressChanged = true;
+      }
+    }
+    if (progressChanged) {
+      setWordProgress(newProgress);
+    }
+  }, [allWords]);
 
 
   const updateWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
@@ -166,6 +170,19 @@ const useWordData = () => {
     });
   }, []);
 
+  const deleteUserWord = useCallback((wordId: number) => {
+    setAllWords(prev => prev.filter(w => w.id !== wordId));
+    setWordProgress(prev => {
+      const newProgress = { ...prev };
+      delete newProgress[wordId];
+      return newProgress;
+    });
+  }, []);
+
+  const updateUserWord = useCallback((updatedWord: Word) => {
+    setAllWords(prev => prev.map(w => w.id === updatedWord.id ? updatedWord : w));
+  }, []);
+
   const setDailyGoal = useCallback((newGoal: number) => {
     if (newGoal > 0) {
       setUserStats(prev => ({...prev, dailyGoal: newGoal}));
@@ -226,7 +243,8 @@ const useWordData = () => {
   const wordsForUserLesson = newUserWords.slice(0, NEW_WORDS_PER_LESSON);
 
   return { 
-    userStats, 
+    userStats,
+    allWords, 
     wordsForUserLesson,
     learnedWords,
     wordProgress,
@@ -241,6 +259,8 @@ const useWordData = () => {
     addUserWord,
     setDailyGoal,
     setWeeklyGoal,
+    deleteUserWord,
+    updateUserWord,
   };
 };
 

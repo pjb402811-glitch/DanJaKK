@@ -33,6 +33,7 @@ export enum AppView {
   SPELLING_BEE,
   USER_WORD_FLASHCARDS,
   WORD_LIST,
+  EDIT_WORD,
 }
 
 export enum QuizMode {
