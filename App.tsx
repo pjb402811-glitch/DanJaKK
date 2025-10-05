@@ -156,13 +156,12 @@ const App: React.FC = () => {
 
   const renderHeader = (stats: UserStats) => (
     <header className="bg-slate-800/80 backdrop-blur-sm shadow-md sticky top-0 z-10 p-4">
-      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center">
-        <div>{/* Spacer */}</div>
-        <div className="flex items-center gap-2 justify-center whitespace-nowrap">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <SparklesIcon className="w-8 h-8 text-blue-500" />
           <h1 className="text-xl md:text-2xl font-extrabold text-white">단짝-단어 암기 친구</h1>
         </div>
-        <div className="flex items-center gap-2 justify-self-end">
+        <div className="flex items-center gap-2">
             <button 
                 onClick={handleBackupData}
                 className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-white bg-indigo-500 rounded-md shadow-sm hover:bg-indigo-600 transition-colors"

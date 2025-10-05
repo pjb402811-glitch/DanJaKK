@@ -33,7 +33,7 @@ const ActionButton: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
     <button 
       onClick={onClick}
       disabled={disabled}
-      className={`relative w-full h-40 text-center p-4 rounded-2xl shadow-lg flex flex-col items-center justify-center gap-2 transition-transform transform hover:scale-105 ${color} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
+      className={`relative w-full h-32 text-center p-4 rounded-2xl shadow-lg flex flex-col items-center justify-center gap-2 transition-transform transform hover:scale-105 ${color} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
     >
       {icon}
       <div>
