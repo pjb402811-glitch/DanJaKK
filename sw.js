@@ -5,9 +5,9 @@ const urlsToCache = [
   '/index.tsx',
   '/App.tsx',
   '/manifest.json',
-  '/apple-touch-icon.png',
-  '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png'
+  '/apple-touch-icon.svg',
+  '/icon-192x192.svg',
+  '/icon-512x512.svg'
 ];
 
 self.addEventListener('install', event => {
