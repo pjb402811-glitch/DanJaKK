@@ -20,8 +20,6 @@ interface DashboardProps {
   activeMode: LearningMode;
   englishStats: ModeStats;
   hanjaStats: ModeStats;
-  englishReviewCount: number;
-  hanjaReviewCount: number;
   hanjaLearnedCount: number;
 }
 
@@ -71,8 +69,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   activeMode,
   englishStats,
   hanjaStats,
-  englishReviewCount,
-  hanjaReviewCount,
   hanjaLearnedCount
 }) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
@@ -175,21 +171,12 @@ const Dashboard: React.FC<DashboardProps> = ({
             />
             <ActionButton 
               icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
-              title="학습 단어 목록"
+              title="학습 영단어 목록"
               subtitle="내 단어장 전체 보기"
               onClick={() => onNavigate(AppView.WORD_LIST)}
               color="bg-gradient-to-br from-sky-500 to-sky-600"
               count={allWordsCount}
               disabled={allWordsCount === 0}
-            />
-            <ActionButton 
-              icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
-              title="복습 카드"
-              subtitle="기억력 강화하기"
-              onClick={() => onNavigate(AppView.REVIEW)}
-              color="bg-gradient-to-br from-green-500 to-green-600"
-              count={englishReviewCount}
-              disabled={englishReviewCount === 0}
             />
           </>
         )}
@@ -221,18 +208,9 @@ const Dashboard: React.FC<DashboardProps> = ({
               color="bg-gradient-to-br from-pink-500 to-pink-600"
               disabled={hanjaLearnedCount < 4}
             />
-            <ActionButton 
-              icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
-              title="한자 복습"
-              subtitle="기억력 강화하기"
-              onClick={() => onNavigate(AppView.CHEONJAMUN_REVIEW)}
-              color="bg-gradient-to-br from-green-500 to-green-600"
-              count={hanjaReviewCount}
-              disabled={hanjaReviewCount === 0}
-            />
              <ActionButton 
               icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
-              title="한자 목록 보기"
+              title="학습 천자문 목록"
               subtitle="내 한자장 전체 보기"
               onClick={() => onNavigate(AppView.CHEONJAMUN_LIST)}
               color="bg-gradient-to-br from-orange-500 to-orange-600"

@@ -8,9 +8,10 @@ interface WordListViewProps {
   onBack: () => void;
   onEdit: (wordId: number) => void;
   onDelete: (wordId: number) => void;
+  onFlashcard: (wordId: number) => void;
 }
 
-const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, onEdit, onDelete }) => {
+const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, onEdit, onDelete, onFlashcard }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -43,16 +44,25 @@ const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, on
                     <p className="text-xl text-slate-300 basis-3/5">{word.meaning}</p>
                   </div>
                   
-                  {word.isUserAdded && (
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => onEdit(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 수정">
-                        <PencilIcon className="w-5 h-5 text-yellow-500" />
-                      </button>
-                      <button onClick={() => onDelete(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 삭제">
-                        <TrashIcon className="w-5 h-5 text-red-500" />
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => onFlashcard(word.id)} 
+                        className="p-2 rounded-full hover:bg-slate-600 transition-colors" 
+                        title="플래시 카드 학습"
+                    >
+                        <BookOpenIcon className="w-5 h-5 text-sky-400" />
+                    </button>
+                    {word.isUserAdded && (
+                      <>
+                        <button onClick={() => onEdit(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 수정">
+                          <PencilIcon className="w-5 h-5 text-yellow-500" />
+                        </button>
+                        <button onClick={() => onDelete(word.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="단어 삭제">
+                          <TrashIcon className="w-5 h-5 text-red-500" />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               );
             })}

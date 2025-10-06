@@ -6,9 +6,10 @@ interface CheonjamunListViewProps {
   allCharacters: HanjaCharacter[];
   progress: Record<number, HanjaCharacterProgress>;
   onBack: () => void;
+  onFlashcard: (characters: HanjaCharacter[]) => void;
 }
 
-const CheonjamunListView: React.FC<CheonjamunListViewProps> = ({ allCharacters, progress, onBack }) => {
+const CheonjamunListView: React.FC<CheonjamunListViewProps> = ({ allCharacters, progress, onBack, onFlashcard }) => {
 
   const learnedGroups = useMemo(() => {
     // FIX: Explicitly cast `Object.values(progress)` to `HanjaCharacterProgress[]` to ensure correct type inference.
@@ -43,19 +44,30 @@ const CheonjamunListView: React.FC<CheonjamunListViewProps> = ({ allCharacters, 
         {learnedGroups.length > 0 ? (
           <div className="space-y-4">
             {learnedGroups.map((group, index) => (
-                <div key={index} className="bg-slate-700/50 p-4 rounded-lg flex flex-col gap-3">
-                  <div className="grid grid-cols-4 gap-2 text-center">
-                    {group.map(c => (
-                      <p key={`${c.id}-char`} className="font-bold text-4xl text-white tracking-widest">{c.character}</p>
-                    ))}
+                <div key={index} className="bg-slate-700/50 p-4 rounded-lg flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="grid grid-cols-4 gap-2 text-center">
+                      {group.map(c => (
+                        <p key={`${c.id}-char`} className="font-bold text-4xl text-white tracking-widest">{c.character}</p>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-center mt-1 text-lg text-slate-300">
+                      {group.map(c => (
+                        <p key={`${c.id}-meaning`}>
+                          {c.meaning}{' '}
+                          <span className="text-3xl font-bold text-sky-400">{c.sound}</span>
+                        </p>
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-4 gap-2 text-center mt-1 text-lg text-slate-300">
-                    {group.map(c => (
-                      <p key={`${c.id}-meaning`}>
-                        {c.meaning}{' '}
-                        <span className="text-3xl font-bold text-sky-400">{c.sound}</span>
-                      </p>
-                    ))}
+                   <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => onFlashcard(group)} 
+                        className="p-2 rounded-full hover:bg-slate-600 transition-colors" 
+                        title="플래시 카드 학습"
+                    >
+                        <BookOpenIcon className="w-5 h-5 text-sky-400" />
+                    </button>
                   </div>
                 </div>
               ))}

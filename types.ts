@@ -1,10 +1,10 @@
-
+// FIX: Removed circular dependency and function implementations. This file should only contain type definitions.
 export interface Word {
   id: number;
   word: string;
   meaning: string;
-  pronunciation: string;
-  example: string;
+  pronunciation?: string;
+  example?: string;
   isUserAdded?: boolean;
 }
 
@@ -43,7 +43,6 @@ export interface UserStats {
 
 export enum AppView {
   DASHBOARD = 'DASHBOARD',
-  REVIEW = 'REVIEW',
   USER_WORD_FLASHCARDS = 'USER_WORD_FLASHCARDS',
   QUIZ = 'QUIZ',
   ADD_WORD = 'ADD_WORD',
@@ -51,10 +50,11 @@ export enum AppView {
   WORD_LIST = 'WORD_LIST',
   EDIT_WORD = 'EDIT_WORD',
   CHEONJAMUN_FLASHCARDS = 'CHEONJAMUN_FLASHCARDS',
-  CHEONJAMUN_REVIEW = 'CHEONJAMUN_REVIEW',
   CHEONJAMUN_LIST = 'CHEONJAMUN_LIST',
   HANJA_QUIZ = 'HANJA_QUIZ',
-  FOUR_CHAR_QUIZ = 'FOUR_CHAR_QUIZ'
+  FOUR_CHAR_QUIZ = 'FOUR_CHAR_QUIZ',
+  REVIEW_SINGLE_WORD_FLASHCARD = 'REVIEW_SINGLE_WORD_FLASHCARD',
+  REVIEW_SINGLE_HANJA_GROUP_FLASHCARD = 'REVIEW_SINGLE_HANJA_GROUP_FLASHCARD',
 }
 
 export type LearningMode = 'ENGLISH' | 'HANJA';

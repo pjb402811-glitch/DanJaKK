@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback } from 'react';
 import { AppView, UserStats, Word, HanjaCharacter, LearningMode } from './types';
 import Dashboard from './components/Dashboard';
@@ -20,11 +19,12 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [wordToEdit, setWordToEdit] = useState<Word | null>(null);
   const [activeMode, setActiveMode] = useState<LearningMode>('ENGLISH');
+  const [singleWordForFlashcard, setSingleWordForFlashcard] = useState<Word[]>([]);
+  const [singleHanjaGroupForFlashcard, setSingleHanjaGroupForFlashcard] = useState<HanjaCharacter[]>([]);
 
   const { 
     userStats, 
     wordsForUserLesson,
-    learnedWords,
     wordProgress,
     userAddedWords,
     allWords,
@@ -43,9 +43,9 @@ const App: React.FC = () => {
     allCharacters,
     characterProgress,
     learnedCharacters,
-    charactersForReview,
-    hanjaReviewCount,
-    learnedGroups
+    learnedGroups,
+    englishReviewCount,
+    hanjaReviewCount
   } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -62,6 +62,16 @@ const App: React.FC = () => {
     setCurrentView(AppView.DASHBOARD);
   }, [addXpAndCoins]);
 
+  const handleReviewSessionComplete = useCallback((xp: number, coins: number) => {
+    addXpAndCoins(xp, coins);
+    setCurrentView(AppView.WORD_LIST);
+  }, [addXpAndCoins]);
+  
+  const handleReviewHanjaSessionComplete = useCallback((xp: number, coins: number) => {
+    addXpAndCoins(xp, coins);
+    setCurrentView(AppView.CHEONJAMUN_LIST);
+  }, [addXpAndCoins]);
+  
   const handleBack = useCallback(() => {
     setCurrentView(AppView.DASHBOARD);
   }, []);
@@ -78,6 +88,19 @@ const App: React.FC = () => {
       setCurrentView(AppView.EDIT_WORD);
     }
   }, [allWords]);
+
+  const handleStartSingleWordFlashcard = useCallback((wordId: number) => {
+    const word = allWords.find(w => w.id === wordId);
+    if (word) {
+        setSingleWordForFlashcard([word]);
+        setCurrentView(AppView.REVIEW_SINGLE_WORD_FLASHCARD);
+    }
+  }, [allWords]);
+
+  const handleStartSingleHanjaGroupFlashcard = useCallback((characters: HanjaCharacter[]) => {
+    setSingleHanjaGroupForFlashcard(characters);
+    setCurrentView(AppView.REVIEW_SINGLE_HANJA_GROUP_FLASHCARD);
+  }, []);
 
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
@@ -226,10 +249,8 @@ const App: React.FC = () => {
     }
     
     switch (currentView) {
-      case AppView.REVIEW:
-        return <FlashcardView words={learnedWords} updateWordProgress={updateWordProgress} onComplete={handleSessionComplete} isReview={true} onBack={handleBack} />;
       case AppView.USER_WORD_FLASHCARDS:
-        return <FlashcardView words={wordsForUserLesson} updateWordProgress={updateWordProgress} onComplete={handleSessionComplete} onBack={handleBack} />;
+        return <FlashcardView words={wordsForUserLesson} updateWordProgress={updateWordProgress} onComplete={handleSessionComplete} onBack={handleBack} sessionTitle="플래시 카드 학습" />;
       case AppView.QUIZ:
         return <QuizGame words={gameWordsForUser} onComplete={handleSessionComplete} onBack={handleBack} />;
       case AppView.ADD_WORD:
@@ -243,6 +264,7 @@ const App: React.FC = () => {
           onBack={handleBack}
           onEdit={handleNavigateToEdit}
           onDelete={handleDeleteWord}
+          onFlashcard={handleStartSingleWordFlashcard}
         />;
       case AppView.EDIT_WORD:
         return wordToEdit ? <EditWordView 
@@ -256,20 +278,14 @@ const App: React.FC = () => {
           updateCharacterProgress={updateCharacterProgress}
           onComplete={handleSessionComplete}
           onBack={handleBack}
+          sessionTitle="천자문 학습"
         />;
-      case AppView.CHEONJAMUN_REVIEW:
-          return <CheonjamunFlashcardView
-            characters={charactersForReview}
-            updateCharacterProgress={updateCharacterProgress}
-            onComplete={handleSessionComplete}
-            onBack={handleBack}
-            isReview={true}
-          />;
       case AppView.CHEONJAMUN_LIST:
         return <CheonjamunListView 
           allCharacters={allCharacters}
           progress={characterProgress}
           onBack={handleBack}
+          onFlashcard={handleStartSingleHanjaGroupFlashcard}
         />;
       case AppView.HANJA_QUIZ:
         return <HanjaQuizView 
@@ -284,6 +300,23 @@ const App: React.FC = () => {
           allGroups={learnedGroups}
           onComplete={handleSessionComplete} 
           onBack={handleBack} 
+        />;
+      case AppView.REVIEW_SINGLE_WORD_FLASHCARD:
+        return <FlashcardView
+            words={singleWordForFlashcard}
+            updateWordProgress={updateWordProgress}
+            onComplete={handleReviewSessionComplete}
+            onBack={() => setCurrentView(AppView.WORD_LIST)}
+            sessionTitle="단어 복습"
+        />;
+      case AppView.REVIEW_SINGLE_HANJA_GROUP_FLASHCARD:
+        return <CheonjamunFlashcardView
+            characters={singleHanjaGroupForFlashcard}
+            updateCharacterProgress={updateCharacterProgress}
+            onComplete={handleReviewHanjaSessionComplete}
+            onBack={() => setCurrentView(AppView.CHEONJAMUN_LIST)}
+            sessionTitle="한자 그룹 복습"
+            isReview={true}
         />;
       case AppView.DASHBOARD:
       default:
@@ -300,8 +333,6 @@ const App: React.FC = () => {
           activeMode={activeMode}
           englishStats={learningStats.englishStats}
           hanjaStats={learningStats.hanjaStats}
-          englishReviewCount={learnedWords.length}
-          hanjaReviewCount={hanjaReviewCount}
           hanjaLearnedCount={learnedCharacters.length}
         />;
     }

@@ -178,14 +178,6 @@ const useLearningData = () => {
       .slice(0, NEW_WORDS_PER_LESSON);
   }, [userAddedWords, wordProgress]);
 
-  const learnedWords = useMemo(() => {
-    const now = new Date();
-    return allWords.filter(word => {
-      const progress = wordProgress[word.id];
-      return progress?.nextReview && new Date(progress.nextReview) <= now;
-    });
-  }, [allWords, wordProgress]);
-
   const charactersForLesson = useMemo(() => {
     const firstUnlearned = allCharacters.find(char => (characterProgress[char.id]?.streak || 0) === 0);
     if (!firstUnlearned) return [];
@@ -195,32 +187,6 @@ const useLearningData = () => {
 
   }, [allCharacters, characterProgress]);
   
-  const charactersForReview = useMemo(() => {
-    const now = new Date();
-    const reviewable = (Object.values(characterProgress) as HanjaCharacterProgress[])
-      .filter(p => p.nextReview && new Date(p.nextReview) <= now)
-      .sort((a, b) => new Date(a.nextReview!).getTime() - new Date(b.nextReview!).getTime());
-    
-    const charIdsToReview = reviewable.slice(0, CHARACTERS_PER_GROUP).map(p => p.characterId);
-    
-    if (charIdsToReview.length === 0) return [];
-    
-    const firstCharToReview = allCharacters.find(c => c.id === charIdsToReview[0]);
-    if (!firstCharToReview) return [];
-    
-    const groupIndex = Math.floor((firstCharToReview.id - 1) / CHARACTERS_PER_GROUP);
-    const group = allCharacters.slice(groupIndex * CHARACTERS_PER_GROUP, groupIndex * CHARACTERS_PER_GROUP + CHARACTERS_PER_GROUP);
-    
-    return group.filter(c => characterProgress[c.id]?.nextReview && new Date(characterProgress[c.id].nextReview!) <= now);
-  }, [allCharacters, characterProgress]);
-
-
-  const hanjaReviewCount = useMemo(() => {
-    const now = new Date();
-    // FIX: Explicitly cast `Object.values(characterProgress)` to `HanjaCharacterProgress[]` to ensure correct type inference for `p`.
-    return (Object.values(characterProgress) as HanjaCharacterProgress[]).filter(p => p.nextReview && new Date(p.nextReview) <= now).length;
-  }, [characterProgress]);
-
   const learnedCharacters = useMemo(() => {
     return allCharacters.filter(char => (characterProgress[char.id]?.lastReviewed));
   }, [allCharacters, characterProgress]);
@@ -241,7 +207,6 @@ const useLearningData = () => {
     const englishStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const hanjaStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
 
-    // FIX: Explicitly cast `Object.values(wordProgress)` to `WordProgress[]` to ensure correct type inference for `p`.
     (Object.values(wordProgress) as WordProgress[]).forEach(p => {
       if (p.lastReviewed) {
         englishStats.totalLearned++;
@@ -250,7 +215,6 @@ const useLearningData = () => {
       }
     });
 
-    // FIX: Explicitly cast `Object.values(characterProgress)` to `HanjaCharacterProgress[]` to ensure correct type inference for `p`.
     (Object.values(characterProgress) as HanjaCharacterProgress[]).forEach(p => {
         if (p.lastReviewed) {
             hanjaStats.totalLearned++;
@@ -262,11 +226,24 @@ const useLearningData = () => {
     return { englishStats, hanjaStats };
   }, [wordProgress, characterProgress]);
 
+  // Derived state for review counts used only in Dashboard, kept here for colocation.
+  const englishReviewCount = useMemo(() => {
+    const now = new Date();
+    return allWords.filter(word => {
+      const progress = wordProgress[word.id];
+      return progress?.nextReview && new Date(progress.nextReview) <= now;
+    }).length;
+  }, [allWords, wordProgress]);
+
+  const hanjaReviewCount = useMemo(() => {
+    const now = new Date();
+    return (Object.values(characterProgress) as HanjaCharacterProgress[]).filter(p => p.nextReview && new Date(p.nextReview) <= now).length;
+  }, [characterProgress]);
+
 
   return {
     userStats,
     wordsForUserLesson,
-    learnedWords,
     wordProgress,
     userAddedWords,
     allWords,
@@ -285,9 +262,9 @@ const useLearningData = () => {
     allCharacters,
     characterProgress,
     learnedCharacters,
-    charactersForReview,
-    hanjaReviewCount,
-    learnedGroups
+    learnedGroups,
+    englishReviewCount,
+    hanjaReviewCount
   };
 };
 
