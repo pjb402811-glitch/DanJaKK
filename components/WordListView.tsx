@@ -39,9 +39,9 @@ const WordListView: React.FC<WordListViewProps> = ({ words, progress, onBack, on
 
               return (
                 <div key={word.id} className="bg-slate-700/50 p-4 rounded-lg flex items-center gap-4 justify-between">
-                  <div className="flex-1 flex items-baseline gap-4">
-                    <p className="font-bold text-2xl text-white basis-2/5 truncate">{word.word}</p>
-                    <p className="text-xl text-slate-300 basis-3/5">{word.meaning}</p>
+                  <div className="flex-1 flex flex-col md:flex-row md:items-baseline md:gap-4">
+                    <p className="font-bold text-2xl text-white md:basis-2/5 truncate">{word.word}</p>
+                    <p className="text-xl text-slate-300 md:basis-3/5">{word.meaning}</p>
                   </div>
                   
                   <div className="flex items-center gap-2">
