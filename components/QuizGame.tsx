@@ -13,23 +13,24 @@ const COINS_PER_CORRECT = 3;
 const OPTIONS_COUNT = 4;
 
 const QuizGame: React.FC<QuizGameProps> = ({ words, onComplete, onBack }) => {
+  const [quizWords] = useState(words);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [options, setOptions] = useState<Word[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState({ xp: 0, coins: 0 });
 
-  const currentWord = words[currentIndex];
+  const currentWord = quizWords[currentIndex];
 
   const generateOptions = useCallback(() => {
-    if (!currentWord || words.length < OPTIONS_COUNT) return;
+    if (!currentWord || quizWords.length < OPTIONS_COUNT) return;
 
-    const otherWords = words.filter(w => w.id !== currentWord.id);
+    const otherWords = quizWords.filter(w => w.id !== currentWord.id);
     const shuffled = otherWords.sort(() => 0.5 - Math.random());
     const randomOptions = shuffled.slice(0, OPTIONS_COUNT - 1);
     const allOptions = [...randomOptions, currentWord].sort(() => 0.5 - Math.random());
     setOptions(allOptions);
-  }, [currentWord, words]);
+  }, [currentWord, quizWords]);
 
   useEffect(() => {
     generateOptions();
@@ -50,7 +51,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ words, onComplete, onBack }) => {
     }
 
     setTimeout(() => {
-      if (currentIndex < words.length - 1) {
+      if (currentIndex < quizWords.length - 1) {
         setCurrentIndex(currentIndex + 1);
         setSelectedOption(null);
         setIsCorrect(null);
@@ -60,7 +61,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ words, onComplete, onBack }) => {
     }, 1500);
   };
 
-  if (words.length < OPTIONS_COUNT) {
+  if (quizWords.length < OPTIONS_COUNT) {
     return (
       <div className="text-center p-8 bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">단어 수 부족</h2>
@@ -83,7 +84,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ words, onComplete, onBack }) => {
             </button>
         </div>
       <div className="w-full bg-slate-700 rounded-full h-2.5 mb-4">
-          <div className="bg-purple-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / words.length) * 100}%` }}></div>
+          <div className="bg-purple-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / quizWords.length) * 100}%` }}></div>
       </div>
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">

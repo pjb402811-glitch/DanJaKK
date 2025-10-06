@@ -23,13 +23,13 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 
 
 const SpellingBeeGame: React.FC<SpellingBeeGameProps> = ({ words, onComplete, onBack }) => {
+  const [quizWords] = useState(() => words.filter(w => w.word.length > 0 && w.word.length <= 12));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState<string>('');
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
   const [score, setScore] = useState({ xp: 0, coins: 0 });
 
-  const gameWords = useMemo(() => words.filter(w => w.word.length > 0 && w.word.length <= 12), [words]);
-  const currentWord = gameWords[currentIndex];
+  const currentWord = quizWords[currentIndex];
 
   const shuffledLetters = useMemo(() => {
     if (!currentWord) return [];
@@ -60,7 +60,7 @@ const SpellingBeeGame: React.FC<SpellingBeeGameProps> = ({ words, onComplete, on
       }));
 
       setTimeout(() => {
-        if (currentIndex < gameWords.length - 1) {
+        if (currentIndex < quizWords.length - 1) {
           setCurrentIndex(prev => prev + 1);
           setCurrentAnswer('');
           setFeedback(null);
@@ -76,10 +76,10 @@ const SpellingBeeGame: React.FC<SpellingBeeGameProps> = ({ words, onComplete, on
         setFeedback(null);
       }, 1200);
     }
-  }, [currentAnswer, currentWord, currentIndex, gameWords, onComplete, score, feedback]);
+  }, [currentAnswer, currentWord, currentIndex, quizWords, onComplete, score, feedback]);
 
 
-  if (gameWords.length === 0) {
+  if (quizWords.length === 0) {
     return (
       <div className="text-center p-8 bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">플레이할 단어 없음</h2>
@@ -108,7 +108,7 @@ const SpellingBeeGame: React.FC<SpellingBeeGameProps> = ({ words, onComplete, on
             </button>
       </div>
       <div className="w-full bg-slate-700 rounded-full h-2.5 mb-4">
-          <div className="bg-red-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / gameWords.length) * 100}%` }}></div>
+          <div className="bg-red-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / quizWords.length) * 100}%` }}></div>
       </div>
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">

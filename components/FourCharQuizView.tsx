@@ -16,13 +16,14 @@ const OPTIONS_COUNT = 4;
 const groupToText = (group: HanjaCharacter[]) => group.map(c => `${c.meaning} ${c.sound}`).join(' - ');
 
 const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, onComplete, onBack }) => {
+  const [quizGroups] = useState(groups);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [options, setOptions] = useState<HanjaCharacter[][]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState({ xp: 0, coins: 0 });
 
-  const currentGroup = groups[currentIndex];
+  const currentGroup = quizGroups[currentIndex];
 
   const generateOptions = useCallback(() => {
     if (!currentGroup || allGroups.length < OPTIONS_COUNT) return;
@@ -59,7 +60,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
     }
 
     setTimeout(() => {
-      if (currentIndex < groups.length - 1) {
+      if (currentIndex < quizGroups.length - 1) {
         setCurrentIndex(currentIndex + 1);
         setSelectedOption(null);
         setIsCorrect(null);
@@ -69,7 +70,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
     }, 1500);
   };
 
-  if (groups.length === 0 || allGroups.length < OPTIONS_COUNT) {
+  if (quizGroups.length === 0 || allGroups.length < OPTIONS_COUNT) {
     return (
       <div className="text-center p-8 bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">학습량 부족</h2>
@@ -92,7 +93,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
             </button>
         </div>
       <div className="w-full bg-slate-700 rounded-full h-2.5 mb-4">
-          <div className="bg-pink-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / groups.length) * 100}%` }}></div>
+          <div className="bg-pink-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex) / quizGroups.length) * 100}%` }}></div>
       </div>
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
