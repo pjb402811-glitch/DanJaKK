@@ -98,7 +98,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
         <p className="text-slate-400 font-semibold mb-2">다음 네 글자 조합의 뜻과 음은 무엇일까요?</p>
-        <h2 className="text-5xl md:text-6xl font-extrabold mb-8 text-white tracking-widest">{currentGroup?.map(c => c.character).join(' ')}</h2>
+        <h2 className="text-4xl md:text-6xl font-extrabold mb-8 text-white tracking-widest">{currentGroup?.map(c => c.character).join(' ')}</h2>
         
         <div className="grid grid-cols-1 gap-4">
           {options.map((option, idx) => {
