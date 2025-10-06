@@ -97,7 +97,7 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
 
             {/* Back of group card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
-              <p className="text-xl md:text-2xl font-bold text-slate-200 text-center break-all">
+              <p className="text-lg md:text-xl font-bold text-slate-200 text-center break-all">
                 {characters.map(c => `${c.meaning} ${c.sound}`).join(' - ')}
               </p>
             </div>
@@ -117,8 +117,8 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
             {/* Back of card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
                 <p className="text-center break-all">
-                    <span className="text-4xl text-slate-300 align-middle">{currentCharacter.meaning}</span>{' '}
-                    <span className="text-6xl font-bold text-slate-200 align-middle">{currentCharacter.sound}</span>
+                    <span className="text-3xl md:text-4xl text-slate-300 align-middle">{currentCharacter.meaning}</span>{' '}
+                    <span className="text-5xl md:text-6xl font-bold text-slate-200 align-middle">{currentCharacter.sound}</span>
                 </p>
             </div>
           </div>
