@@ -1,29 +1,34 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { AppView, UserStats, Word, WordProgress } from './types';
+
+import React, { useState, useMemo, useCallback } from 'react';
+import { AppView, UserStats, Word, HanjaCharacter, LearningMode } from './types';
 import Dashboard from './components/Dashboard';
 import FlashcardView from './components/FlashcardView';
 import QuizGame from './components/QuizGame';
-import useWordData from './hooks/useWordData';
+import useLearningData from './hooks/useWordData';
 import { SparklesIcon, ArrowDownTrayIcon, ArrowUpTrayIcon } from './components/icons/Icons';
 import AddWordView from './components/AddWordView';
 import SpellingBeeGame from './components/SpellingBeeGame';
 import WordListView from './components/WordListView';
 import EditWordView from './components/EditWordView';
+import CheonjamunFlashcardView from './components/CheonjamunFlashcardView';
+import CheonjamunListView from './components/CheonjamunListView';
+import TopNav from './components/TopNav';
+import HanjaQuizView from './components/HanjaQuizView';
+import FourCharQuizView from './components/FourCharQuizView';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [wordToEdit, setWordToEdit] = useState<Word | null>(null);
+  const [activeMode, setActiveMode] = useState<LearningMode>('ENGLISH');
 
   const { 
     userStats, 
     wordsForUserLesson,
     learnedWords,
     wordProgress,
-    totalWordsLearned,
-    wordsLearnedToday,
-    wordsLearnedThisWeek,
     userAddedWords,
     allWords,
+    learningStats,
     updateWordProgress,
     addXpAndCoins,
     isInitialLoading,
@@ -33,10 +38,23 @@ const App: React.FC = () => {
     setWeeklyGoal,
     deleteUserWord,
     updateUserWord,
-  } = useWordData();
+    charactersForLesson,
+    updateCharacterProgress,
+    allCharacters,
+    characterProgress,
+    learnedCharacters,
+    charactersForReview,
+    hanjaReviewCount,
+    learnedGroups
+  } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
     setCurrentView(view);
+  }, []);
+
+  const handleModeChange = useCallback((mode: LearningMode) => {
+    setActiveMode(mode);
+    setCurrentView(AppView.DASHBOARD);
   }, []);
   
   const handleSessionComplete = useCallback((xp: number, coins: number) => {
@@ -81,16 +99,20 @@ const App: React.FC = () => {
       const words = localStorage.getItem('danzzak-words');
       const progress = localStorage.getItem('danzzak-progress');
       const stats = localStorage.getItem('danzzak-stats');
+      const characters = localStorage.getItem('danzzak-characters');
+      const characterProgress = localStorage.getItem('danzzak-character-progress');
 
-      if (!words || !progress || !stats) {
+      if (!words && !progress && !stats && !characters && !characterProgress) {
         alert('백업할 데이터가 없습니다.');
         return;
       }
 
       const backupData = {
-        words: JSON.parse(words),
-        progress: JSON.parse(progress),
-        stats: JSON.parse(stats),
+        words: words ? JSON.parse(words) : [],
+        progress: progress ? JSON.parse(progress) : {},
+        stats: stats ? JSON.parse(stats) : {},
+        characters: characters ? JSON.parse(characters) : [],
+        characterProgress: characterProgress ? JSON.parse(characterProgress) : {},
       };
 
       const dataStr = JSON.stringify(backupData, null, 2);
@@ -133,6 +155,9 @@ const App: React.FC = () => {
             localStorage.setItem('danzzak-words', JSON.stringify(restoredData.words));
             localStorage.setItem('danzzak-progress', JSON.stringify(restoredData.progress));
             localStorage.setItem('danzzak-stats', JSON.stringify(restoredData.stats));
+            if (restoredData.characters) localStorage.setItem('danzzak-characters', JSON.stringify(restoredData.characters));
+            if (restoredData.characterProgress) localStorage.setItem('danzzak-character-progress', JSON.stringify(restoredData.characterProgress));
+            
             alert('데이터를 성공적으로 가져왔습니다. 앱을 새로고침합니다.');
             window.location.reload();
           } else {
@@ -152,6 +177,14 @@ const App: React.FC = () => {
   const gameWordsForUser = useMemo(() => {
     return [...userAddedWords].sort(() => 0.5 - Math.random()).slice(0, 10);
   }, [userAddedWords]);
+
+  const quizHanjaCharacters = useMemo(() => {
+    return [...learnedCharacters].sort(() => 0.5 - Math.random()).slice(0, 10);
+  }, [learnedCharacters]);
+
+  const quizHanjaGroups = useMemo(() => {
+    return [...learnedGroups].sort(() => 0.5 - Math.random()).slice(0, 10);
+  }, [learnedGroups]);
 
 
   const renderHeader = (stats: UserStats) => (
@@ -217,20 +250,59 @@ const App: React.FC = () => {
           onUpdateWord={handleWordUpdated}
           onBack={handleBackToWordList}
         /> : null;
+      case AppView.CHEONJAMUN_FLASHCARDS:
+        return <CheonjamunFlashcardView
+          characters={charactersForLesson}
+          updateCharacterProgress={updateCharacterProgress}
+          onComplete={handleSessionComplete}
+          onBack={handleBack}
+        />;
+      case AppView.CHEONJAMUN_REVIEW:
+          return <CheonjamunFlashcardView
+            characters={charactersForReview}
+            updateCharacterProgress={updateCharacterProgress}
+            onComplete={handleSessionComplete}
+            onBack={handleBack}
+            isReview={true}
+          />;
+      case AppView.CHEONJAMUN_LIST:
+        return <CheonjamunListView 
+          allCharacters={allCharacters}
+          progress={characterProgress}
+          onBack={handleBack}
+        />;
+      case AppView.HANJA_QUIZ:
+        return <HanjaQuizView 
+          characters={quizHanjaCharacters}
+          updateCharacterProgress={updateCharacterProgress}
+          onComplete={handleSessionComplete} 
+          onBack={handleBack} 
+        />;
+      case AppView.FOUR_CHAR_QUIZ:
+        return <FourCharQuizView 
+          groups={quizHanjaGroups} 
+          allGroups={learnedGroups}
+          onComplete={handleSessionComplete} 
+          onBack={handleBack} 
+        />;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
           stats={userStats} 
           onNavigate={handleNavigate} 
-          reviewCount={learnedWords.length} 
           userWordCount={wordsForUserLesson.length}
           userAddedWordsCount={userAddedWords.length}
           onSetDailyGoal={setDailyGoal}
           onSetWeeklyGoal={setWeeklyGoal}
-          totalWordsLearned={totalWordsLearned}
-          wordsLearnedToday={wordsLearnedToday}
-          wordsLearnedThisWeek={wordsLearnedThisWeek}
           allWordsCount={allWords.length}
+          cheonjamunLearnCount={charactersForLesson.length}
+          allCharactersCount={allCharacters.length}
+          activeMode={activeMode}
+          englishStats={learningStats.englishStats}
+          hanjaStats={learningStats.hanjaStats}
+          englishReviewCount={learnedWords.length}
+          hanjaReviewCount={hanjaReviewCount}
+          hanjaLearnedCount={learnedCharacters.length}
         />;
     }
   };
@@ -239,6 +311,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-slate-900 text-slate-200">
       {renderHeader(userStats)}
       <main className="max-w-7xl mx-auto p-4 md:p-6">
+        <TopNav activeMode={activeMode} onModeChange={handleModeChange} />
         {renderContent()}
       </main>
       <footer className="text-center p-4 text-xs text-slate-500">

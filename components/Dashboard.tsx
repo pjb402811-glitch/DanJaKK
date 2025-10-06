@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
-import { AppView, UserStats } from '../types';
-import { BookOpenIcon, SparklesIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon, ArrowDownTrayIcon, ArrowUpTrayIcon } from './icons/Icons';
+import { AppView, UserStats, LearningMode } from '../types';
+import { BookOpenIcon, SparklesIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon, PaintBrushIcon, QuestionMarkCircleIcon, Squares2X2Icon } from './icons/Icons';
 
+interface ModeStats {
+  learnedToday: number;
+  learnedThisWeek: number;
+  totalLearned: number;
+}
 interface DashboardProps {
   stats: UserStats;
   onNavigate: (view: AppView) => void;
-  reviewCount: number;
   userWordCount: number;
   userAddedWordsCount: number;
   onSetDailyGoal: (goal: number) => void;
   onSetWeeklyGoal: (goal: number) => void;
-  totalWordsLearned: number;
-  wordsLearnedToday: number;
-  wordsLearnedThisWeek: number;
   allWordsCount: number;
+  cheonjamunLearnCount: number;
+  allCharactersCount: number;
+  activeMode: LearningMode;
+  englishStats: ModeStats;
+  hanjaStats: ModeStats;
+  englishReviewCount: number;
+  hanjaReviewCount: number;
+  hanjaLearnedCount: number;
 }
 
 const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string; children?: React.ReactNode; }> = ({ icon, label, value, color, children }) => (
@@ -49,7 +58,23 @@ const ActionButton: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   );
 
 
-const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, userWordCount, userAddedWordsCount, onSetDailyGoal, onSetWeeklyGoal, totalWordsLearned, wordsLearnedToday, wordsLearnedThisWeek, allWordsCount }) => {
+const Dashboard: React.FC<DashboardProps> = ({ 
+  stats, 
+  onNavigate, 
+  userWordCount, 
+  userAddedWordsCount, 
+  onSetDailyGoal, 
+  onSetWeeklyGoal, 
+  allWordsCount, 
+  cheonjamunLearnCount, 
+  allCharactersCount,
+  activeMode,
+  englishStats,
+  hanjaStats,
+  englishReviewCount,
+  hanjaReviewCount,
+  hanjaLearnedCount
+}) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(stats.dailyGoal);
   
@@ -66,10 +91,13 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
     setIsEditingWeeklyGoal(false);
 }
 
+  const currentModeStats = activeMode === 'ENGLISH' ? englishStats : hanjaStats;
+  const itemType = activeMode === 'ENGLISH' ? '단어' : '한자';
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard icon={<TargetIcon className="w-6 h-6 text-white"/>} label="오늘의 목표" value={`${wordsLearnedToday} / ${stats.dailyGoal} 단어`} color="bg-blue-500">
+        <StatCard icon={<TargetIcon className="w-6 h-6 text-white"/>} label="오늘의 목표" value={`${currentModeStats.learnedToday} / ${stats.dailyGoal} ${itemType}`} color="bg-blue-500">
             {isEditingDailyGoal ? (
                 <div className="flex items-center gap-2">
                     <input 
@@ -88,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
                 </button>
             )}
         </StatCard>
-        <StatCard icon={<CalendarIcon className="w-6 h-6 text-white"/>} label="이번 주 목표" value={`${wordsLearnedThisWeek} / ${stats.weeklyGoal} 단어`} color="bg-teal-500">
+        <StatCard icon={<CalendarIcon className="w-6 h-6 text-white"/>} label="이번 주 목표" value={`${currentModeStats.learnedThisWeek} / ${stats.weeklyGoal} ${itemType}`} color="bg-teal-500">
             {isEditingWeeklyGoal ? (
                 <div className="flex items-center gap-2">
                     <input 
@@ -107,60 +135,112 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, onNavigate, reviewCount, u
                 </button>
             )}
         </StatCard>
-        <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label="학습한 단어" value={totalWordsLearned} color="bg-green-500"/>
+        <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label={`총 학습량`} value={`${currentModeStats.totalLearned} ${itemType}`} color="bg-green-500"/>
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <ActionButton 
-          icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-          title="단어추가 하기"
-          subtitle="학습 목록에 새 단어 등록"
-          onClick={() => onNavigate(AppView.ADD_WORD)}
-          color="bg-gradient-to-br from-gray-700 to-gray-800"
-        />
-        <ActionButton 
-          icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-          title="플래시 카드 학습"
-          subtitle="내가 추가한 단어 배우기"
-          onClick={() => onNavigate(AppView.USER_WORD_FLASHCARDS)}
-          color="bg-gradient-to-br from-teal-500 to-teal-600"
-          count={userWordCount}
-          disabled={userWordCount === 0}
-        />
-        <ActionButton 
-          icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
-          title="단어 퀴즈"
-          subtitle={userAddedWordsCount < 4 ? "단어를 4개 이상 추가해주세요" : "추가한 단어로 뜻 맞추기"}
-          onClick={() => onNavigate(AppView.QUIZ)}
-          color="bg-gradient-to-br from-purple-500 to-purple-600"
-          disabled={userAddedWordsCount < 4}
-        />
-        <ActionButton 
-          icon={<PencilIcon className="w-8 h-8 text-white/50" />}
-          title="철자 맞추기 퀴즈"
-          subtitle={userAddedWordsCount === 0 ? "단어를 1개 이상 추가해주세요" : "추가한 단어로 조합하기"}
-          onClick={() => onNavigate(AppView.SPELLING_BEE)}
-          color="bg-gradient-to-br from-red-500 to-red-600"
-          disabled={userAddedWordsCount === 0}
-        />
-        <ActionButton 
-          icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
-          title="학습 단어 목록"
-          subtitle="내 단어장 전체 보기"
-          onClick={() => onNavigate(AppView.WORD_LIST)}
-          color="bg-gradient-to-br from-sky-500 to-sky-600"
-          count={allWordsCount}
-          disabled={allWordsCount === 0}
-        />
-        <ActionButton 
-          icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
-          title="복습 카드"
-          subtitle="기억력 강화하기"
-          onClick={() => onNavigate(AppView.REVIEW)}
-          color="bg-gradient-to-br from-green-500 to-green-600"
-          count={reviewCount}
-          disabled={reviewCount === 0}
-        />
+        {activeMode === 'ENGLISH' && (
+          <>
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="단어추가 하기"
+              subtitle="학습 목록에 새 단어 등록"
+              onClick={() => onNavigate(AppView.ADD_WORD)}
+              color="bg-gradient-to-br from-gray-700 to-gray-800"
+            />
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="플래시 카드 학습"
+              subtitle="내가 추가한 단어 배우기"
+              onClick={() => onNavigate(AppView.USER_WORD_FLASHCARDS)}
+              color="bg-gradient-to-br from-teal-500 to-teal-600"
+              count={userWordCount}
+              disabled={userWordCount === 0}
+            />
+            <ActionButton 
+              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
+              title="단어 퀴즈"
+              subtitle={userAddedWordsCount < 4 ? "단어를 4개 이상 추가해주세요" : "추가한 단어로 뜻 맞추기"}
+              onClick={() => onNavigate(AppView.QUIZ)}
+              color="bg-gradient-to-br from-purple-500 to-purple-600"
+              disabled={userAddedWordsCount < 4}
+            />
+            <ActionButton 
+              icon={<PencilIcon className="w-8 h-8 text-white/50" />}
+              title="철자 맞추기 퀴즈"
+              subtitle={userAddedWordsCount === 0 ? "단어를 1개 이상 추가해주세요" : "추가한 단어로 조합하기"}
+              onClick={() => onNavigate(AppView.SPELLING_BEE)}
+              color="bg-gradient-to-br from-red-500 to-red-600"
+              disabled={userAddedWordsCount === 0}
+            />
+            <ActionButton 
+              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
+              title="학습 단어 목록"
+              subtitle="내 단어장 전체 보기"
+              onClick={() => onNavigate(AppView.WORD_LIST)}
+              color="bg-gradient-to-br from-sky-500 to-sky-600"
+              count={allWordsCount}
+              disabled={allWordsCount === 0}
+            />
+            <ActionButton 
+              icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
+              title="복습 카드"
+              subtitle="기억력 강화하기"
+              onClick={() => onNavigate(AppView.REVIEW)}
+              color="bg-gradient-to-br from-green-500 to-green-600"
+              count={englishReviewCount}
+              disabled={englishReviewCount === 0}
+            />
+          </>
+        )}
+
+        {activeMode === 'HANJA' && (
+          <>
+            <ActionButton 
+              icon={<PaintBrushIcon className="w-8 h-8 text-white/50" />}
+              title="천자문 플래시카드 학습"
+              subtitle="네 자씩 그룹으로 학습하기"
+              onClick={() => onNavigate(AppView.CHEONJAMUN_FLASHCARDS)}
+              color="bg-gradient-to-br from-yellow-500 to-yellow-600"
+              count={cheonjamunLearnCount}
+              disabled={cheonjamunLearnCount === 0}
+            />
+             <ActionButton 
+              icon={<QuestionMarkCircleIcon className="w-8 h-8 text-white/50" />}
+              title="한자 퀴즈"
+              subtitle={hanjaLearnedCount < 4 ? "한자를 4개 이상 학습해주세요" : "개별 한자 뜻 맞추기"}
+              onClick={() => onNavigate(AppView.HANJA_QUIZ)}
+              color="bg-gradient-to-br from-indigo-500 to-indigo-600"
+              disabled={hanjaLearnedCount < 4}
+            />
+            <ActionButton 
+              icon={<Squares2X2Icon className="w-8 h-8 text-white/50" />}
+              title="사자성어 퀴즈"
+              subtitle={hanjaLearnedCount < 4 ? "한자를 4개 이상 학습해주세요" : "네 글자 조합 뜻 맞추기"}
+              onClick={() => onNavigate(AppView.FOUR_CHAR_QUIZ)}
+              color="bg-gradient-to-br from-pink-500 to-pink-600"
+              disabled={hanjaLearnedCount < 4}
+            />
+            <ActionButton 
+              icon={<BookOpenIcon className="w-8 h-8 text-white/50" />}
+              title="한자 복습"
+              subtitle="기억력 강화하기"
+              onClick={() => onNavigate(AppView.CHEONJAMUN_REVIEW)}
+              color="bg-gradient-to-br from-green-500 to-green-600"
+              count={hanjaReviewCount}
+              disabled={hanjaReviewCount === 0}
+            />
+             <ActionButton 
+              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
+              title="한자 목록 보기"
+              subtitle="내 한자장 전체 보기"
+              onClick={() => onNavigate(AppView.CHEONJAMUN_LIST)}
+              color="bg-gradient-to-br from-orange-500 to-orange-600"
+              count={allCharactersCount}
+              disabled={allCharactersCount === 0}
+            />
+          </>
+        )}
       </div>
     </div>
   );

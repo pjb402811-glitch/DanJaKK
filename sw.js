@@ -20,7 +20,12 @@ const urlsToCache = [
   '/components/SpellingBeeGame.tsx',
   '/components/WordListView.tsx',
   '/components/EditWordView.tsx',
-  '/components/icons/Icons.tsx'
+  '/components/CheonjamunFlashcardView.tsx',
+  '/components/CheonjamunListView.tsx',
+  '/components/HanjaQuizView.tsx',
+  '/components/FourCharQuizView.tsx',
+  '/components/icons/Icons.tsx',
+  '/components/TopNav.tsx'
 ];
 
 self.addEventListener('install', event => {
