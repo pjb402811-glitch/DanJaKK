@@ -98,7 +98,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
         <p className="text-slate-400 font-semibold mb-2">다음 네 글자 조합의 뜻과 음은 무엇일까요?</p>
-        <h2 className="text-6xl font-extrabold mb-8 text-white tracking-widest">{currentGroup?.map(c => c.character).join(' ')}</h2>
+        <h2 className="text-5xl md:text-6xl font-extrabold mb-8 text-white tracking-widest">{currentGroup?.map(c => c.character).join(' ')}</h2>
         
         <div className="grid grid-cols-1 gap-4">
           {options.map((option, idx) => {
@@ -116,7 +116,7 @@ const FourCharQuizView: React.FC<FourCharQuizViewProps> = ({ groups, allGroups, 
                 key={idx}
                 onClick={() => handleOptionClick(option)}
                 disabled={selectedOption !== null}
-                className={`p-4 rounded-lg font-semibold text-left text-lg transition-all duration-300 transform ${selectedOption === null ? 'hover:scale-105' : ''} ${buttonClass}`}
+                className={`p-4 rounded-lg font-semibold text-left text-base md:text-lg transition-all duration-300 transform ${selectedOption === null ? 'hover:scale-105' : ''} ${buttonClass}`}
               >
                 {optionText}
               </button>
