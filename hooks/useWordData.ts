@@ -226,7 +226,10 @@ const useLearningData = () => {
     return { englishStats, hanjaStats };
   }, [wordProgress, characterProgress]);
 
-  // Derived state for review counts used only in Dashboard, kept here for colocation.
+  const unlearnedCharactersCount = useMemo(() => {
+    return allCharacters.filter(c => (characterProgress[c.id]?.streak || 0) === 0).length;
+  }, [allCharacters, characterProgress]);
+
   const englishReviewCount = useMemo(() => {
     const now = new Date();
     return allWords.filter(word => {
@@ -264,7 +267,8 @@ const useLearningData = () => {
     learnedCharacters,
     learnedGroups,
     englishReviewCount,
-    hanjaReviewCount
+    hanjaReviewCount,
+    unlearnedCharactersCount
   };
 };
 

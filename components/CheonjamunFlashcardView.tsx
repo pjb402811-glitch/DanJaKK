@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { HanjaCharacter } from '../types';
+import { HanjaCharacter, HanjaCharacterProgress } from '../types';
 import { ChevronLeftIcon } from './icons/Icons';
 
 interface CheonjamunFlashcardViewProps {
   characters: HanjaCharacter[];
+  characterProgress: Record<number, HanjaCharacterProgress>;
   updateCharacterProgress: (characterId: number, isCorrect: boolean) => void;
   onComplete: (xp: number, coins: number) => void;
   onBack: () => void;
@@ -14,13 +15,28 @@ interface CheonjamunFlashcardViewProps {
 const XP_PER_CHAR = 10;
 const COINS_PER_CHAR = 2;
 
-const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ characters, updateCharacterProgress, onComplete, onBack, sessionTitle, isReview = false }) => {
+const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ characters, characterProgress, updateCharacterProgress, onComplete, onBack, sessionTitle, isReview = false }) => {
+  
+  const [sessionCharacters] = useState(characters);
+
+  const individualCharacters = useMemo(() => {
+    return sessionCharacters;
+  }, [sessionCharacters]);
+
+  const firstUnlearnedIndex = useMemo(() => {
+    if (isReview) {
+      return 0;
+    }
+    const index = sessionCharacters.findIndex(c => (characterProgress[c.id]?.streak || 0) === 0);
+    return index === -1 ? 0 : index;
+  }, [sessionCharacters, characterProgress, isReview]);
+
   const [stage, setStage] = useState<'group' | 'individual'>(isReview ? 'individual' : 'group');
-  const [charIndex, setCharIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(firstUnlearnedIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionProgress, setSessionProgress] = useState({ correct: 0, incorrect: 0 });
 
-  const currentCharacter = useMemo(() => characters[charIndex], [characters, charIndex]);
+  const currentCharacter = useMemo(() => individualCharacters[charIndex], [individualCharacters, charIndex]);
 
   const handleNext = (isCorrect: boolean) => {
     updateCharacterProgress(currentCharacter.id, isCorrect);
@@ -30,7 +46,7 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
       incorrect: prev.incorrect + (isCorrect ? 0 : 1),
     }));
 
-    if (charIndex < characters.length - 1) {
+    if (charIndex < individualCharacters.length - 1) {
       setCharIndex(charIndex + 1);
       setIsFlipped(false);
     } else {
@@ -42,10 +58,11 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
   
   const startIndividualLearning = () => {
     setIsFlipped(false);
+    setCharIndex(firstUnlearnedIndex);
     setStage('individual');
   };
 
-  if (characters.length === 0 || !currentCharacter) {
+  if (individualCharacters.length === 0 || !currentCharacter) {
     return (
       <div className="text-center p-8 bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">모두 완료!</h2>
@@ -72,9 +89,9 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
       
       {stage === 'individual' ? (
         <div className="w-full max-w-2xl">
-          <p className="text-center text-slate-400 font-semibold">{isReview ? sessionTitle : individualTitle}: {charIndex + 1} / {characters.length}</p>
+          <p className="text-center text-slate-400 font-semibold">{isReview ? sessionTitle : individualTitle}: {charIndex + 1} / {individualCharacters.length}</p>
           <div className="w-full bg-slate-700 rounded-full h-2.5 mt-2 mb-8">
-              <div className="bg-yellow-500 h-2.5 rounded-full" style={{ width: `${((charIndex + 1) / characters.length) * 100}%` }}></div>
+              <div className="bg-yellow-500 h-2.5 rounded-full" style={{ width: `${((charIndex + 1) / individualCharacters.length) * 100}%` }}></div>
           </div>
         </div>
       ) : (
@@ -91,17 +108,17 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
           <div className={`relative w-full h-full transform-style-preserve-3d transition-transform duration-500 ${isFlipped ? 'rotate-y-180' : ''}`}>
             {/* Front of group card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 border-4 border-yellow-400">
-              <h2 className="text-5xl md:text-6xl font-extrabold text-white break-all text-center tracking-wider">{characters.map(c => c.character).join(' ')}</h2>
+              <h2 className="text-5xl md:text-6xl font-extrabold text-white break-all text-center tracking-wider">{sessionCharacters.map(c => c.character).join(' ')}</h2>
               <p className="absolute bottom-4 text-xs text-slate-400">네 자를 먼저 외워보세요. 클릭해서 뜻을 확인하세요.</p>
             </div>
 
             {/* Back of group card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
                 <div className="flex justify-around items-center w-full px-2">
-                    {characters.map((c, index) => (
-                    <div key={index} className="text-center mx-1">
-                        <p className="text-lg text-slate-300">{c.meaning}</p>
-                        <p className="text-4xl font-bold text-slate-100 mt-1">{c.sound}</p>
+                    {sessionCharacters.map((c, index) => (
+                    <div key={index} className="text-center mx-1 flex flex-col">
+                        <span className="text-lg text-slate-300">{c.meaning}</span>
+                        <span className="text-4xl font-bold text-slate-100 mt-1">{c.sound}</span>
                     </div>
                     ))}
                 </div>
@@ -121,7 +138,7 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
             </div>
             {/* Back of card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
-                <div className="text-center">
+                <div className="text-center flex flex-col">
                     <p className="text-3xl text-slate-300">{currentCharacter.meaning}</p>
                     <p className="text-8xl font-bold text-slate-100 mt-2">{currentCharacter.sound}</p>
                 </div>

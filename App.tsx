@@ -45,7 +45,8 @@ const App: React.FC = () => {
     learnedCharacters,
     learnedGroups,
     englishReviewCount,
-    hanjaReviewCount
+    hanjaReviewCount,
+    unlearnedCharactersCount
   } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -275,6 +276,7 @@ const App: React.FC = () => {
       case AppView.CHEONJAMUN_FLASHCARDS:
         return <CheonjamunFlashcardView
           characters={charactersForLesson}
+          characterProgress={characterProgress}
           updateCharacterProgress={updateCharacterProgress}
           onComplete={handleSessionComplete}
           onBack={handleBack}
@@ -312,6 +314,7 @@ const App: React.FC = () => {
       case AppView.REVIEW_SINGLE_HANJA_GROUP_FLASHCARD:
         return <CheonjamunFlashcardView
             characters={singleHanjaGroupForFlashcard}
+            characterProgress={characterProgress}
             updateCharacterProgress={updateCharacterProgress}
             onComplete={handleReviewHanjaSessionComplete}
             onBack={() => setCurrentView(AppView.CHEONJAMUN_LIST)}
@@ -328,7 +331,7 @@ const App: React.FC = () => {
           onSetDailyGoal={setDailyGoal}
           onSetWeeklyGoal={setWeeklyGoal}
           allWordsCount={allWords.length}
-          cheonjamunLearnCount={charactersForLesson.length}
+          cheonjamunLearnCount={unlearnedCharactersCount}
           allCharactersCount={allCharacters.length}
           activeMode={activeMode}
           englishStats={learningStats.englishStats}
