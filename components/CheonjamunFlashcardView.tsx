@@ -96,10 +96,15 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
             </div>
 
             {/* Back of group card */}
-            <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
-              <p className="text-lg md:text-xl font-bold text-slate-200 text-center break-all">
-                {characters.map(c => `${c.meaning} ${c.sound}`).join(' - ')}
-              </p>
+            <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
+                <div className="flex justify-around items-center w-full px-2">
+                    {characters.map((c, index) => (
+                    <div key={index} className="text-center mx-1">
+                        <p className="text-lg text-slate-300">{c.meaning}</p>
+                        <p className="text-4xl font-bold text-slate-100 mt-1">{c.sound}</p>
+                    </div>
+                    ))}
+                </div>
             </div>
           </div>
         </div>
@@ -116,10 +121,10 @@ const CheonjamunFlashcardView: React.FC<CheonjamunFlashcardViewProps> = ({ chara
             </div>
             {/* Back of card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
-                <p className="text-center break-all">
-                    <span className="text-3xl md:text-4xl text-slate-300 align-middle">{currentCharacter.meaning}</span>{' '}
-                    <span className="text-5xl md:text-6xl font-bold text-slate-200 align-middle">{currentCharacter.sound}</span>
-                </p>
+                <div className="text-center">
+                    <p className="text-3xl text-slate-300">{currentCharacter.meaning}</p>
+                    <p className="text-8xl font-bold text-slate-100 mt-2">{currentCharacter.sound}</p>
+                </div>
             </div>
           </div>
         </div>

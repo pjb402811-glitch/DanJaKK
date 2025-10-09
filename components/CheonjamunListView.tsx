@@ -51,12 +51,12 @@ const CheonjamunListView: React.FC<CheonjamunListViewProps> = ({ allCharacters, 
                         <p key={`${c.id}-char`} className="font-bold text-4xl text-white tracking-widest">{c.character}</p>
                       ))}
                     </div>
-                    <div className="grid grid-cols-4 gap-2 text-center mt-1 text-lg text-slate-300">
+                    <div className="grid grid-cols-4 gap-2 text-center mt-2">
                       {group.map(c => (
-                        <p key={`${c.id}-meaning`}>
-                          {c.meaning}{' '}
-                          <span className="text-3xl font-bold text-sky-400">{c.sound}</span>
-                        </p>
+                        <div key={`${c.id}-meaning`}>
+                          <p className="text-sm text-slate-300">{c.meaning}</p>
+                          <p className="text-2xl font-bold text-sky-400">{c.sound}</p>
+                        </div>
                       ))}
                     </div>
                   </div>
