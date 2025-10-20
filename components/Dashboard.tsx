@@ -21,6 +21,11 @@ interface DashboardProps {
   englishStats: ModeStats;
   hanjaStats: ModeStats;
   hanjaLearnedCount: number;
+  conversationStats: ModeStats;
+  userConversationCount: number;
+  userAddedConversationsCount: number;
+  allConversationsCount: number;
+  learnedConversationsCount: number;
 }
 
 const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string; children?: React.ReactNode; }> = ({ icon, label, value, color, children }) => (
@@ -69,7 +74,12 @@ const Dashboard: React.FC<DashboardProps> = ({
   activeMode,
   englishStats,
   hanjaStats,
-  hanjaLearnedCount
+  hanjaLearnedCount,
+  conversationStats,
+  userConversationCount,
+  userAddedConversationsCount,
+  allConversationsCount,
+  learnedConversationsCount,
 }) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(stats.dailyGoal);
@@ -87,52 +97,54 @@ const Dashboard: React.FC<DashboardProps> = ({
     setIsEditingWeeklyGoal(false);
 }
 
-  const currentModeStats = activeMode === 'ENGLISH' ? englishStats : hanjaStats;
-  const itemType = activeMode === 'ENGLISH' ? '단어' : '한자';
+  const currentModeStats = activeMode === 'ENGLISH' ? englishStats : (activeMode === 'HANJA' ? hanjaStats : conversationStats);
+  const itemType = activeMode === 'ENGLISH' ? '단어' : (activeMode === 'HANJA' ? '한자' : '문장');
 
   return (
     <div className="space-y-8">
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard icon={<TargetIcon className="w-6 h-6 text-white"/>} label="오늘의 목표" value={`${currentModeStats.learnedToday} / ${stats.dailyGoal} ${itemType}`} color="bg-blue-500">
-            {isEditingDailyGoal ? (
-                <div className="flex items-center gap-2">
-                    <input 
-                        type="number" 
-                        value={dailyGoal} 
-                        onChange={(e) => setDailyGoal(parseInt(e.target.value, 10))}
-                        className="w-16 p-1 text-center rounded bg-slate-700"
-                    />
-                    <button onClick={handleDailyGoalSave} className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    </button>
-                </div>
-            ) : (
-                <button onClick={() => setIsEditingDailyGoal(true)} className="p-2 rounded-full hover:bg-slate-700">
-                    <PencilIcon className="w-4 h-4 text-slate-400"/>
-                </button>
-            )}
-        </StatCard>
-        <StatCard icon={<CalendarIcon className="w-6 h-6 text-white"/>} label="이번 주 목표" value={`${currentModeStats.learnedThisWeek} / ${stats.weeklyGoal} ${itemType}`} color="bg-teal-500">
-            {isEditingWeeklyGoal ? (
-                <div className="flex items-center gap-2">
-                    <input 
-                        type="number" 
-                        value={weeklyGoal} 
-                        onChange={(e) => setWeeklyGoal(parseInt(e.target.value, 10))}
-                        className="w-16 p-1 text-center rounded bg-slate-700"
-                    />
-                    <button onClick={handleWeeklyGoalSave} className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    </button>
-                </div>
-            ) : (
-                <button onClick={() => setIsEditingWeeklyGoal(true)} className="p-2 rounded-full hover:bg-slate-700">
-                    <PencilIcon className="w-4 h-4 text-slate-400"/>
-                </button>
-            )}
-        </StatCard>
-        <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label={`총 학습량`} value={`${currentModeStats.totalLearned} ${itemType}`} color="bg-green-500"/>
-      </div>
+          <StatCard icon={<TargetIcon className="w-6 h-6 text-white"/>} label="오늘의 목표" value={`${currentModeStats.learnedToday} / ${stats.dailyGoal} ${itemType}`} color="bg-blue-500">
+              {isEditingDailyGoal ? (
+                  <div className="flex items-center gap-2">
+                      <input 
+                          type="number" 
+                          value={dailyGoal} 
+                          onChange={(e) => setDailyGoal(parseInt(e.target.value, 10))}
+                          className="w-16 p-1 text-center rounded bg-slate-700"
+                      />
+                      <button onClick={handleDailyGoalSave} className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      </button>
+                  </div>
+              ) : (
+                  <button onClick={() => setIsEditingDailyGoal(true)} className="p-2 rounded-full hover:bg-slate-700">
+                      <PencilIcon className="w-4 h-4 text-slate-400"/>
+                  </button>
+              )}
+          </StatCard>
+          <StatCard icon={<CalendarIcon className="w-6 h-6 text-white"/>} label="이번 주 목표" value={`${currentModeStats.learnedThisWeek} / ${stats.weeklyGoal} ${itemType}`} color="bg-teal-500">
+              {isEditingWeeklyGoal ? (
+                  <div className="flex items-center gap-2">
+                      <input 
+                          type="number" 
+                          value={weeklyGoal} 
+                          onChange={(e) => setWeeklyGoal(parseInt(e.target.value, 10))}
+                          className="w-16 p-1 text-center rounded bg-slate-700"
+                      />
+                      <button onClick={handleWeeklyGoalSave} className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      </button>
+                  </div>
+              ) : (
+                  <button onClick={() => setIsEditingWeeklyGoal(true)} className="p-2 rounded-full hover:bg-slate-700">
+                      <PencilIcon className="w-4 h-4 text-slate-400"/>
+                  </button>
+              )}
+          </StatCard>
+          <StatCard icon={<BookOpenIcon className="w-6 h-6 text-white"/>} label={`총 학습량`} value={`${currentModeStats.totalLearned} ${itemType}`} color="bg-green-500"/>
+        </div>
+      
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {activeMode === 'ENGLISH' && (
@@ -216,6 +228,44 @@ const Dashboard: React.FC<DashboardProps> = ({
               color="bg-gradient-to-br from-orange-500 to-orange-600"
               count={allCharactersCount}
               disabled={allCharactersCount === 0}
+            />
+          </>
+        )}
+
+        {activeMode === 'CONVERSATION' && (
+          <>
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="문장 추가하기"
+              subtitle="학습 목록에 새 문장 등록"
+              onClick={() => onNavigate(AppView.ADD_CONVERSATION)}
+              color="bg-gradient-to-br from-gray-700 to-gray-800"
+            />
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="플래시 카드 학습"
+              subtitle="내가 추가한 문장 배우기"
+              onClick={() => onNavigate(AppView.CONVERSATION_FLASHCARDS)}
+              color="bg-gradient-to-br from-teal-500 to-teal-600"
+              count={userConversationCount}
+              disabled={userConversationCount === 0}
+            />
+            <ActionButton 
+              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
+              title="문장 퀴즈"
+              subtitle={learnedConversationsCount < 4 ? "문장을 4개 이상 학습해주세요" : "학습한 문장으로 뜻 맞추기"}
+              onClick={() => onNavigate(AppView.CONVERSATION_QUIZ)}
+              color="bg-gradient-to-br from-purple-500 to-purple-600"
+              disabled={learnedConversationsCount < 4}
+            />
+            <ActionButton 
+              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
+              title="학습 문장 목록"
+              subtitle="내 문장장 전체 보기"
+              onClick={() => onNavigate(AppView.CONVERSATION_LIST)}
+              color="bg-gradient-to-br from-sky-500 to-sky-600"
+              count={allConversationsCount}
+              disabled={allConversationsCount === 0}
             />
           </>
         )}

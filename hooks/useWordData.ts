@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Word, WordProgress, HanjaCharacter, HanjaCharacterProgress, UserStats } from '../types';
-import { generateInitialWords, generateInitialCharacters } from '../services/geminiService';
+import { Word, WordProgress, HanjaCharacter, HanjaCharacterProgress, UserStats, Conversation, ConversationProgress } from '../types';
+import { generateInitialWords, generateInitialCharacters, generateInitialConversations } from '../services/geminiService';
 
-const NEW_WORDS_PER_LESSON = 5;
+const NEW_ITEMS_PER_LESSON = 5;
 const CHARACTERS_PER_GROUP = 4;
 
 const REVIEW_INTERVALS = [1, 2, 7, 14, 30, 60, 120]; // in days
@@ -44,6 +44,9 @@ const useLearningData = () => {
 
   const [allCharacters, setAllCharacters] = useState<HanjaCharacter[]>([]);
   const [characterProgress, setCharacterProgress] = useState<Record<number, HanjaCharacterProgress>>({});
+
+  const [allConversations, setAllConversations] = useState<Conversation[]>([]);
+  const [conversationProgress, setConversationProgress] = useState<Record<number, ConversationProgress>>({});
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +90,21 @@ const useLearningData = () => {
          setCharacterProgress(initialCharProgress);
        }
 
+      const savedConversations = localStorage.getItem('danzzak-conversations');
+      const savedConversationProgress = localStorage.getItem('danzzak-conversation-progress');
+      if (savedConversations && savedConversationProgress) {
+        setAllConversations(JSON.parse(savedConversations));
+        setConversationProgress(JSON.parse(savedConversationProgress));
+      } else {
+        const initialConversations = generateInitialConversations();
+        setAllConversations(initialConversations);
+        const initialProgress: Record<number, ConversationProgress> = {};
+        initialConversations.forEach(convo => {
+          initialProgress[convo.id] = { conversationId: convo.id, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 };
+        });
+        setConversationProgress(initialProgress);
+      }
+
     } catch (e) {
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
       console.error(e);
@@ -100,6 +118,8 @@ const useLearningData = () => {
   useEffect(() => { localStorage.setItem('danzzak-progress', JSON.stringify(wordProgress)); }, [wordProgress]);
   useEffect(() => { localStorage.setItem('danzzak-characters', JSON.stringify(allCharacters)); }, [allCharacters]);
   useEffect(() => { localStorage.setItem('danzzak-character-progress', JSON.stringify(characterProgress)); }, [characterProgress]);
+  useEffect(() => { localStorage.setItem('danzzak-conversations', JSON.stringify(allConversations)); }, [allConversations]);
+  useEffect(() => { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(conversationProgress)); }, [conversationProgress]);
 
   const updateWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
     setWordProgress(prev => {
@@ -136,6 +156,24 @@ const useLearningData = () => {
     });
   }, []);
 
+  const updateConversationProgress = useCallback((conversationId: number, isCorrect: boolean) => {
+    setConversationProgress(prev => {
+      const progress = { ...prev[conversationId] };
+      const now = new Date().toISOString();
+      progress.lastReviewed = now;
+
+      if (isCorrect) {
+        progress.correct++;
+        progress.streak++;
+      } else {
+        progress.incorrect++;
+        progress.streak = 0;
+      }
+      progress.nextReview = getNextReviewDate(progress.streak);
+      return { ...prev, [conversationId]: progress };
+    });
+  }, []);
+
   const addXpAndCoins = useCallback((xp: number, coins: number) => {
     setUserStats(prev => ({ ...prev, xp: prev.xp + xp, coins: prev.coins + coins }));
   }, []);
@@ -154,8 +192,26 @@ const useLearningData = () => {
     });
   }, []);
 
+  const addUserConversation = useCallback((convo: Omit<Conversation, 'id'>) => {
+    setAllConversations(prev => {
+      const newId = Math.max(0, ...prev.map(c => c.id)) + 1;
+      const newConversation = { ...convo, id: newId, isUserAdded: true };
+      
+      setConversationProgress(progPrev => ({
+        ...progPrev,
+        [newId]: { conversationId: newId, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 }
+      }));
+
+      return [...prev, newConversation];
+    });
+  }, []);
+
   const updateUserWord = useCallback((word: Word) => {
     setAllWords(prev => prev.map(w => w.id === word.id ? word : w));
+  }, []);
+
+  const updateUserConversation = useCallback((convo: Conversation) => {
+    setAllConversations(prev => prev.map(c => c.id === convo.id ? convo : c));
   }, []);
 
   const deleteUserWord = useCallback((wordId: number) => {
@@ -163,6 +219,15 @@ const useLearningData = () => {
     setWordProgress(prev => {
         const newProgress = {...prev};
         delete newProgress[wordId];
+        return newProgress;
+    });
+  }, []);
+
+  const deleteUserConversation = useCallback((conversationId: number) => {
+    setAllConversations(prev => prev.filter(c => c.id !== conversationId));
+    setConversationProgress(prev => {
+        const newProgress = {...prev};
+        delete newProgress[conversationId];
         return newProgress;
     });
   }, []);
@@ -175,8 +240,16 @@ const useLearningData = () => {
   const wordsForUserLesson = useMemo(() => {
     return userAddedWords
       .filter(word => !wordProgress[word.id]?.lastReviewed)
-      .slice(0, NEW_WORDS_PER_LESSON);
+      .slice(0, NEW_ITEMS_PER_LESSON);
   }, [userAddedWords, wordProgress]);
+
+  const userAddedConversations = useMemo(() => allConversations.filter(c => c.isUserAdded), [allConversations]);
+
+  const conversationsForLesson = useMemo(() => {
+    return allConversations
+      .filter(convo => !conversationProgress[convo.id]?.lastReviewed)
+      .slice(0, NEW_ITEMS_PER_LESSON);
+  }, [allConversations, conversationProgress]);
 
   const charactersForLesson = useMemo(() => {
     const firstUnlearned = allCharacters.find(char => (characterProgress[char.id]?.streak || 0) === 0);
@@ -190,6 +263,10 @@ const useLearningData = () => {
   const learnedCharacters = useMemo(() => {
     return allCharacters.filter(char => (characterProgress[char.id]?.lastReviewed));
   }, [allCharacters, characterProgress]);
+
+  const learnedConversations = useMemo(() => {
+    return allConversations.filter(c => (conversationProgress[c.id]?.lastReviewed));
+  }, [allConversations, conversationProgress]);
 
   const learnedGroups = useMemo(() => {
     const learnedCharacterIds = new Set(learnedCharacters.map(c => c.id));
@@ -206,6 +283,7 @@ const useLearningData = () => {
   const learningStats = useMemo(() => {
     const englishStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const hanjaStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
+    const conversationStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
 
     (Object.values(wordProgress) as WordProgress[]).forEach(p => {
       if (p.lastReviewed) {
@@ -223,8 +301,16 @@ const useLearningData = () => {
         }
     });
 
-    return { englishStats, hanjaStats };
-  }, [wordProgress, characterProgress]);
+    (Object.values(conversationProgress) as ConversationProgress[]).forEach(p => {
+      if (p.lastReviewed) {
+          conversationStats.totalLearned++;
+          if(isToday(p.lastReviewed)) conversationStats.learnedToday++;
+          if(isThisWeek(p.lastReviewed)) conversationStats.learnedThisWeek++;
+      }
+    });
+
+    return { englishStats, hanjaStats, conversationStats };
+  }, [wordProgress, characterProgress, conversationProgress]);
 
   const unlearnedCharactersCount = useMemo(() => {
     return allCharacters.filter(c => (characterProgress[c.id]?.streak || 0) === 0).length;
@@ -268,7 +354,16 @@ const useLearningData = () => {
     learnedGroups,
     englishReviewCount,
     hanjaReviewCount,
-    unlearnedCharactersCount
+    unlearnedCharactersCount,
+    allConversations,
+    conversationProgress,
+    userAddedConversations,
+    conversationsForLesson,
+    learnedConversations,
+    updateConversationProgress,
+    addUserConversation,
+    updateUserConversation,
+    deleteUserConversation,
   };
 };
 

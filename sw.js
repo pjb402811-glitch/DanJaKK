@@ -25,7 +25,12 @@ const urlsToCache = [
   '/components/HanjaQuizView.tsx',
   '/components/FourCharQuizView.tsx',
   '/components/icons/Icons.tsx',
-  '/components/TopNav.tsx'
+  '/components/TopNav.tsx',
+  '/components/AddConversationView.tsx',
+  '/components/ConversationFlashcardView.tsx',
+  '/components/ConversationQuizGame.tsx',
+  '/components/ConversationListView.tsx',
+  '/components/EditConversationView.tsx'
 ];
 
 self.addEventListener('install', event => {

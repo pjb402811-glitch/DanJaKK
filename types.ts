@@ -15,6 +15,14 @@ export interface HanjaCharacter {
   meaning: string;
 }
 
+export interface Conversation {
+  id: number;
+  expression: string;
+  meaning: string;
+  example?: string;
+  isUserAdded?: boolean;
+}
+
 export interface WordProgress {
   wordId: number;
   correct: number;
@@ -32,6 +40,16 @@ export interface HanjaCharacterProgress {
   nextReview: string | null;
   streak: number;
 }
+
+export interface ConversationProgress {
+  conversationId: number;
+  correct: number;
+  incorrect: number;
+  lastReviewed: string | null;
+  nextReview: string | null;
+  streak: number;
+}
+
 
 export interface UserStats {
   xp: number;
@@ -55,6 +73,13 @@ export enum AppView {
   FOUR_CHAR_QUIZ = 'FOUR_CHAR_QUIZ',
   REVIEW_SINGLE_WORD_FLASHCARD = 'REVIEW_SINGLE_WORD_FLASHCARD',
   REVIEW_SINGLE_HANJA_GROUP_FLASHCARD = 'REVIEW_SINGLE_HANJA_GROUP_FLASHCARD',
+  
+  ADD_CONVERSATION = 'ADD_CONVERSATION',
+  CONVERSATION_FLASHCARDS = 'CONVERSATION_FLASHCARDS',
+  CONVERSATION_QUIZ = 'CONVERSATION_QUIZ',
+  CONVERSATION_LIST = 'CONVERSATION_LIST',
+  EDIT_CONVERSATION = 'EDIT_CONVERSATION',
+  REVIEW_SINGLE_CONVERSATION_FLASHCARD = 'REVIEW_SINGLE_CONVERSATION_FLASHCARD',
 }
 
-export type LearningMode = 'ENGLISH' | 'HANJA';
+export type LearningMode = 'ENGLISH' | 'HANJA' | 'CONVERSATION';

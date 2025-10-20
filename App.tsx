@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { AppView, UserStats, Word, HanjaCharacter, LearningMode } from './types';
+import { AppView, UserStats, Word, HanjaCharacter, LearningMode, Conversation, ConversationProgress, WordProgress, HanjaCharacterProgress } from './types';
 import Dashboard from './components/Dashboard';
 import FlashcardView from './components/FlashcardView';
 import QuizGame from './components/QuizGame';
@@ -15,12 +15,21 @@ import TopNav from './components/TopNav';
 import HanjaQuizView from './components/HanjaQuizView';
 import FourCharQuizView from './components/FourCharQuizView';
 
+import AddConversationView from './components/AddConversationView';
+import ConversationFlashcardView from './components/ConversationFlashcardView';
+import ConversationQuizGame from './components/ConversationQuizGame';
+import ConversationListView from './components/ConversationListView';
+import EditConversationView from './components/EditConversationView';
+
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [wordToEdit, setWordToEdit] = useState<Word | null>(null);
   const [activeMode, setActiveMode] = useState<LearningMode>('ENGLISH');
   const [singleWordForFlashcard, setSingleWordForFlashcard] = useState<Word[]>([]);
   const [singleHanjaGroupForFlashcard, setSingleHanjaGroupForFlashcard] = useState<HanjaCharacter[]>([]);
+  const [conversationToEdit, setConversationToEdit] = useState<Conversation | null>(null);
+  const [singleConversationForFlashcard, setSingleConversationForFlashcard] = useState<Conversation[]>([]);
 
   const { 
     userStats, 
@@ -46,7 +55,16 @@ const App: React.FC = () => {
     learnedGroups,
     englishReviewCount,
     hanjaReviewCount,
-    unlearnedCharactersCount
+    unlearnedCharactersCount,
+    allConversations,
+    conversationProgress,
+    userAddedConversations,
+    conversationsForLesson,
+    learnedConversations,
+    updateConversationProgress,
+    addUserConversation,
+    updateUserConversation,
+    deleteUserConversation,
   } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -72,6 +90,11 @@ const App: React.FC = () => {
     addXpAndCoins(xp, coins);
     setCurrentView(AppView.CHEONJAMUN_LIST);
   }, [addXpAndCoins]);
+
+  const handleReviewConversationSessionComplete = useCallback((xp: number, coins: number) => {
+    addXpAndCoins(xp, coins);
+    setCurrentView(AppView.CONVERSATION_LIST);
+  }, [addXpAndCoins]);
   
   const handleBack = useCallback(() => {
     setCurrentView(AppView.DASHBOARD);
@@ -82,6 +105,11 @@ const App: React.FC = () => {
     setCurrentView(AppView.DASHBOARD);
   }, [addUserWord]);
 
+  const handleConversationAdded = useCallback((conversation: Omit<Conversation, 'id'>) => {
+    addUserConversation(conversation);
+    setCurrentView(AppView.DASHBOARD);
+  }, [addUserConversation]);
+
   const handleNavigateToEdit = useCallback((wordId: number) => {
     const word = allWords.find(w => w.id === wordId);
     if (word) {
@@ -89,6 +117,15 @@ const App: React.FC = () => {
       setCurrentView(AppView.EDIT_WORD);
     }
   }, [allWords]);
+  
+  const handleNavigateToEditConversation = useCallback((conversationId: number) => {
+    const conversation = allConversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setConversationToEdit(conversation);
+      setCurrentView(AppView.EDIT_CONVERSATION);
+    }
+  }, [allConversations]);
+
 
   const handleStartSingleWordFlashcard = useCallback((wordId: number) => {
     const word = allWords.find(w => w.id === wordId);
@@ -103,41 +140,83 @@ const App: React.FC = () => {
     setCurrentView(AppView.REVIEW_SINGLE_HANJA_GROUP_FLASHCARD);
   }, []);
 
+  const handleStartSingleConversationFlashcard = useCallback((conversationId: number) => {
+    const conversation = allConversations.find(c => c.id === conversationId);
+    if (conversation) {
+        setSingleConversationForFlashcard([conversation]);
+        setCurrentView(AppView.REVIEW_SINGLE_CONVERSATION_FLASHCARD);
+    }
+  }, [allConversations]);
+
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
     setCurrentView(AppView.WORD_LIST);
   }, [updateUserWord]);
 
+  const handleConversationUpdated = useCallback((conversation: Conversation) => {
+    updateUserConversation(conversation);
+    setCurrentView(AppView.CONVERSATION_LIST);
+  }, [updateUserConversation]);
+
   const handleBackToWordList = useCallback(() => {
     setCurrentView(AppView.WORD_LIST);
   }, []);
+  
+  const handleBackToConversationList = useCallback(() => {
+    setCurrentView(AppView.CONVERSATION_LIST);
+  }, []);
+
 
   const handleDeleteWord = useCallback((wordId: number) => {
     if (window.confirm('이 단어를 정말로 삭제하시겠습니까? 학습 기록도 함께 사라집니다.')) {
         deleteUserWord(wordId);
     }
   }, [deleteUserWord]);
+  
+  const handleDeleteConversation = useCallback((conversationId: number) => {
+    if (window.confirm('이 문장을 정말로 삭제하시겠습니까? 학습 기록도 함께 사라집니다.')) {
+        deleteUserConversation(conversationId);
+    }
+  }, [deleteUserConversation]);
 
   const handleBackupData = useCallback(() => {
     try {
-      const words = localStorage.getItem('danzzak-words');
-      const progress = localStorage.getItem('danzzak-progress');
-      const stats = localStorage.getItem('danzzak-stats');
-      const characters = localStorage.getItem('danzzak-characters');
-      const characterProgress = localStorage.getItem('danzzak-character-progress');
+      const backupData: {
+        words?: Word[];
+        progress?: Record<number, WordProgress>;
+        stats?: UserStats;
+        characters?: HanjaCharacter[];
+        characterProgress?: Record<number, HanjaCharacterProgress>;
+        conversations?: Conversation[];
+        conversationProgress?: Record<number, ConversationProgress>;
+      } = {};
 
-      if (!words && !progress && !stats && !characters && !characterProgress) {
+      const words = localStorage.getItem('danzzak-words');
+      if(words) backupData.words = JSON.parse(words);
+      
+      const progress = localStorage.getItem('danzzak-progress');
+      if(progress) backupData.progress = JSON.parse(progress);
+
+      const stats = localStorage.getItem('danzzak-stats');
+      if(stats) backupData.stats = JSON.parse(stats);
+
+      const characters = localStorage.getItem('danzzak-characters');
+      if(characters) backupData.characters = JSON.parse(characters);
+
+      const characterProgress = localStorage.getItem('danzzak-character-progress');
+      if(characterProgress) backupData.characterProgress = JSON.parse(characterProgress);
+
+      const conversations = localStorage.getItem('danzzak-conversations');
+      if(conversations) backupData.conversations = JSON.parse(conversations);
+
+      const conversationProgress = localStorage.getItem('danzzak-conversation-progress');
+      if(conversationProgress) backupData.conversationProgress = JSON.parse(conversationProgress);
+
+
+      if (Object.keys(backupData).length === 0) {
         alert('백업할 데이터가 없습니다.');
         return;
       }
-
-      const backupData = {
-        words: words ? JSON.parse(words) : [],
-        progress: progress ? JSON.parse(progress) : {},
-        stats: stats ? JSON.parse(stats) : {},
-        characters: characters ? JSON.parse(characters) : [],
-        characterProgress: characterProgress ? JSON.parse(characterProgress) : {},
-      };
 
       const dataStr = JSON.stringify(backupData, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -175,13 +254,16 @@ const App: React.FC = () => {
           const result = event.target?.result as string;
           const restoredData = JSON.parse(result);
 
-          if (restoredData.words && restoredData.progress && restoredData.stats) {
-            localStorage.setItem('danzzak-words', JSON.stringify(restoredData.words));
-            localStorage.setItem('danzzak-progress', JSON.stringify(restoredData.progress));
-            localStorage.setItem('danzzak-stats', JSON.stringify(restoredData.stats));
-            if (restoredData.characters) localStorage.setItem('danzzak-characters', JSON.stringify(restoredData.characters));
-            if (restoredData.characterProgress) localStorage.setItem('danzzak-character-progress', JSON.stringify(restoredData.characterProgress));
+          let dataRestored = false;
+          if (restoredData.words) { localStorage.setItem('danzzak-words', JSON.stringify(restoredData.words)); dataRestored = true; }
+          if (restoredData.progress) { localStorage.setItem('danzzak-progress', JSON.stringify(restoredData.progress)); dataRestored = true; }
+          if (restoredData.stats) { localStorage.setItem('danzzak-stats', JSON.stringify(restoredData.stats)); dataRestored = true; }
+          if (restoredData.characters) { localStorage.setItem('danzzak-characters', JSON.stringify(restoredData.characters)); dataRestored = true; }
+          if (restoredData.characterProgress) { localStorage.setItem('danzzak-character-progress', JSON.stringify(restoredData.characterProgress)); dataRestored = true; }
+          if (restoredData.conversations) { localStorage.setItem('danzzak-conversations', JSON.stringify(restoredData.conversations)); dataRestored = true; }
+          if (restoredData.conversationProgress) { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(restoredData.conversationProgress)); dataRestored = true; }
             
+          if (dataRestored) {
             alert('데이터를 성공적으로 가져왔습니다. 앱을 새로고침합니다.');
             window.location.reload();
           } else {
@@ -201,6 +283,10 @@ const App: React.FC = () => {
   const gameWordsForUser = useMemo(() => {
     return [...userAddedWords].sort(() => 0.5 - Math.random()).slice(0, 10);
   }, [userAddedWords]);
+
+  const gameConversationsForUser = useMemo(() => {
+    return [...learnedConversations].sort(() => 0.5 - Math.random()).slice(0, 10);
+  }, [learnedConversations]);
 
   const quizHanjaCharacters = useMemo(() => {
     return [...learnedCharacters].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -321,6 +407,35 @@ const App: React.FC = () => {
             sessionTitle="한자 그룹 복습"
             isReview={true}
         />;
+       case AppView.ADD_CONVERSATION:
+        return <AddConversationView onAddConversation={handleConversationAdded} onBack={handleBack} />;
+      case AppView.CONVERSATION_FLASHCARDS:
+        return <ConversationFlashcardView conversations={conversationsForLesson} updateConversationProgress={updateConversationProgress} onComplete={handleSessionComplete} onBack={handleBack} sessionTitle="플래시 카드 학습" />;
+      case AppView.CONVERSATION_QUIZ:
+        return <ConversationQuizGame conversations={gameConversationsForUser} allConversations={learnedConversations} onComplete={handleSessionComplete} onBack={handleBack} />;
+      case AppView.CONVERSATION_LIST:
+        return <ConversationListView 
+          conversations={allConversations} 
+          progress={conversationProgress} 
+          onBack={handleBack}
+          onEdit={handleNavigateToEditConversation}
+          onDelete={handleDeleteConversation}
+          onFlashcard={handleStartSingleConversationFlashcard}
+        />;
+      case AppView.EDIT_CONVERSATION:
+        return conversationToEdit ? <EditConversationView 
+          conversationToEdit={conversationToEdit}
+          onUpdateConversation={handleConversationUpdated}
+          onBack={handleBackToConversationList}
+        /> : null;
+      case AppView.REVIEW_SINGLE_CONVERSATION_FLASHCARD:
+        return <ConversationFlashcardView
+            conversations={singleConversationForFlashcard}
+            updateConversationProgress={updateConversationProgress}
+            onComplete={handleReviewConversationSessionComplete}
+            onBack={() => setCurrentView(AppView.CONVERSATION_LIST)}
+            sessionTitle="문장 복습"
+        />;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
@@ -337,6 +452,11 @@ const App: React.FC = () => {
           englishStats={learningStats.englishStats}
           hanjaStats={learningStats.hanjaStats}
           hanjaLearnedCount={learnedCharacters.length}
+          conversationStats={learningStats.conversationStats}
+          userConversationCount={conversationsForLesson.length}
+          userAddedConversationsCount={userAddedConversations.length}
+          allConversationsCount={allConversations.length}
+          learnedConversationsCount={learnedConversations.length}
         />;
     }
   };
