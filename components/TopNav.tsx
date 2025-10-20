@@ -22,14 +22,14 @@ const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
         className={getButtonClass('ENGLISH')}
         aria-pressed={activeMode === 'ENGLISH'}
       >
-        영어 단어 학습
+        영어단어 학습
       </button>
       <button
         onClick={() => onModeChange('CONVERSATION')}
         className={getButtonClass('CONVERSATION')}
         aria-pressed={activeMode === 'CONVERSATION'}
       >
-        영어회화 학습
+        영어회화학습
       </button>
       <button
         onClick={() => onModeChange('HANJA')}
