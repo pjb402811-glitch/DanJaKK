@@ -75,12 +75,12 @@ const ConversationFlashcardView: React.FC<ConversationFlashcardViewProps> = ({ c
           <div className={`relative w-full h-full transform-style-preserve-3d transition-transform duration-500 ${isFlipped ? 'rotate-y-180' : ''}`}>
             {/* Front of card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 border-4 border-blue-400">
-              <h2 className="text-3xl font-extrabold text-white break-all text-center">{currentItem.expression}</h2>
+              <h2 className="text-3xl font-extrabold text-white break-words text-center">{currentItem.expression}</h2>
               <p className="absolute bottom-4 text-xs text-slate-400">클릭해서 뒤집기</p>
             </div>
             {/* Back of card */}
             <div className="absolute w-full h-full backface-hidden bg-slate-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 rotate-y-180 border-4 border-sky-400">
-                <p className="text-center break-all">
+                <p className="text-center break-keep">
                     <span className="text-3xl font-bold text-slate-200">{currentItem.meaning}</span>
                 </p>
             </div>

@@ -90,7 +90,7 @@ const ConversationQuizGame: React.FC<ConversationQuizGameProps> = ({ conversatio
 
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
         <p className="text-slate-400 font-semibold mb-2">다음 문장의 뜻은 무엇일까요...</p>
-        <h2 className="text-2xl font-extrabold mb-8 text-white">{currentItem?.expression}</h2>
+        <h2 className="text-2xl font-extrabold mb-8 text-white break-words">{currentItem?.expression}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {options.map(option => {
@@ -107,7 +107,7 @@ const ConversationQuizGame: React.FC<ConversationQuizGameProps> = ({ conversatio
                 key={option.id}
                 onClick={() => handleOptionClick(option)}
                 disabled={selectedOption !== null}
-                className={`p-4 rounded-lg font-semibold text-left transition-all duration-300 transform ${selectedOption === null ? 'hover:scale-105' : ''} ${buttonClass}`}
+                className={`p-4 rounded-lg font-semibold text-left transition-all duration-300 transform break-keep ${selectedOption === null ? 'hover:scale-105' : ''} ${buttonClass}`}
               >
                 {option.meaning}
               </button>
