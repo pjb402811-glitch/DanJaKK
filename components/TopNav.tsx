@@ -8,7 +8,7 @@ interface TopNavProps {
 
 const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
   const getButtonClass = (mode: LearningMode) => {
-    const baseClass = 'w-1/3 py-4 px-2 text-center text-lg font-bold transition-colors duration-300 focus:outline-none';
+    const baseClass = 'w-1/3 py-4 px-2 text-center text-base md:text-lg font-bold transition-colors duration-300 focus:outline-none';
     if (activeMode === mode) {
       return `${baseClass} text-white bg-slate-700/80 border-b-4 border-blue-500`;
     }
