@@ -3,7 +3,7 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/apple-touch-icon.svg',
+  '/apple-touch-icon.png',
   '/icon-192x192.svg',
   '/icon-512x512.svg',
   '/favicon-32x32.png',
