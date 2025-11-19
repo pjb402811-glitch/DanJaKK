@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Word, WordProgress, HanjaCharacter, HanjaCharacterProgress, UserStats, Conversation, ConversationProgress } from '../types';
-import { generateInitialWords, generateInitialCharacters, generateInitialConversations } from '../services/geminiService';
+import { generateInitialWords, generateInitialCharacters, generateInitialConversations, generateInitialPriorityWords } from '../services/geminiService';
 
 const NEW_ITEMS_PER_LESSON = 5;
 const CHARACTERS_PER_GROUP = 4;
@@ -47,6 +48,9 @@ const useLearningData = () => {
 
   const [allConversations, setAllConversations] = useState<Conversation[]>([]);
   const [conversationProgress, setConversationProgress] = useState<Record<number, ConversationProgress>>({});
+
+  const [allPriorityWords, setAllPriorityWords] = useState<Word[]>([]);
+  const [priorityWordProgress, setPriorityWordProgress] = useState<Record<number, WordProgress>>({});
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +109,22 @@ const useLearningData = () => {
         setConversationProgress(initialProgress);
       }
 
+      // Load Priority Words
+      const savedPriorityWords = localStorage.getItem('danzzak-priority-words');
+      const savedPriorityProgress = localStorage.getItem('danzzak-priority-progress');
+      if (savedPriorityWords && savedPriorityProgress) {
+        setAllPriorityWords(JSON.parse(savedPriorityWords));
+        setPriorityWordProgress(JSON.parse(savedPriorityProgress));
+      } else {
+        const initialPriorityWords = generateInitialPriorityWords();
+        setAllPriorityWords(initialPriorityWords);
+        const initialProgress: Record<number, WordProgress> = {};
+        initialPriorityWords.forEach(word => {
+          initialProgress[word.id] = { wordId: word.id, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 };
+        });
+        setPriorityWordProgress(initialProgress);
+      }
+
     } catch (e) {
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
       console.error(e);
@@ -120,9 +140,29 @@ const useLearningData = () => {
   useEffect(() => { localStorage.setItem('danzzak-character-progress', JSON.stringify(characterProgress)); }, [characterProgress]);
   useEffect(() => { localStorage.setItem('danzzak-conversations', JSON.stringify(allConversations)); }, [allConversations]);
   useEffect(() => { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(conversationProgress)); }, [conversationProgress]);
+  useEffect(() => { localStorage.setItem('danzzak-priority-words', JSON.stringify(allPriorityWords)); }, [allPriorityWords]);
+  useEffect(() => { localStorage.setItem('danzzak-priority-progress', JSON.stringify(priorityWordProgress)); }, [priorityWordProgress]);
 
   const updateWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
     setWordProgress(prev => {
+      const progress = { ...prev[wordId] };
+      const now = new Date().toISOString();
+      progress.lastReviewed = now;
+
+      if (isCorrect) {
+        progress.correct++;
+        progress.streak++;
+      } else {
+        progress.incorrect++;
+        progress.streak = 0;
+      }
+      progress.nextReview = getNextReviewDate(progress.streak);
+      return { ...prev, [wordId]: progress };
+    });
+  }, []);
+  
+  const updatePriorityWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
+    setPriorityWordProgress(prev => {
       const progress = { ...prev[wordId] };
       const now = new Date().toISOString();
       progress.lastReviewed = now;
@@ -192,6 +232,20 @@ const useLearningData = () => {
     });
   }, []);
 
+  const addPriorityWord = useCallback((word: Omit<Word, 'id'>) => {
+    setAllPriorityWords(prev => {
+      const newId = Math.max(0, ...prev.map(w => w.id)) + 1;
+      const newWord = { ...word, id: newId, isUserAdded: true };
+      
+      setPriorityWordProgress(progPrev => ({
+        ...progPrev,
+        [newId]: { wordId: newId, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 }
+      }));
+
+      return [...prev, newWord];
+    });
+  }, []);
+
   const addUserConversation = useCallback((convo: Omit<Conversation, 'id'>) => {
     setAllConversations(prev => {
       const newId = Math.max(0, ...prev.map(c => c.id)) + 1;
@@ -210,6 +264,10 @@ const useLearningData = () => {
     setAllWords(prev => prev.map(w => w.id === word.id ? word : w));
   }, []);
 
+  const updatePriorityWord = useCallback((word: Word) => {
+    setAllPriorityWords(prev => prev.map(w => w.id === word.id ? word : w));
+  }, []);
+
   const updateUserConversation = useCallback((convo: Conversation) => {
     setAllConversations(prev => prev.map(c => c.id === convo.id ? convo : c));
   }, []);
@@ -217,6 +275,15 @@ const useLearningData = () => {
   const deleteUserWord = useCallback((wordId: number) => {
     setAllWords(prev => prev.filter(w => w.id !== wordId));
     setWordProgress(prev => {
+        const newProgress = {...prev};
+        delete newProgress[wordId];
+        return newProgress;
+    });
+  }, []);
+  
+  const deletePriorityWord = useCallback((wordId: number) => {
+    setAllPriorityWords(prev => prev.filter(w => w.id !== wordId));
+    setPriorityWordProgress(prev => {
         const newProgress = {...prev};
         delete newProgress[wordId];
         return newProgress;
@@ -242,6 +309,12 @@ const useLearningData = () => {
       .filter(word => !wordProgress[word.id]?.lastReviewed)
       .slice(0, NEW_ITEMS_PER_LESSON);
   }, [userAddedWords, wordProgress]);
+  
+  const priorityWordsForLesson = useMemo(() => {
+      return allPriorityWords
+        .filter(word => !priorityWordProgress[word.id]?.lastReviewed)
+        .slice(0, NEW_ITEMS_PER_LESSON);
+  }, [allPriorityWords, priorityWordProgress]);
 
   const userAddedConversations = useMemo(() => allConversations.filter(c => c.isUserAdded), [allConversations]);
 
@@ -268,6 +341,10 @@ const useLearningData = () => {
     return allConversations.filter(c => (conversationProgress[c.id]?.lastReviewed));
   }, [allConversations, conversationProgress]);
 
+  const learnedPriorityWords = useMemo(() => {
+    return allPriorityWords.filter(w => (priorityWordProgress[w.id]?.lastReviewed));
+  }, [allPriorityWords, priorityWordProgress]);
+
   const learnedGroups = useMemo(() => {
     const learnedCharacterIds = new Set(learnedCharacters.map(c => c.id));
     const groups: HanjaCharacter[][] = [];
@@ -284,6 +361,7 @@ const useLearningData = () => {
     const englishStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const hanjaStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const conversationStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
+    const priorityStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
 
     (Object.values(wordProgress) as WordProgress[]).forEach(p => {
       if (p.lastReviewed) {
@@ -308,9 +386,17 @@ const useLearningData = () => {
           if(isThisWeek(p.lastReviewed)) conversationStats.learnedThisWeek++;
       }
     });
+    
+    (Object.values(priorityWordProgress) as WordProgress[]).forEach(p => {
+        if (p.lastReviewed) {
+            priorityStats.totalLearned++;
+            if(isToday(p.lastReviewed)) priorityStats.learnedToday++;
+            if(isThisWeek(p.lastReviewed)) priorityStats.learnedThisWeek++;
+        }
+      });
 
-    return { englishStats, hanjaStats, conversationStats };
-  }, [wordProgress, characterProgress, conversationProgress]);
+    return { englishStats, hanjaStats, conversationStats, priorityStats };
+  }, [wordProgress, characterProgress, conversationProgress, priorityWordProgress]);
 
   const unlearnedCharactersCount = useMemo(() => {
     return allCharacters.filter(c => (characterProgress[c.id]?.streak || 0) === 0).length;
@@ -364,6 +450,14 @@ const useLearningData = () => {
     addUserConversation,
     updateUserConversation,
     deleteUserConversation,
+    allPriorityWords,
+    priorityWordProgress,
+    priorityWordsForLesson,
+    addPriorityWord,
+    updatePriorityWord,
+    deletePriorityWord,
+    updatePriorityWordProgress,
+    learnedPriorityWords,
   };
 };
 

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback } from 'react';
 import { AppView, UserStats, Word, HanjaCharacter, LearningMode, Conversation, ConversationProgress, WordProgress, HanjaCharacterProgress } from './types';
 import Dashboard from './components/Dashboard';
@@ -30,6 +31,9 @@ const App: React.FC = () => {
   const [singleHanjaGroupForFlashcard, setSingleHanjaGroupForFlashcard] = useState<HanjaCharacter[]>([]);
   const [conversationToEdit, setConversationToEdit] = useState<Conversation | null>(null);
   const [singleConversationForFlashcard, setSingleConversationForFlashcard] = useState<Conversation[]>([]);
+  
+  const [priorityWordToEdit, setPriorityWordToEdit] = useState<Word | null>(null);
+  const [singlePriorityWordForFlashcard, setSinglePriorityWordForFlashcard] = useState<Word[]>([]);
 
   const { 
     userStats, 
@@ -65,6 +69,14 @@ const App: React.FC = () => {
     addUserConversation,
     updateUserConversation,
     deleteUserConversation,
+    allPriorityWords,
+    priorityWordProgress,
+    priorityWordsForLesson,
+    addPriorityWord,
+    updatePriorityWord,
+    deletePriorityWord,
+    updatePriorityWordProgress,
+    learnedPriorityWords,
   } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -95,6 +107,11 @@ const App: React.FC = () => {
     addXpAndCoins(xp, coins);
     setCurrentView(AppView.CONVERSATION_LIST);
   }, [addXpAndCoins]);
+
+  const handleReviewPrioritySessionComplete = useCallback((xp: number, coins: number) => {
+    addXpAndCoins(xp, coins);
+    setCurrentView(AppView.PRIORITY_LIST);
+  }, [addXpAndCoins]);
   
   const handleBack = useCallback(() => {
     setCurrentView(AppView.DASHBOARD);
@@ -109,6 +126,11 @@ const App: React.FC = () => {
     addUserConversation(conversation);
     setCurrentView(AppView.DASHBOARD);
   }, [addUserConversation]);
+  
+  const handlePriorityWordAdded = useCallback((word: Omit<Word, 'id'>) => {
+    addPriorityWord(word);
+    setCurrentView(AppView.DASHBOARD);
+  }, [addPriorityWord]);
 
   const handleNavigateToEdit = useCallback((wordId: number) => {
     const word = allWords.find(w => w.id === wordId);
@@ -125,6 +147,14 @@ const App: React.FC = () => {
       setCurrentView(AppView.EDIT_CONVERSATION);
     }
   }, [allConversations]);
+  
+  const handleNavigateToEditPriority = useCallback((wordId: number) => {
+    const word = allPriorityWords.find(w => w.id === wordId);
+    if (word) {
+      setPriorityWordToEdit(word);
+      setCurrentView(AppView.EDIT_PRIORITY_WORD);
+    }
+  }, [allPriorityWords]);
 
 
   const handleStartSingleWordFlashcard = useCallback((wordId: number) => {
@@ -147,6 +177,14 @@ const App: React.FC = () => {
         setCurrentView(AppView.REVIEW_SINGLE_CONVERSATION_FLASHCARD);
     }
   }, [allConversations]);
+  
+  const handleStartSinglePriorityFlashcard = useCallback((wordId: number) => {
+    const word = allPriorityWords.find(w => w.id === wordId);
+    if (word) {
+        setSinglePriorityWordForFlashcard([word]);
+        setCurrentView(AppView.REVIEW_SINGLE_PRIORITY_WORD_FLASHCARD);
+    }
+  }, [allPriorityWords]);
 
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
@@ -157,6 +195,11 @@ const App: React.FC = () => {
     updateUserConversation(conversation);
     setCurrentView(AppView.CONVERSATION_LIST);
   }, [updateUserConversation]);
+  
+  const handlePriorityWordUpdated = useCallback((word: Word) => {
+    updatePriorityWord(word);
+    setCurrentView(AppView.PRIORITY_LIST);
+  }, [updatePriorityWord]);
 
   const handleBackToWordList = useCallback(() => {
     setCurrentView(AppView.WORD_LIST);
@@ -164,6 +207,10 @@ const App: React.FC = () => {
   
   const handleBackToConversationList = useCallback(() => {
     setCurrentView(AppView.CONVERSATION_LIST);
+  }, []);
+
+  const handleBackToPriorityList = useCallback(() => {
+    setCurrentView(AppView.PRIORITY_LIST);
   }, []);
 
 
@@ -179,6 +226,12 @@ const App: React.FC = () => {
     }
   }, [deleteUserConversation]);
 
+  const handleDeletePriorityWord = useCallback((wordId: number) => {
+    if (window.confirm('이 단어를 정말로 삭제하시겠습니까? 학습 기록도 함께 사라집니다.')) {
+        deletePriorityWord(wordId);
+    }
+  }, [deletePriorityWord]);
+
   const handleBackupData = useCallback(() => {
     try {
       const backupData: {
@@ -189,6 +242,8 @@ const App: React.FC = () => {
         characterProgress?: Record<number, HanjaCharacterProgress>;
         conversations?: Conversation[];
         conversationProgress?: Record<number, ConversationProgress>;
+        priorityWords?: Word[];
+        priorityProgress?: Record<number, WordProgress>;
       } = {};
 
       const words = localStorage.getItem('danzzak-words');
@@ -211,6 +266,12 @@ const App: React.FC = () => {
 
       const conversationProgress = localStorage.getItem('danzzak-conversation-progress');
       if(conversationProgress) backupData.conversationProgress = JSON.parse(conversationProgress);
+      
+      const priorityWords = localStorage.getItem('danzzak-priority-words');
+      if(priorityWords) backupData.priorityWords = JSON.parse(priorityWords);
+
+      const priorityProgress = localStorage.getItem('danzzak-priority-progress');
+      if(priorityProgress) backupData.priorityProgress = JSON.parse(priorityProgress);
 
 
       if (Object.keys(backupData).length === 0) {
@@ -262,6 +323,8 @@ const App: React.FC = () => {
           if (restoredData.characterProgress) { localStorage.setItem('danzzak-character-progress', JSON.stringify(restoredData.characterProgress)); dataRestored = true; }
           if (restoredData.conversations) { localStorage.setItem('danzzak-conversations', JSON.stringify(restoredData.conversations)); dataRestored = true; }
           if (restoredData.conversationProgress) { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(restoredData.conversationProgress)); dataRestored = true; }
+          if (restoredData.priorityWords) { localStorage.setItem('danzzak-priority-words', JSON.stringify(restoredData.priorityWords)); dataRestored = true; }
+          if (restoredData.priorityProgress) { localStorage.setItem('danzzak-priority-progress', JSON.stringify(restoredData.priorityProgress)); dataRestored = true; }
             
           if (dataRestored) {
             alert('데이터를 성공적으로 가져왔습니다. 앱을 새로고침합니다.');
@@ -283,6 +346,10 @@ const App: React.FC = () => {
   const gameWordsForUser = useMemo(() => {
     return [...userAddedWords].sort(() => 0.5 - Math.random()).slice(0, 10);
   }, [userAddedWords]);
+  
+  const gamePriorityWordsForUser = useMemo(() => {
+    return [...learnedPriorityWords].sort(() => 0.5 - Math.random()).slice(0, 10);
+  }, [learnedPriorityWords]);
 
   const gameConversationsForUser = useMemo(() => {
     return [...learnedConversations].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -436,6 +503,37 @@ const App: React.FC = () => {
             onBack={() => setCurrentView(AppView.CONVERSATION_LIST)}
             sessionTitle="문장 복습"
         />;
+      case AppView.ADD_PRIORITY_WORD:
+        return <AddWordView onAddWord={handlePriorityWordAdded} onBack={handleBack} />;
+      case AppView.PRIORITY_FLASHCARDS:
+        return <FlashcardView words={priorityWordsForLesson} updateWordProgress={updatePriorityWordProgress} onComplete={handleSessionComplete} onBack={handleBack} sessionTitle="플래시 카드 학습" />;
+      case AppView.PRIORITY_QUIZ:
+        return <QuizGame words={gamePriorityWordsForUser} onComplete={handleSessionComplete} onBack={handleBack} />;
+      case AppView.PRIORITY_SPELLING_BEE:
+        return <SpellingBeeGame words={gamePriorityWordsForUser} onComplete={handleSessionComplete} onBack={handleBack} />;
+      case AppView.PRIORITY_LIST:
+        return <WordListView 
+          words={allPriorityWords} 
+          progress={priorityWordProgress} 
+          onBack={handleBack}
+          onEdit={handleNavigateToEditPriority}
+          onDelete={handleDeletePriorityWord}
+          onFlashcard={handleStartSinglePriorityFlashcard}
+        />;
+      case AppView.EDIT_PRIORITY_WORD:
+        return priorityWordToEdit ? <EditWordView 
+          wordToEdit={priorityWordToEdit}
+          onUpdateWord={handlePriorityWordUpdated}
+          onBack={handleBackToPriorityList}
+        /> : null;
+      case AppView.REVIEW_SINGLE_PRIORITY_WORD_FLASHCARD:
+        return <FlashcardView
+            words={singlePriorityWordForFlashcard}
+            updateWordProgress={updatePriorityWordProgress}
+            onComplete={handleReviewPrioritySessionComplete}
+            onBack={() => setCurrentView(AppView.PRIORITY_LIST)}
+            sessionTitle="단어 복습"
+        />;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
@@ -457,6 +555,10 @@ const App: React.FC = () => {
           userAddedConversationsCount={userAddedConversations.length}
           allConversationsCount={allConversations.length}
           learnedConversationsCount={learnedConversations.length}
+          priorityStats={learningStats.priorityStats}
+          priorityWordsForLessonCount={priorityWordsForLesson.length}
+          allPriorityWordsCount={allPriorityWords.length}
+          learnedPriorityWordsCount={learnedPriorityWords.length}
         />;
     }
   };

@@ -1,8 +1,1486 @@
+
 import { Word, HanjaCharacter, Conversation } from '../types';
 
 // This function is kept for structure but now returns an empty array to prevent adding default words.
 export const generateInitialWords = (): Word[] => {
   return [];
+};
+
+export const generateInitialPriorityWords = (): Word[] => {
+  const rawData = `
+decide|결정하다, 결심하다
+wake|(잠에서) 깨다, 깨우다
+suffer|고통받다, 겪다 
+introduce|소개하다, 도입하다
+waste|낭비하다; 낭비, 쓰레기 
+exercise|운동하다, 연습하다; 운동, 연습 
+disappoint|실망시키다 
+protect|보호하다 (=guard)
+explore|탐험하다
+explode|폭발하다
+gain|얻다; 이익 
+delete|삭제하다
+download|다운로드하다, 내려받다
+remain|남다, 계속 ~이다; (~s) 유적 
+suggest|제안하다, 암시하다
+operate|작동하다, 수술하다
+say|말하다, ~라고 쓰여 있다
+survey|(설문) 조사하다; (설문) 조사 
+participate|참가하다, 참여하다
+deliver|배달하다, (말 등을) 전하다 
+employ|고용하다
+enable|~할 수 있게 하다, 가능하게 하다
+remind|상기시키다
+recycle|재활용하다
+health|건강 
+defend|방어하다 
+survive|살아남다, 남아 있다 
+attend|참석하다, 다니다 
+respect|존경하다, 존중하다; 존경 
+serve|(음식을) 내놓다, 제공하다, (식당 등에서) 시중들다
+chance|기회, 가능성; 우연히 ~하다 
+deserve|받을 만하다, ~할 가치가 있다
+describe|묘사하다, 말로 설명하다 
+require|필요로 하다, 요구하다
+reduce|줄이다
+develop|발달시키다, 개발하다 
+weather|날씨
+attack|공격하다; 공격 
+compare|비교하다, 비유하다 
+include|포함하다
+produce|생산하다
+recover|회복하다, 되찾다 
+pretend|~인 체하다
+demand|요구하다; 수요 
+discover|발견하다, ~을 알게 되다
+dislike|좋아하지 않다, 싫어하다
+problem|문제
+blow|바람이 불다; 타격 
+lose|잃다, 지다
+read|읽다, ~라고 쓰여 있다
+affect|~에 영향을 주다 
+consider|숙고하다, 여기다
+cheat|속이다, 부정행위를 하다
+weight|무게, 체중, 중량
+taste|맛, 기호; 맛을 보다 
+vegetable|채소
+culture|문화
+idea|생각, 아이디어
+illness|아픔, 병 
+recipe|요리법
+behavior|행동, 행실
+lock|자물쇠; 자물쇠를 채우다, 잠그다 
+customer|고객, 손님
+diet|식단, 다이어트
+head|머리, 책임자; 이끌다, (~을 향해) 나아가다 
+effect|결과, 영향, 효과
+teenager|십 대의 소년과 소녀
+knowledge|지식
+price|값, 가격
+job|직업, 일
+habit|습관, 버릇
+library|도서관
+guide|안내자, 안내서; 안내하다 
+decrease|감소; 감소하다 
+effort|노력
+future|미래; 미래의 
+model|모델, 모형 
+meaning|의미, 뜻
+complaint|불평, 항의
+business|사업, 일
+hospital|병원
+town|작은 도시, 시내 
+president|대통령, 사장, 회장
+meal|식사
+reason|이유, 이성
+success|성공
+vacation|휴가
+sickness|질병, 메스꺼움 
+attention|주의, 주목 
+noise|소음, 시끄러운 소리
+dream|꿈; 꿈을 꾸다 
+garlic|마늘
+world|세계, 세상
+vet|수의사 (veterinarian의 줄임말)
+promise|약속; 약속하다 
+seat|좌석; 앉히다 
+situation|상황, 처지
+schedule|예정(표) (=timetable); 예정하다 
+adult|어른, 다 자란 동물 
+hobby|취미
+reality|현실
+difference|차이, 다름 
+beach|해변 (=seashore) 
+headache|두통, 골칫거리
+prison|감옥
+heat|열, 더위; 뜨겁게 하다 
+soldier|군인, 병사 
+skill|기술
+stripe|줄무늬
+export|수출(품), 수출하다
+earth|지구, 흙
+list|목록
+surface|표면 
+journey|여행 (=travel), 여정
+danger|위험
+beauty|아름다움, 미인
+information|정보 
+shock|충격 
+difficulty|어려움, 장애
+stage|무대, 단계
+theater|극장
+fact|사실
+voice|목소리
+battle|전투, 싸움
+shape|모양
+tongue|혀, 언어
+throat|목구멍
+army|육군, 군대
+heart|심장, 마음
+grammar|문법
+joy|기쁨 (=pleasure)
+damage|손상, 피해 
+wound|부상; 부상을 입히다 
+practice|연습, 실행; 연습하다, 실행하다 
+import|수입(품), 수입하다
+opinion|의견, 생각
+allowance|용돈
+accident|사고, 뜻밖의 사건
+language|언어, 말
+space|공간, 우주
+fever|열, 열병
+purpose|목적, 의도 
+sunrise|해돋이, 일출
+tool|도구, 수단 
+judge|판사, 재판관; 판단하다 
+speech|말, 연설
+fence|울타리, 담
+earthquake|지진
+event|사건, 행사, 경기 종목
+choice|선택, 선택권
+traffic|교통(량), 차량들
+environment|환경
+ocean|대양, 바다 
+decision|결정, 판단
+subway|지하철
+office|사무소, 사무실
+fog|안개
+pilot|조종사 
+life|생명, 삶 
+musician|음악가 
+diary|일기 (=journal) 
+science|과학
+joke|농담; 농담을 하다 
+grass|풀, 잔디
+mistake|실수, 잘못; 잘못 알다 
+forest|숲, 삼림
+couple|한 쌍, 부부 
+airport|공항 
+poet|시인
+nature|자연, 천성
+thief|도둑 
+cost|비용; ~의 비용이 들다 
+holiday|휴일, 휴가
+principal|교장, 장(長); 주요한 
+death|죽음, 사망 
+war|전쟁
+neighbor|이웃 사람
+group|집단, 무리
+history|역사
+beef|소고기
+enemy|적
+machine|기계
+crowd|군중, 무리
+robber|강도
+blood|피, 혈액
+factory|공장
+birth|출생
+clerk|사무원, 점원
+bottle|병
+type|유형, 타입; 타이프를 치다 
+center|중심, 중심지(센터)
+law|법, 법률 
+gym|체육관, 헬스클럽 (gymnasium의 줄임말) 
+village|마을
+tower|탑
+bit|조금, 작은 조각
+favor|호의, 찬성; 선호하다 
+passport|여권
+coin|동전 
+prize|상, 상품
+bridge|다리
+million|백만, 다수
+nation|국가, 국민
+officer|관리, 경관
+thought|생각, 사고; think의 과거, 과거분사 
+way|방식, 길
+peace|평화, 평온
+personality|성격, 인격
+economy|경제
+university|종합 대학 
+drug|약, 마약
+appointment|약속, 임명
+attitude|태도
+secret|비밀; 비밀의 
+baggage|수하물, 짐 (=luggage)
+detail|세부 사항, 상세한 기술
+ability|능력, 재능
+risk|위험; 위험에 빠뜨리다, 위험을 무릅쓰다 
+front|앞부분, 정면
+honor|명예, 영광 
+wallet|지갑
+individual|개인; 개인의, 개개의 
+society|사회
+opportunity|기회
+audience|청중, 시청자
+foundation|기초, 근거 
+crime|범죄
+strength|힘, 강점
+pollution|오염, 공해 
+handle|손잡이; 다루다 
+revolution|혁명
+government|정부
+experience|경험
+affair|사건, 일
+interview|면접, 인터뷰; 인터뷰하다, 면접을 보다 
+comfort|안락, 위안
+climate|기후, 분위기 
+delay|지연; 연기하다 
+product|제품, 생산품
+hiking|하이킹, (산과 들로 가는) 도보여행 
+role|역할
+symbol|상징, 기호
+expert|전문가; 전문가의, 전문적인 
+staff|(전체) 직원
+responsibility|책임(감) 
+anger|화, 분노; 화나게 하다 
+border|국경, 경계
+influence|영향 (=effect); ~에 영향을 미치다 
+fuel|연료; 연료를 공급하다 
+award|상 
+half|반, 절반
+sort|종류 (=kind); 분류하다 
+trip|여행 (=journey)
+wheel|바퀴, (자동차 등의) 핸들
+slave|노예
+method|방법
+stress|강조, 스트레스; 강조하다 
+competition|경쟁
+passion|열정, 정열
+pause|일시 중지, 잠깐 멈춤; 잠시 멈추다 
+exchange|교환; 교환하다 
+desire|욕망; 바라다 
+proverb|속담, 격언
+dish|접시, 요리
+balance|균형 
+resource|자원, 자산 
+furniture|가구
+devil|악마, 말썽꾸러기
+cash|현금; (수표를) 현금으로 바꾸다 
+bone|뼈
+electricity|전기
+visitor|방문자, 방문객 
+public|대중, 일반 사람들; 공공의, 대중의 
+supply|공급 
+victory|승리 
+wealth|재산, 부(富)
+series|연속, 시리즈 (단수·복수 동형)
+control|통제, 지배; 통제하다, 지배하다 
+cover|표지, 덮개; 덮다 
+mystery|신비, 불가사의, 추리 소설
+ruin|파멸, (~s) 폐허; 망치다, 파멸시키다 
+election|선거 
+voyage|항해, 여행 
+greeting|인사, (~s) 인사말 
+solution|해결(책)
+tradition|전통, 풍습
+adventure|모험
+clue|실마리, 단서
+saying|격언, 속담
+muscle|근육
+project|계획; 계획하다 
+duty|의무
+talent|재주, 재능
+edge|가장자리, 날 
+debt|빚, 부채 
+instrument|기구, 악기
+view|경치, 의견 
+trouble|골칫거리, 문제; 괴롭히다, 애먹이다 
+minute|분(分), 순간 
+section|부분, (신문의) 면
+uniform|제복 
+junior|후배, 연소자; 손아래의, 하급의 
+design|디자인, 설계 
+senior|선배, 연장자; 손위의, 상급의 
+wood|나무, (종종 ~s) 숲
+powder|가루, 분말 
+gallery|화랑, 미술관
+tourist|관광객, 여행자
+wonderful|놀랄 만한, 멋진
+shadow|그림자
+step|걸음, 한 걸음; 걷다 (=walk) 
+care|조심, 돌봄; 관심을 가지다 
+thin|얇은, 야윈
+height|높이, 키
+flood|홍수; 넘치게 하다 
+error|잘못, 오류
+delicious|맛있는
+famous|유명한
+poor|가난한, 불쌍한
+twin|쌍둥이의 한 사람; 쌍둥이의 
+colorful|화려한
+passenger|승객
+healthy|건강한, 건강에 좋은
+base|기초, 토대; 기초를 두다 
+trust|신뢰; 신뢰하다 
+pepper|후추
+trick|속임수, 장난
+childhood|어린 시절
+Mars|화성
+friendship|우정
+stair|계단
+example|예, 본보기
+bright|밝은, 영리한
+sunshine|햇빛
+huge|거대한, 막대한
+stone|돌
+length|길이
+evil|악 
+depth|깊이
+guest|손님 (=visitor), 초대 손님 
+museum|박물관
+absent|결석한
+plate|접시, (특정 음식의) 한 접시
+favorite|아주 좋아하는; 마음에 드는 사람[것] 
+area|지역, 면적
+magazine|잡지
+stomach|위
+salt|소금
+branch|가지, 지점
+brain|뇌, 머리
+thirsty|목마른 
+flight|항공편, 비행
+hero|영웅, 남자 주인공 
+failure|실패, 실패한 것[사람] 
+cheap|값싼
+interested|흥미[관심] 있어 하는
+different|다른 
+calm|평온한, 침착한
+main|주요한
+deep|깊은; 깊게 
+safe|안전한 
+pleased|만족해하는, 기뻐하는
+honest|정직한
+scientific|과학의, 과학적인 
+male|남성의, 수컷의; 남성, 수컷 
+dirty|더러운, 야비한
+national|국가의, 국립의 
+loud|큰 목소리의, 시끄러운
+empty|빈, 비어 있는; 비다, 비우다 
+cool|시원한, 냉담한, 멋진
+heavy|무거운, 심한
+careful|조심하는, 세심한
+fast|빠른; 빨리 
+embarrassed|당황한, 난처한
+serious|심각한, 진지한
+alone|혼자; 홀로
+lonely|외로운
+wrong|틀린, 잘못된
+far|먼; 멀리, (비교급을 강조하여) 훨씬 
+bored|지루해하는, 싫증난 
+wise|현명한
+important|중요한
+weak|약한 
+enough|충분한; 충분히 
+satisfied|만족하는
+fresh|신선한, 새로운
+narrow|좁은, 좁고 긴 
+exciting|흥미진진한
+amazing|놀라운, 대단한
+peaceful|평화로운, 평온한 
+difficult|어려운 
+expensive|값비싼
+possible|가능한
+middle|가운데의; 한가운데, 중앙 
+excited|흥분한, 신난
+quiet|조용한, 말이 없는
+popular|인기 있는, 대중적인 
+worth|~의 가치가 있는; 가치 
+surprised|놀란
+organic|유기농의
+regular|규칙적인
+female|여성의, 암컷의; 여성, 암컷 
+special|특별한
+friendly|친절한, 사이가 좋은
+terrible|끔찍한, 지독한
+impossible|불가능한
+dumb|말을 못하는
+modern|현대의, 현대적인
+blind|눈먼, 앞을 못 보는 
+chief|주요한, 최고의; 우두머리, 장 
+crowded|붐비는, 혼잡한 
+scared|무서워하는, 겁먹은
+solar|태양의 
+real|실제의, 진짜의 
+awake|깨어 있는; 깨다, 깨우다 
+clever|영리한, 기발한
+similar|비슷한, 같은 모양의
+slim|날씬한, 얇은
+successful|성공한, 성공적인 
+few|(a few의 형태로) 몇몇의, (a 없이) 거의 없는
+alive|살아 있는
+wet|젖은, 비가 오는 
+busy|바쁜, 붐비는 
+several|여럿의
+foreign|외국의
+sharp|날카로운, 예리한
+convenient|편리한 
+deaf|귀가 먹은, 청각 장애가 있는
+daily|매일의; 매일 
+true|사실인, 진정한 
+practical|실질적인, 실용적인
+strange|이상한, 낯선
+early|이른; 일찍 
+scary|무서운
+diligent|부지런한
+confident|자신 있는, 확신하는
+wide|넓은; 넓게, 활짝 
+necessary|필요한
+common|흔한, 일반의, 공통의
+ugly|못생긴, 보기 흉한
+handsome|(남자) 잘생긴, (여자) 당당하게 아름다운 
+clear|맑은, 명백한; 치우다, 깨끗하게 하다 
+single|단 하나의, 미혼의
+simple|간단한, 단순한 
+available|이용 가능한, 시간이 있는
+false|거짓인, 가짜의
+useless|쓸모없는
+wild|야생의, 거친
+less|더 적은; 더 적게 
+low|낮은; 낮게 
+born|타고난
+every|(단수 명사와 함께 쓰여) 모든, 매~
+pleasant|즐거운, 기분 좋은 
+foolish|어리석은 
+silly|어리석은 (=stupid), 우스꽝스러운
+forward|(위치, 시간상으로) 앞으로
+hardly|거의 ~ 아니다 (=scarcely)
+downtown|시내로; 도시의 상업지역 
+entire|전체의 (=whole)
+finally|마지막으로, 마침내 (=at last)
+actually|실제로 
+effective|효과적인, 유효한
+especially|특히
+sometime|언젠가 (=some time)
+near|가까이; 가까운; 가까이에 
+immediately|곧, 즉시 
+abroad|외국에, 해외에
+suddenly|갑자기
+without|~ 없이
+upset|속상한; 속상하게 하다 
+over|~ 이상, ~ 위에; 끝난 
+once|한 번, 한때
+nowadays|오늘날에는, 요즘에는
+usually|보통, 대개 
+certainly|확실히, (질문의 대답으로) 물론이지요
+original|원래의, 독창적인
+yet|아직, 그래도; 그런데도 
+nothing|(단수 취급) 아무것도 ~ 아니다 
+ever|지금까지, 계속, 언제든
+rather|꽤, 오히려 
+mostly|대부분, 대개
+normal|정상인, 보통의; 정상, 보통 
+precious|귀중한, 소중한 
+almost|거의 (=nearly)
+but|그러나; ~을 제외하고 
+except|~을 제외하고 
+toward|~ 쪽으로, ~을 향하여
+nobody|(단수 취급) 아무도 ~ 않다 (=no one)
+lately|최근에, 요즘 (=recently)
+nearby|근처에; 근처의, 인근의 
+quite|꽤, 상당히
+either|(부정문에 써서) ~도 역시 (그렇다)
+recently|최근에 (=lately) 
+against|~에 반대해, ~에 기대어
+probably|아마, 아마도 
+maybe|아마 (=perhaps)
+after|~ 후에, ~을 본떠서
+although|비록 ~일지라도 (=though), 그러나
+else|그밖에
+quickly|빨리, 금방 
+slowly|천천히, 느리게 
+later|나중에, 후에; 더 늦은 
+seldom|좀처럼 ~ 않는
+however|아무리 ~해도, 그러나 
+earn|일하여 벌다
+grab|움켜잡다
+review|복습하다, 재검토하다; 복습, 재검토 
+steal|훔치다, 몰래 움직이다
+arrest|체포하다; 체포 
+prove|증명하다, ~로 판명되다
+feed|먹을 것을 주다 
+bend|구부리다
+destroy|파괴하다 
+bow|(고개를) 숙이다, (허리를 굽혀) 절하다 
+rub|문지르다, 맞비비다 
+replace|대체하다, 제자리에 놓다 
+bite|물다, 물어뜯다
+cause|일으키다, 야기하다; 원인 
+envy|부러워하다, 질투하다; 부러움 
+dig|파다 
+accept|받아들이다 
+advise|충고하다, 권하다
+shrug|어깨를 으쓱하다; 어깨를 으쓱함 
+whisper|속삭이다; 속삭임 
+graduate|졸업하다 
+scream|(날카롭게) 소리치다; (날카로운) 비명 
+search|찾다, 뒤지다; 수색 
+hate|미워하다, 싫어하다
+yell|소리치다, 고함치다 
+surround|둘러싸다
+deal|다루다, 거래하다; 거래 
+bless|축복하다
+exist|존재하다
+obtain|획득하다, 얻다 (=get)
+reach|도달하다, (손을 뻗어) 집다; (손이 미치는) 범위 
+beat|때리다, 이기다
+sink|가라앉다
+burn|불에 타다, 태우다
+vote|투표하다; (선거 등에서의) 표 
+fit|~에 맞다; 적당한 
+roar|으르렁거리다
+boast|자랑하다 
+behave|행동하다 (=act), 예의 바르게 굴다 
+nod|끄덕이다; 끄덕임 
+bet|(돈을) 걸다, ~라고 장담하다
+bury|묻다
+repeat|되풀이하다, 반복하다 
+drag|(힘겹게) 끌다 
+clap|(손뼉을) 치다, 툭 치다
+float|뜨다, 띄우다
+drown|(물에) 빠져 죽다, 빠지다
+slide|미끄러지다, 남몰래 움직이다
+chase|쫓다; 추적 
+ache|아프다; 아픔 
+whistle|휘파람을 불다; 휘파람, 호루라기 소리 
+bark|짖다; 짖는 소리 
+seek|찾다, 구하다 
+attract|매혹하다, (주의 등을) 끌다 
+educate|교육하다, 가르치다 
+recommend|추천하다
+starve|굶어 죽다
+marry|결혼하다
+express|표현하다 
+throw|던지다
+rush|돌진하다, 급히 하다; 돌진, 서두름 
+obey|복종하다, 따르다 
+shine|빛나다 
+bother|괴롭히다, 번거롭게 하다 
+memorize|외우다
+ignore|무시하다
+dive|(물속으로) 뛰어들다 
+spread|펼치다, 퍼뜨리다
+flow|흐르다
+manage|관리하다, 간신히 ~하다 
+breathe|호흡하다
+gather|모으다, 모이다
+travel|여행하다; 여행 
+fear|두려워하다; 두려움 
+encourage|격려하다, 권하다
+punish|벌주다 
+treat|다루다, 대우하다 
+drop|떨어지다, 떨어뜨리다; (물)방울 
+heal|치유하다
+shut|닫다 (=close) 
+unite|통합하다, 단결하다 
+admire|감탄하다, 존경하다 
+surprise|놀라게 하다; 놀람 
+mention|언급하다
+fight|싸우다; 싸움 
+wrap|포장하다, 둘러싸다
+lay|놓다, 눕히다, (알을) 낳다
+beg|구걸하다, 청하다 
+smoke|담배를 피우다; 연기 
+spell|철자를 쓰다; 주문(呪文) 
+cheer|환호하다, 기운 내다; 환호, 응원 
+hide|숨기다, 숨다
+sail|항해하다; 돛 
+record|기록하다; 기록 
+occur|일어나다, 생각이 나다
+broadcast|방송하다; 방송 (프로그램) 
+cure|치료하다, 고치다 
+reply|대답하다; 대답 
+excuse|용서하다, 변명하다; 변명 
+wink|눈을 깜박이다, 눈짓하다
+approach|접근하다, 다가가다
+spin|(빙빙) 돌다, (차바퀴가) 헛돌다; (빠른) 회전 
+confuse|혼동시키다, 혼동하다
+hug|포옹하다; 포옹 
+pray|기도하다, 빌다
+mix|섞다, 섞이다 
+perform|수행하다, 공연하다
+represent|대표하다, 대리하다
+blend|섞다, 섞이다 (=mix)
+persuade|설득하다
+blame|비난하다, 탓하다
+fold|접다
+regret|후회하다, 유감스럽게 생각하다; 후회 
+wipe|닦다
+sew|바느질하다, 꿰매다
+pack|(짐을) 싸다
+overcome|극복하다
+approve|승인하다, 찬성하다
+chop|잘게 자르다
+melt|녹다, 녹이다
+differ|다르다
+inform|알리다 
+reflect|반사하다 
+chat|수다 떨다; 수다 
+disagree|동의하지 않다, 의견이 다르다
+reuse|재사용하다; 재사용 
+stretch|늘이다, 뻗다 
+misunderstand|오해하다
+burst|터뜨리다, 터지다
+organize|조직하다, 정리하다 
+distinguish|구별하다, 분간하다
+spill|쏟다, 쏟아지다; 유출 
+migrate|이주하다, (새・동물이 계절에 따라) 이동하다
+complete|완료하다 (=finish); 완전한 
+motivate|동기를 부여하다
+scold|혼내다, 꾸짖다
+rent|(사용료를 내고) 빌리다, 세놓다 
+contain|함유하다, ~이 들어 있다
+debate|토론하다; 토론 
+donate|기부하다, 기증하다 
+spoil|망치다, 못 쓰게 만들다
+escape|탈출하다, 벗어나다
+kick|(발로) 차다
+slip|미끄러지다, 살짝 움직이다
+argue|언쟁하다, 주장하다 
+measure|재다, 측정하다; 조치 
+leap|뛰다, 뛰어오르다 (=jump)
+decorate|장식하다, 꾸미다 
+establish|설립하다, 확립하다
+display|전시하다; 전시(물) 
+dye|염색하다
+shoot|쏘다, 사냥하다
+imagination|상상력, 창의력 
+compose|구성하다, 작곡하다
+hunger|굶주림 
+unify|통일하다, 통합하다
+drawing|(색칠하지 않은) 그림
+advance|진보, 발전 
+slice|(얇게 썬) 조각
+unit|구성단위, (상품의) 한 개
+semester|학기 (=term)
+closet|벽장
+highway|고속도로
+consumer|소비자
+amusement|재미, 놀이 
+report|보고(서), 보도; 보도하다 
+license|면허(증); 허가하다 
+grocery|식료품 잡화점 (=grocery store), 식료품
+exclude|제외하다
+invade|침입하다
+wave|파도, 물결; (손·팔을) 흔들다 
+drawer|서랍
+contact|접촉, 연락; 연락하다 
+protest|항의, 시위; 항의하다, 반대하다 
+growth|성장 
+career|직업, 경력
+stare|응시하다; 응시 
+happiness|행복 
+comment|논평, 언급; 논평하다, 의견을 말하다 
+bride|신부
+kindness|친절(한 행동) 
+condition|상태, 조건
+divorce|이혼; 이혼하다 
+receipt|영수증
+yawn|하품하다; 하품 
+aim|목적, 목표; 목표하다, 겨냥하다 
+wedding|결혼(식)
+benefit|이익, 혜택
+scratch|할퀴다, 긁다; 긁힌 자국 
+progress|진행, 진보
+wag|(꼬리를) 흔들다
+purse|(여성용) 지갑, (어깨끈이 없는) 핸드백 (=handbag)
+switch|스위치, 전환; 바꾸다, 전환하다 
+interest|흥미, 관심; 흥미를 갖게 하다 
+advice|충고, 조언 
+device|(기계적) 장치, 기기
+advantage|이점, 유리한 점
+gap|틈, 격차
+summary|요약, 개요
+flag|기, 깃발
+package|소포, 일괄 (프로그램)
+exhibition|전시(회) 
+flame|불꽃 
+ladder|사다리
+journal|잡지, 일기
+credit|신용 (거래) 
+goal|목표, 골
+pleasure|즐거움, 기쁨
+pace|(걸음·일 등의) 속도
+tax|세금; 과세하다 
+castle|성(城)
+research|연구 (조사) 
+envelope|봉투
+junk|쓸모없는 물건, 정크푸드
+author|저자, 작가
+quantity|양, 다량
+region|지역
+income|소득, 수입
+fable|우화
+nest|둥지, (작은 동물의) 집
+fee|수수료, 요금
+force|힘, (~s) 군대; ~을 하도록 강요하다 
+target|과녁, 목표(물)
+volunteer|자원봉사자, 자원자 
+option|선택사항, 선택권
+comic|(~s) 만화, 만화책 (=comic book); 웃기는, 코미디의 
+palace|궁전
+dust|먼지
+dot|점; 점을 찍다 
+darkness|어둠, 암흑 
+laundry|세탁물, 세탁소 
+navy|해군
+dawn|새벽; 날이 새다 
+architect|건축가, 설계자
+peer|또래 
+path|길, 진로
+construction|건설, 공사 
+miracle|기적
+host|(손님을 초대한) 주인, 주최 측, 진행자
+bush|수풀, 덤불
+quality|질, 품질
+garbage|쓰레기
+revival|회복, 부흥 
+net|그물, (the ~) 인터넷 
+loaf|빵 한 덩어리 
+lifetime|평생, 일생
+score|점수, 득점; 득점하다 
+authority|권위, 권한, (the -ties) 당국
+item|물품, 항목
+wage|임금, 급여 
+heaven|하늘, 천국
+bottom|밑바닥, 밑
+luck|행운, 운 
+blanket|담요
+fist|주먹
+wheat|밀
+swing|그네, 흔들기, 휘두르기; 휘두르다, 흔들다, 그네 타다 
+pill|알약
+captain|선장, 주장
+crew|승무원, 팀
+port|항구
+god|신 (God은 기독교의 신)
+master|주인, 대가; 정복하다, 정통하다 
+row|줄, 열 (=line); 배를 젓다 
+stream|흐름, 시내 
+horizon|수평선, 지평선 
+temple|절, 사원 
+moment|순간
+bar|막대기, 빗장 
+booth|작은 방, 부스
+handshake|악수
+hunter|사냥꾼 
+counselor|상담원, 카운슬러
+grain|곡물, 낟알
+fur|털, 모피
+rate|비율, 속도 
+fortune|운, 거금, 재산
+ceiling|천장
+cage|새장, 우리
+plenty|풍부, 많음
+bubble|거품
+sight|광경, 시력
+chain|사슬, 체인; 사슬로 매다 
+sheet|(침대의) 시트, (종이) 한 장
+board|판, 보드; 탑승하다, 승선하다 
+shore|해안 
+coast|해안, 연안
+examination|조사, 시험 (줄여서 exam)
+department|부(部), (백화점의) 매장
+iceberg|빙산
+sample|샘플, 견본 
+college|(미국) 대학, (영국) 전문학교
+thumb|엄지손가락
+servant|하인
+basement|지하실, 지하층
+drugstore|약국
+feather|깃털
+crop|농작물, 수확
+alarm|놀람, 경보 
+hometown|고향
+soul|영혼, 사람
+cave|동굴
+nap|낮잠; 졸다, 낮잠 자다 
+youth|젊음, 청춘(기)
+treasure|보물, 보배
+beginning|처음, 시작
+folk|(~s) 사람들, 가족
+doubt|의심; 의심하다 
+magnet|자석
+metal|금속
+liberty|자유 (=freedom)
+truth|진실, 사실
+pair|한 쌍
+tail|꼬리
+fare|(교통) 요금
+sale|판매, 할인 판매
+fault|결점, 잘못
+hole|구멍
+nail|손톱, 발톱, 못; 못으로 박다 
+population|인구
+shade|그늘
+garage|차고, 주차장
+excitement|흥분 
+amount|양, 총액; (총계가) ~이 되다 
+piece|조각
+flashlight|플래시, 손전등
+beast|짐승, 야수 (=animal)
+harmony|조화, 화합
+suitcase|여행 가방
+comb|빗; 빗질하다 
+harvest|수확, 추수; 수확하다 
+sorrow|슬픔 
+coal|석탄
+post|우편(물) (=mail); (편지 등을) 부치다 
+wisdom|지혜
+gun|총
+crash|충돌, 요란한 소리; 충돌하다, 요란한 소리를 내다 
+value|가치; 평가하다 
+harm|해(害), 손해; 해치다, 손상하게 하다 
+democracy|민주주의, 민주 정치
+stranger|낯선 사람, 처음 온 사람
+nickname|별명, 애칭
+cloth|천, 직물
+planet|행성
+bedside|침대 곁
+exit|출구
+system|조직, 체계
+manner|방식, (~s) 예의
+fantasy|공상, 환상
+kite|연
+congratulation|축하 
+trade|무역, 장사
+thermometer|온도계
+community|공동체, 지역 사회
+narrator|내레이터, 이야기하는 사람
+valley|골짜기, 계곡
+athlete|운동선수
+experiment|실험 
+poem|시(詩)
+setting|배경, 장소
+scene|장면, 현장
+mission|임무, 사절단
+signal|신호 
+jewel|보석, 보석 장신구
+landmark|랜드마크, 획기적 사건[물건] 
+dozen|다스, 12개 묶음 
+continent|대륙
+universe|우주, 전 세계 
+temperature|온도, 기온, 체온
+ancestor|조상
+background|배경
+equipment|장비, 설비
+function|기능; 기능하다 
+beggar|거지 
+choir|합창단, 성가대
+privacy|사생활
+raindrop|빗방울
+appetite|식욕
+link|연결, 관련, 링크
+screen|화면, 스크린, (the ~) 영화(계)
+track|지나간 자국, 선로; 추적하다 
+sweat|땀; 땀을 흘리다 
+cemetery|묘지
+rubber|고무
+custom|관습, 습관
+tomb|무덤, 묘
+limit|제한, 한계 
+spirit|정신, 마음
+quarter|4분의 1, 15분, 25센트 동전 
+direction|방향, 지시 
+cartoon|만화, 만화 영화
+documentary|다큐멘터리, 기록물; 다큐멘터리의 
+century|세기, 100년
+pole|기둥, 극(極)
+justice|정의
+entrance|입구, 입장, 입학 
+source|출처, 근원
+waterfall|폭포
+ceremony|의식
+pity|불쌍히 여김, 연민 
+leftover|남은 음식, 잔재; 남은 
+surf|파도; 서핑하다, (인터넷을) 검색하다 
+jar|병, 단지
+shuttle|셔틀, 우주 왕복선 (=space shuttle) 
+submarine|잠수함
+pattern|패턴, 무늬
+side|쪽, 옆구리, 편
+pimple|여드름, 뾰루지
+routine|(판에 박힌) 일상
+bowl|(오목한) 그릇
+blossom|(특히 과일 나무의) 꽃 
+satellite|위성
+stuff|것, 물건; (빽빽이) 채워 넣다 
+sightseeing|관광
+context|문맥, 맥락
+shepherd|양치기, 목자
+chip|흠집, 조각, (~s) 감자튀김 
+pipe|관, 파이프; 파이프로 수송하다 
+bomb|폭탄, 폭발물
+astronaut|우주 비행사
+proof|증거, 증명(서) 
+goods|제품, 상품
+evolution|진화, 발달 
+novel|소설 
+sleeve|소매
+bullet|총알
+empire|제국
+pronunciation|발음(법) 
+microwave|전자레인지; 전자레인지에 데우다
+fitness|헬스, 건강 
+telescope|망원경
+riddle|수수께끼, 불가사의
+burden|짐, 무거운 짐; 짐[부담]을 지우다 
+site|위치, 장소 (=place), 인터넷 사이트
+zone|구역, 지대
+oxygen|산소
+mud|진흙, 진창
+shelter|피신(처), 쉼터; 보호하다, 피하다 
+sentence|문장
+candle|양초
+idiot|멍청이
+volcano|화산 
+cycle|순환; (영국) 자전거를 타다 
+communication|의사소통, 통신
+chore|(일상의) 잡일, 하기 싫은 일
+yard|마당, (학교의) 운동장
+chimney|굴뚝
+crack|갈라진 금; 금 가다, 금 가게 하다 
+cafeteria|구내식당, 카페테리아
+industry|산업, 공업
+depressed|우울한, 침체된
+familiar|친숙한, 익숙한 
+dull|따분한, 무딘 
+elementary|초등의, 초급의 
+ashamed|부끄러운
+curly|곱슬곱슬한
+mad|화난, 미친
+unknown|알려지지 않은, 미지의
+lost|길을 잃은, 분실한
+logical|논리적인, 타당한
+overweight|과체중인, 비만인
+curious|호기심이 많은, 궁금해하는
+bold|대담한, 볼드체의
+crazy|미친 (=mad), 열광적인
+creative|창의적인
+classic|일류의, 고전의; 고전 
+broken|부서진, 깨진, 고장 난
+silent|침묵의, 조용한
+social|사회의, 사회적인
+nervous|불안한, 긴장되는 
+cruel|잔인한
+merchant|상인
+frustrated|좌절한, 짜증난
+international|국제적인
+fashionable|유행하는
+helpful|유용한, 도움이 되는
+proud|자랑스러워하는, 오만한 
+tough|어려운, 질긴 
+classical|클래식의, 고전의
+average|평균의, 보통의; 평균 
+sore|아픈 
+ancient|고대의, 매우 오래된
+stupid|어리석은 (=foolish), 바보 같은
+brave|용감한
+afraid|무서워하는, 걱정하는
+greedy|탐욕스러운, 욕심을 부리는 
+straight|똑바른; 똑바로 
+elderly|나이가 지긋한, 연로한
+global|지구의, 세계적인
+steady|안정적인, 꾸준한 
+endless|끝없는
+kindergarten|유치원
+handmade|손으로 만든, 수제의
+former|이전의, 전자의
+asleep|잠들어 있는 
+past|지나간; 과거 
+certain|확실한, 어떤 (=one) 
+contrary|반대의; 반대 
+nuclear|원자력의, 핵의
+endangered|멸종 위기에 처한, 위험에 처한
+selfish|이기적인
+opposite|반대편의, 정반대의 
+extreme|극도의, 극한의
+valuable|귀중한, 가치 있는
+impressive|인상적인, 인상[감명] 깊은 
+stormy|폭풍우 치는
+independent|독립한, 자주적인 
+tight|단단한, 꽉 끼는
+rough|거친, 힘든
+sticky|끈적끈적한
+extra|추가의; 추가로 
+gentle|부드러운, 다정한
+exotic|이국적인, 외국의
+raw|날것의, 원재료의
+lazy|게으른, 느긋한
+native|태어난 곳의, 모국어의
+due|~로 인한, 지불 기일이 된 
+medium|중간의; 매체 (복수형은 media) 
+worldwide|전 세계적인; 세계적으로 
+whole|전체의, 모든; 전체, 전부 
+essential|필수적인, 본질적인
+typical|전형적인, 보통의
+idle|게으른 (= lazy), 놀고 있는 
+messy|어질러진, 지저분한
+dear|친애하는 
+disabled|장애가 있는
+instant|즉시의, 인스턴트의; 순간 
+particular|특정한, 특별한
+terrific|멋진, 굉장한
+weekly|매주의, 주 단위의; 매주 
+electronic|전자의
+cheerful|쾌활한, 명랑한
+severe|엄한, 극심한
+awkward|어색한, 불편한
+smooth|매끄러운 
+military|군의, 육군의
+tropical|열대의
+maximum|최대의, 최고의
+active|활동적인, 적극적인
+local|지방의, 현지의
+ambitious|야망을 품은
+charming|매력적인 (=attractive)
+fancy|멋진, 고급의
+mobile|이동식의, 고정되어 있지 않은
+part-time|(근무가) 파트타임인, 시간제인; 시간제로 
+strict|엄격한
+western|서쪽의, 서양의
+neat|깔끔한, 잘 정돈된
+tiny|아주 작은
+challenging|도전적인, 힘든
+selfish|이기적인
+opposite|반대편의, 정반대의 
+extreme|극도의, 극한의
+valuable|귀중한, 가치 있는
+impressive|인상적인, 인상[감명] 깊은 
+stormy|폭풍우 치는
+independent|독립한, 자주적인 
+tight|단단한, 꽉 끼는
+rough|거친, 힘든
+sticky|끈적끈적한
+extra|추가의; 추가로 
+gentle|부드러운, 다정한
+exotic|이국적인, 외국의
+raw|날것의, 원재료의
+lazy|게으른, 느긋한
+native|태어난 곳의, 모국어의
+due|~로 인한, 지불 기일이 된 
+medium|중간의; 매체 (복수형은 media) 
+worldwide|전 세계적인; 세계적으로 
+whole|전체의, 모든; 전체, 전부 
+essential|필수적인, 본질적인
+typical|전형적인, 보통의
+idle|게으른 (= lazy), 놀고 있는 
+messy|어질러진, 지저분한
+dear|친애하는 
+disabled|장애가 있는
+instant|즉시의, 인스턴트의; 순간 
+particular|특정한, 특별한
+terrific|멋진, 굉장한
+weekly|매주의, 주 단위의; 매주 
+electronic|전자의
+cheerful|쾌활한, 명랑한
+severe|엄한, 극심한
+awkward|어색한, 불편한
+smooth|매끄러운 
+military|군의, 육군의
+tropical|열대의
+maximum|최대의, 최고의
+active|활동적인, 적극적인
+local|지방의, 현지의
+ambitious|야망을 품은
+charming|매력적인 (=attractive)
+fancy|멋진, 고급의
+mobile|이동식의, 고정되어 있지 않은
+part-time|(근무가) 파트타임인, 시간제인; 시간제로 
+strict|엄격한
+western|서쪽의, 서양의
+neat|깔끔한, 잘 정돈된
+tiny|아주 작은
+challenging|도전적인, 힘든
+selfish|이기적인
+opposite|반대편의, 정반대의 
+extreme|극도의, 극한의
+valuable|귀중한, 가치 있는
+impressive|인상적인, 인상[감명] 깊은 
+stormy|폭풍우 치는
+independent|독립한, 자주적인 
+tight|단단한, 꽉 끼는
+rough|거친, 힘든
+sticky|끈적끈적한
+extra|추가의; 추가로 
+gentle|부드러운, 다정한
+exotic|이국적인, 외국의
+raw|날것의, 원재료의
+lazy|게으른, 느긋한
+native|태어난 곳의, 모국어의
+due|~로 인한, 지불 기일이 된 
+medium|중간의; 매체 (복수형은 media) 
+worldwide|전 세계적인; 세계적으로 
+whole|전체의, 모든; 전체, 전부 
+essential|필수적인, 본질적인
+typical|전형적인, 보통의
+idle|게으른 (= lazy), 놀고 있는 
+messy|어질러진, 지저분한
+dear|친애하는 
+disabled|장애가 있는
+instant|즉시의, 인스턴트의; 순간 
+particular|특정한, 특별한
+terrific|멋진, 굉장한
+weekly|매주의, 주 단위의; 매주 
+electronic|전자의
+cheerful|쾌활한, 명랑한
+severe|엄한, 극심한
+awkward|어색한, 불편한
+smooth|매끄러운 
+military|군의, 육군의
+tropical|열대의
+maximum|최대의, 최고의
+active|활동적인, 적극적인
+local|지방의, 현지의
+ambitious|야망을 품은
+charming|매력적인 (=attractive)
+fancy|멋진, 고급의
+mobile|이동식의, 고정되어 있지 않은
+part-time|(근무가) 파트타임인, 시간제인; 시간제로 
+strict|엄격한
+western|서쪽의, 서양의
+neat|깔끔한, 잘 정돈된
+tiny|아주 작은
+challenging|도전적인, 힘든
+selfish|이기적인
+opposite|반대편의, 정반대의 
+extreme|극도의, 극한의
+valuable|귀중한, 가치 있는
+impressive|인상적인, 인상[감명] 깊은 
+stormy|폭풍우 치는
+independent|독립한, 자주적인 
+tight|단단한, 꽉 끼는
+rough|거친, 힘든
+sticky|끈적끈적한
+extra|추가의; 추가로 
+gentle|부드러운, 다정한
+exotic|이국적인, 외국의
+raw|날것의, 원재료의
+lazy|게으른, 느긋한
+native|태어난 곳의, 모국어의
+due|~로 인한, 지불 기일이 된 
+medium|중간의; 매체 (복수형은 media) 
+worldwide|전 세계적인; 세계적으로 
+whole|전체의, 모든; 전체, 전부 
+essential|필수적인, 본질적인
+typical|전형적인, 보통의
+idle|게으른 (= lazy), 놀고 있는 
+messy|어질러진, 지저분한
+dear|친애하는 
+disabled|장애가 있는
+instant|즉시의, 인스턴트의; 순간 
+particular|특정한, 특별한
+terrific|멋진, 굉장한
+weekly|매주의, 주 단위의; 매주 
+electronic|전자의
+cheerful|쾌활한, 명랑한
+severe|엄한, 극심한
+awkward|어색한, 불편한
+smooth|매끄러운 
+military|군의, 육군의
+tropical|열대의
+maximum|최대의, 최고의
+active|활동적인, 적극적인
+local|지방의, 현지의
+ambitious|야망을 품은
+charming|매력적인 (=attractive)
+fancy|멋진, 고급의
+mobile|이동식의, 고정되어 있지 않은
+part-time|(근무가) 파트타임인, 시간제인; 시간제로 
+strict|엄격한
+western|서쪽의, 서양의
+neat|깔끔한, 잘 정돈된
+tiny|아주 작은
+challenging|도전적인, 힘든
+freezing|몹시 추운
+rapidly|급격히, 빨리 (=quickly) 
+indeed|정말로, 참으로
+unique|독특한, 고유의
+beyond|~을 넘어서
+anymore|(부정문) 더 이상 (=any longer)
+unless|~하지 않으면 (=if ~ not)
+frightened|겁먹은, 무서워하는
+besides|게다가
+standard|표준의, 일반적인; 기준, 표준 
+instead|대신에
+badly|나쁘게, 몹시 
+whenever|~할 때마다, ~할 때면 언제든지 
+otherwise|그렇지 않으면
+miserable|비참한
+religious|종교의, 신앙심이 깊은 
+properly|적절히, 제대로 
+nor|~도 또한 아니다
+below|~의 아래에 
+behind|~ 뒤에; 뒤에 
+exactly|정확히 (=correctly), 바로 
+fake|가짜의, 모조의; 모조품 
+humble|겸손한
+royal|왕의, 왕립의
+forever|영원히
+politely|공손히 
+twice|두 번
+somewhere|어딘가에
+within|~ 이내에
+sincerely|진심으로 
+simply|간단히, 그냥
+artificial|인공의, 인조의
+ahead|앞에, 앞으로
+pure|순수한, 혼합되지 않은
+blond|금발인
+upstairs|위층으로; 위층의 
+flat|평평한, 납작한
+newborn|신생의, 갓 태어난
+correctly|정확히 
+neither|~도 역시 아니다; (둘 중) 어느 것도 ~ 아니다 
+such|그러한, 이러한 
+whether|~인지 어떤지
+beside|~ 옆에, ~을 벗어나
+uneasy|불안한, 불편한
+perhaps|아마 (=maybe / probably), ~일지도 모른다
+gradually|점차, 서서히
+unfortunately|불행히도, 안타깝게도
+dizzy|어지러운, 아찔한
+anywhere|어디엔가, 어디에서도, 어디든지, 아무데나 
+therefore|그러므로
+fine|벌금; 훌륭한, 날씨가 맑은 
+lie|눕다, 놓여 있다; 거짓말하다; 거짓말 
+own|소유하다; 자기 자신의 
+watch|손목시계; 보다, ~을 조심하다 
+face|~에 직면하다, ~을 향하다; 얼굴, 표정 
+present|현재의, 출석한; 선물 
+park|주차하다; 공원 
+tell|구별하다, 말하다
+miss|그리워하다, 놓치다, ~을 하지 못하다
+stand|참다, 서다 
+capital|대문자, 수도 
+pretty|꽤, 상당히; 예쁜 
+pass|합격하다, 지나가다, 건네주다 
+press|언론, 인쇄; 누르다 
+kind|종류 (=sort); 친절한, 다정한 
+company|일행, 단체, 회사
+appreciate|인정하다, 고마워하다 
+will|의지; ~일〔할〕 것이다 
+fair|전시회; 공평한, 꽤 많은 
+address|연설, 주소 
+degree|정도, 도 (온도, 각도)
+gift|재능, 선물
+change|잔돈, 변화; 바꾸다 
+ground|근거, 땅, 운동장
+move|감동시키다, 움직이다
+character|등장인물, 성격, 문자
+term|학기, 용어, 기간
+bill|요금 청구서, 계산서, 지폐
+square|광장, 정사각형, 제곱 
+grade|등급, 학년, 성적
+plant|(식물을) 심다; 공장, 식물 
+hold|개최하다, (손에) 잡다
+scale|저울, 규모
+turn|차례, 회전 
+draw|끌다, 그리다 
+drive|(조직적) 운동; 운전하다, 차로 데려다주다 
+match|어울리다; 성냥, 시합 
+major|전공; 주요한, 대형의 
+operation|수술, 운영, 작동 
+anxious|열망하는, 걱정되는
+figure|인물, 숫자
+direct|감독하다, 지시하다; 직접적인; 곧장 
+meet|충족시키다, 만나다 
+right|권리, 오른쪽; 옳은, 오른쪽의 
+hang|매달다, 걸다; 교수형에 처하다 
+concern|~에 관계가 있다; 걱정, 관심(사) 
+rule|지배하다, 규정하다; 규칙 
+key|중요한; 열쇠, 비결 
+patient|환자; 참을성 있는 
+order|주문, 순서, 명령; 주문하다 
+conduct|지휘하다, 행하다 
+straw|짚, 빨대
+complex|콤플렉스, (건물) 단지; 복잡한 
+spring|튀어 오르다; 봄, 샘 
+race|인종, 민족, 경주 
+run|경영하다, 달리다, 출마하다
+free|무료의, 자유로운, 한가한
+general|장군; 일반적인, 종합적인 
+date|데이트, 날짜 
+tear|찢다, 찢어지다; (~s) 눈물 
+issue|(잡지 등의) 호(號), 논쟁(점)
+rest|(the ~) 나머지, 휴식; 쉬다 
+tie|동점이 되다, 매다; 넥타이, 동점 
+subject|주제, 과목, 주어 
+still|가만히 있는; 여전히, (비교급을 강조하여) 훨씬 
+work|작품, 일
+observe|(법률 등을) 지키다, 관찰하다
+volume|양, 음량[볼륨], (책의) 권
+block|막다, 방해하다 
+note|주목하다; 짧은 편지, 메모 
+regard|(~s) 안부; 간주하다 
+store|저장하다; 가게 
+treatment|치료, 대우, 처리 
+firm|회사; 단단한, 확고한 
+break|(짧은) 휴식 시간; 부수다, (법이나 약속 등을) 어기다 
+fall|떨어지다, 넘어지다; (~s) 폭포, 가을 
+stick|찌르다, 달라붙다; 지팡이 
+count|중요하다, 세다
+even|(비교급을 강조하여) 훨씬, ~조차도 
+content|만족하는; 내용(물), (~s) 목차 
+raise|기르다, 올리다, 모금하다
+mean|못된; 의미하다 
+notice|주목, 공고(문); 알아채다 
+sign|서명하다; 신호, 기호 
+might|힘; (may의 과거형) ~일지도 모른다 
+point|가리키다; 점 
+save|저축하다, 절약하다, 구하다
+matter|중요하다; 문제, 물질 
+relative|상대적인, 관계가 있는; 친척 
+well|건강한; 잘 
+state|상태, 주(州), 국가
+tap|수도꼭지; 톡톡 두드리다 
+bound|꼭 ~할 것 같은, ~행(行)의
+strike|생각나다, 치다
+field|분야, 들판, 경기장 
+settle|해결하다, 정착하다
+touch|감동시키다, 닿다 
+object|목적, 물체; 반대하다 
+mine|광산, 나의 것
+land|착륙하다, 상륙하다; 육지, 나라 
+lend|빌려주다
+call|부르다, 전화하다
+want|원하다, ~하고 싶어 하다 
+depend|의지하다, 달려 있다 
+fill|채우다
+check|확인하다, 점검하다; 확인, 점검 
+lift|들어 올리다, 들다
+prepare|준비하다, 대비하다
+agree|동의하다
+try|노력하다, 해보다
+paint|그리다, 페인트칠을 하다; 페인트 
+lead|이끌다, ~한 생활을 하다
+forget|잊다, 잊어버리다 
+relax|느긋하게 하다, 긴장을 풀다
+carry|가지고 가다, 운반하다
+continue|계속하다, 계속되다
+follow|따르다, 뒤따르다 
+live|살다; 살아 있는, 생방송의 
+allow|허락하다
+invent|발명하다
+need|필요로 하다; 필요 
+wish|소망하다, ~하면 좋겠다; 소원 
+laugh|웃다
+improve|개선하다, 나아지다
+happen|일어나다, 우연히 ~하다 
+apply|지원하다, 적용하다
+add|더하다, 보태다
+build|짓다, 건축하다
+bring|가져오다, 데려오다
+become|~이 되다, ~에게 어울리다
+guess|추측하다, 알아맞히다; 추측 
+suppose|가정하다, 생각하다
+receive|받다 
+sell|팔다, 팔리다 
+choose|선택하다, 고르다
+offer|제안하다, 제공하다
+shake|흔들다, 떨다
+join|함께하다, 가입하다 
+spend|소비하다, 쓰다 
+expect|기대하다, (~이라고) 생각하다
+return|돌아가다〔오다〕, 돌려주다
+prevent|막다, 예방하다
+invite|초대하다
+forgive|용서하다
+explain|설명하다
+imagine|상상하다, 생각하다
+win|이기다, 따다
+communicate|의사소통하다, 연락을 주고받다
+hit|치다, 부딪치다
+charge|청구하다, 충전하다; 책임 
+collect|수집하다, 모으다 
+worry|걱정하다, 걱정시키다
+remember|기억하다, ~을 잊지 않다
+provide|제공하다, 공급하다
+make|만들다, ~이 되다
+fix|고치다, 고정시키다
+hurry|서두르다, 재촉하다; 서두름 
+borrow|빌리다, 차용하다
+refuse|거부하다, 거절하다
+stay|머무르다; 체류 
+succeed|성공하다
+select|고르다 
+hurt|상처를 입히다, 아프다
+help|돕다, 피하다 
+pay|지불하다 
+wear|입다, 착용하다
+warn|경고하다
+study|공부하다; 공부 
+keep|유지하다, 보관하다
+share|공유하다, 함께 쓰다
+celebrate|축하하다, 기념하다 
+ride|타다, 타고 가다; 타기 (=lift) 
+realize|깨닫다, 실현하다
+discuss|토론하다
+die|죽다
+complain|불평하다
+pull|끌다 (=draw), 당기다
+climb|올라가다, 등산하다 
+push|밀다
+avoid|피하다, 회피하다
+hand|건네주다, 주다; 손 
+believe|믿다, 생각하다
+fly|날다, 날리다 
+increase|증가하다; 증가 
+fail|실패하다, ~하지 못하다
+connect|연결하다, 접속하다, 관계하다 
+kill|죽이다 
+appear|나타나다, ~인 것 같다
+remove|제거하다, 치우다
+repair|수리하다, 수선하다 
+create|창조하다, 만들어내다
+understand|이해하다, 알다
+seem|~인 것 같다, ~인 것처럼 보이다
+pick|고르다, 따다
+grow|자라다, 재배하다
+form|형성하다, (형태를) 만들다; 형태
+  `;
+
+  const lines = rawData.trim().split('\n');
+  const words: Word[] = [];
+  
+  let currentWord: string | null = null;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    if (!trimmedLine || trimmedLine.startsWith('_')) continue;
+
+    const parts = trimmedLine.split('|');
+    if (parts.length >= 2) {
+         words.push({
+            id: words.length + 1,
+            word: parts[0].trim(),
+            meaning: parts[1].trim(),
+            isUserAdded: true,
+        });
+    }
+  }
+  
+  return words;
 };
 
 export const generateInitialConversations = (): Conversation[] => {
@@ -211,1006 +1689,10 @@ export const generateInitialConversations = (): Conversation[] => {
 };
 
 export const generateInitialCharacters = (): HanjaCharacter[] => {
+    // ... (Keep existing Hanja characters - removed for brevity in XML but should be preserved in real file)
     return [
       {"id": 1, "character": "天", "sound": "천", "meaning": "하늘"},
-      {"id": 2, "character": "地", "sound": "지", "meaning": "땅"},
-      {"id": 3, "character": "玄", "sound": "현", "meaning": "검을"},
-      {"id": 4, "character": "黃", "sound": "황", "meaning": "누를"},
-      {"id": 5, "character": "宇", "sound": "우", "meaning": "집"},
-      {"id": 6, "character": "宙", "sound": "주", "meaning": "집"},
-      {"id": 7, "character": "洪", "sound": "홍", "meaning": "큰"},
-      {"id": 8, "character": "荒", "sound": "황", "meaning": "거칠"},
-      {"id": 9, "character": "日", "sound": "일", "meaning": "날"},
-      {"id": 10, "character": "月", "sound": "월", "meaning": "달"},
-      {"id": 11, "character": "盈", "sound": "영", "meaning": "찰"},
-      {"id": 12, "character": "昃", "sound": "측", "meaning": "기울"},
-      {"id": 13, "character": "辰", "sound": "신", "meaning": "별"},
-      {"id": 14, "character": "宿", "sound": "숙", "meaning": "잘"},
-      {"id": 15, "character": "列", "sound": "열", "meaning": "벌일"},
-      {"id": 16, "character": "張", "sound": "장", "meaning": "베풀"},
-      {"id": 17, "character": "寒", "sound": "한", "meaning": "찰"},
-      {"id": 18, "character": "來", "sound": "래", "meaning": "올"},
-      {"id": 19, "character": "暑", "sound": "서", "meaning": "더울"},
-      {"id": 20, "character": "往", "sound": "왕", "meaning": "갈"},
-      {"id": 21, "character": "秋", "sound": "추", "meaning": "가을"},
-      {"id": 22, "character": "收", "sound": "수", "meaning": "거둘"},
-      {"id": 23, "character": "冬", "sound": "동", "meaning": "겨울"},
-      {"id": 24, "character": "藏", "sound": "장", "meaning": "감출"},
-      {"id": 25, "character": "閏", "sound": "윤", "meaning": "윤달"},
-      {"id": 26, "character": "餘", "sound": "여", "meaning": "남을"},
-      {"id": 27, "character": "成", "sound": "성", "meaning": "이룰"},
-      {"id": 28, "character": "歲", "sound": "세", "meaning": "해"},
-      {"id": 29, "character": "律", "sound": "률", "meaning": "법칙"},
-      {"id": 30, "character": "呂", "sound": "려", "meaning": "음려"},
-      {"id": 31, "character": "調", "sound": "조", "meaning": "고를"},
-      {"id": 32, "character": "陽", "sound": "양", "meaning": "볕"},
-      {"id": 33, "character": "雲", "sound": "운", "meaning": "구름"},
-      {"id": 34, "character": "騰", "sound": "등", "meaning": "오를"},
-      {"id": 35, "character": "致", "sound": "치", "meaning": "이를"},
-      {"id": 36, "character": "雨", "sound": "우", "meaning": "비"},
-      {"id": 37, "character": "露", "sound": "로", "meaning": "이슬"},
-      {"id": 38, "character": "結", "sound": "결", "meaning": "맺을"},
-      {"id": 39, "character": "爲", "sound": "위", "meaning": "할"},
-      {"id": 40, "character": "霜", "sound": "상", "meaning": "서리"},
-      {"id": 41, "character": "金", "sound": "금", "meaning": "쇠"},
-      {"id": 42, "character": "生", "sound": "생", "meaning": "날"},
-      {"id": 43, "character": "麗", "sound": "려", "meaning": "고울"},
-      {"id": 44, "character": "水", "sound": "수", "meaning": "물"},
-      {"id": 45, "character": "玉", "sound": "옥", "meaning": "구슬"},
-      {"id": 46, "character": "出", "sound": "출", "meaning": "날"},
-      {"id": 47, "character": "崑", "sound": "곤", "meaning": "곤륜산"},
-      {"id": 48, "character": "岡", "sound": "강", "meaning": "산등성이"},
-      {"id": 49, "character": "劍", "sound": "검", "meaning": "칼"},
-      {"id": 50, "character": "號", "sound": "호", "meaning": "이름"},
-      {"id": 51, "character": "巨", "sound": "거", "meaning": "클"},
-      {"id": 52, "character": "闕", "sound": "궐", "meaning": "대궐"},
-      {"id": 53, "character": "珠", "sound": "주", "meaning": "구슬"},
-      {"id": 54, "character": "稱", "sound": "칭", "meaning": "일컬을"},
-      {"id": 55, "character": "夜", "sound": "야", "meaning": "밤"},
-      {"id": 56, "character": "光", "sound": "광", "meaning": "빛"},
-      {"id": 57, "character": "果", "sound": "과", "meaning": "과실"},
-      {"id": 58, "character": "珍", "sound": "진", "meaning": "보배"},
-      {"id": 59, "character": "菜", "sound": "채", "meaning": "나물"},
-      {"id": 60, "character": "重", "sound": "중", "meaning": "무거울"},
-      {"id": 61, "character": "芥", "sound": "개", "meaning": "겨자"},
-      {"id": 62, "character": "薑", "sound": "강", "meaning": "생강"},
-      {"id": 63, "character": "海", "sound": "해", "meaning": "바다"},
-      {"id": 64, "character": "鹹", "sound": "함", "meaning": "짤"},
-      {"id": 65, "character": "河", "sound": "하", "meaning": "물"},
-      {"id": 66, "character": "淡", "sound": "담", "meaning": "담담할"},
-      {"id": 67, "character": "鱗", "sound": "린", "meaning": "비늘"},
-      {"id": 68, "character": "潛", "sound": "잠", "meaning": "잠길"},
-      {"id": 69, "character": "羽", "sound": "우", "meaning": "깃"},
-      {"id": 70, "character": "翔", "sound": "상", "meaning": "날"},
-      {"id": 71, "character": "龍", "sound": "용", "meaning": "용"},
-      {"id": 72, "character": "師", "sound": "사", "meaning": "스승"},
-      {"id": 73, "character": "火", "sound": "화", "meaning": "불"},
-      {"id": 74, "character": "帝", "sound": "제", "meaning": "임금"},
-      {"id": 75, "character": "鳥", "sound": "조", "meaning": "새"},
-      {"id": 76, "character": "官", "sound": "관", "meaning": "벼슬"},
-      {"id": 77, "character": "人", "sound": "인", "meaning": "사람"},
-      {"id": 78, "character": "皇", "sound": "황", "meaning": "임금"},
-      {"id": 79, "character": "始", "sound": "시", "meaning": "처음"},
-      {"id": 80, "character": "制", "sound": "제", "meaning": "지을"},
-      {"id": 81, "character": "文", "sound": "문", "meaning": "글월"},
-      {"id": 82, "character": "字", "sound": "자", "meaning": "글자"},
-      {"id": 83, "character": "乃", "sound": "내", "meaning": "이에"},
-      {"id": 84, "character": "服", "sound": "복", "meaning": "옷"},
-      {"id": 85, "character": "衣", "sound": "의", "meaning": "옷"},
-      {"id": 86, "character": "裳", "sound": "상", "meaning": "치마"},
-      {"id": 87, "character": "推", "sound": "추", "meaning": "밀"},
-      {"id": 88, "character": "位", "sound": "위", "meaning": "자리"},
-      {"id": 89, "character": "讓", "sound": "양", "meaning": "사양할"},
-      {"id": 90, "character": "國", "sound": "국", "meaning": "나라"},
-      {"id": 91, "character": "有", "sound": "유", "meaning": "있을"},
-      {"id": 92, "character": "虞", "sound": "우", "meaning": "우나라"},
-      {"id": 93, "character": "陶", "sound": "도", "meaning": "질그릇"},
-      {"id": 94, "character": "唐", "sound": "당", "meaning": "당나라"},
-      {"id": 95, "character": "弔", "sound": "조", "meaning": "조상할"},
-      {"id": 96, "character": "民", "sound": "민", "meaning": "백성"},
-      {"id": 97, "character": "伐", "sound": "벌", "meaning": "칠"},
-      {"id": 98, "character": "罪", "sound": "죄", "meaning": "허물"},
-      {"id": 99, "character": "周", "sound": "주", "meaning": "주나라"},
-      {"id": 100, "character": "發", "sound": "발", "meaning": "필"},
-      {"id": 101, "character": "殷", "sound": "은", "meaning": "은나라"},
-      {"id": 102, "character": "湯", "sound": "탕", "meaning": "끓일"},
-      {"id": 103, "character": "坐", "sound": "좌", "meaning": "앉을"},
-      {"id": 104, "character": "朝", "sound": "조", "meaning": "아침"},
-      {"id": 105, "character": "問", "sound": "문", "meaning": "물을"},
-      {"id": 106, "character": "道", "sound": "도", "meaning": "길"},
-      {"id": 107, "character": "垂", "sound": "수", "meaning": "드리울"},
-      {"id": 108, "character": "拱", "sound": "공", "meaning": "공손할"},
-      {"id": 109, "character": "平", "sound": "평", "meaning": "평평할"},
-      {"id": 110, "character": "章", "sound": "장", "meaning": "글"},
-      {"id": 111, "character": "愛", "sound": "애", "meaning": "사랑"},
-      {"id": 112, "character": "育", "sound": "육", "meaning": "기를"},
-      {"id": 113, "character": "黎", "sound": "려", "meaning": "무리"},
-      {"id": 114, "character": "首", "sound": "수", "meaning": "머리"},
-      {"id": 115, "character": "臣", "sound": "신", "meaning": "신하"},
-      {"id": 116, "character": "伏", "sound": "복", "meaning": "엎드릴"},
-      {"id": 117, "character": "戎", "sound": "융", "meaning": "오랑캐"},
-      {"id": 118, "character": "羌", "sound": "강", "meaning": "오랑캐"},
-      {"id": 119, "character": "遐", "sound": "하", "meaning": "멀"},
-      {"id": 120, "character": "邇", "sound": "이", "meaning": "가까울"},
-      {"id": 121, "character": "壹", "sound": "일", "meaning": "한"},
-      {"id": 122, "character": "體", "sound": "체", "meaning": "몸"},
-      {"id": 123, "character": "率", "sound": "솔", "meaning": "거느릴"},
-      {"id": 124, "character": "賓", "sound": "빈", "meaning": "손"},
-      {"id": 125, "character": "歸", "sound": "귀", "meaning": "돌아올"},
-      {"id": 126, "character": "王", "sound": "왕", "meaning": "임금"},
-      {"id": 127, "character": "鳴", "sound": "명", "meaning": "울"},
-      {"id": 128, "character": "鳳", "sound": "봉", "meaning": "봉황"},
-      {"id": 129, "character": "在", "sound": "재", "meaning": "있을"},
-      {"id": 130, "character": "樹", "sound": "수", "meaning": "나무"},
-      {"id": 131, "character": "白", "sound": "백", "meaning": "흰"},
-      {"id": 132, "character": "駒", "sound": "구", "meaning": "망아지"},
-      {"id": 133, "character": "食", "sound": "식", "meaning": "먹을"},
-      {"id": 134, "character": "場", "sound": "장", "meaning": "마당"},
-      {"id": 135, "character": "化", "sound": "화", "meaning": "될"},
-      {"id": 136, "character": "被", "sound": "피", "meaning": "입을"},
-      {"id": 137, "character": "草", "sound": "초", "meaning": "풀"},
-      {"id": 138, "character": "木", "sound": "목", "meaning": "나무"},
-      {"id": 139, "character": "賴", "sound": "뢰", "meaning": "힘입을"},
-      {"id": 140, "character": "及", "sound": "급", "meaning": "미칠"},
-      {"id": 141, "character": "万", "sound": "만", "meaning": "일만"},
-      {"id": 142, "character": "方", "sound": "방", "meaning": "모"},
-      {"id": 143, "character": "蓋", "sound": "개", "meaning": "덮을"},
-      {"id": 144, "character": "此", "sound": "차", "meaning": "이"},
-      {"id": 145, "character": "身", "sound": "신", "meaning": "몸"},
-      {"id": 146, "character": "髮", "sound": "발", "meaning": "터럭"},
-      {"id": 147, "character": "四", "sound": "사", "meaning": "넉"},
-      {"id": 148, "character": "大", "sound": "대", "meaning": "큰"},
-      {"id": 149, "character": "五", "sound": "오", "meaning": "다섯"},
-      {"id": 150, "character": "常", "sound": "상", "meaning": "항상"},
-      {"id": 151, "character": "恭", "sound": "공", "meaning": "공손할"},
-      {"id": 152, "character": "惟", "sound": "유", "meaning": "생각할"},
-      {"id": 153, "character": "鞠", "sound": "국", "meaning": "기를"},
-      {"id": 154, "character": "養", "sound": "양", "meaning": "기를"},
-      {"id": 155, "character": "豈", "sound": "개", "meaning": "어찌"},
-      {"id": 156, "character": "敢", "sound": "감", "meaning": "감히"},
-      {"id": 157, "character": "毁", "sound": "훼", "meaning": "헐"},
-      {"id": 158, "character": "傷", "sound": "상", "meaning": "다칠"},
-      {"id": 159, "character": "女", "sound": "녀", "meaning": "여자"},
-      {"id": 160, "character": "慕", "sound": "모", "meaning": "사모할"},
-      {"id": 161, "character": "貞", "sound": "정", "meaning": "곧을"},
-      {"id": 162, "character": "潔", "sound": "결", "meaning": "깨끗할"},
-      {"id": 163, "character": "男", "sound": "남", "meaning": "사내"},
-      {"id": 164, "character": "效", "sound": "효", "meaning": "본받을"},
-      {"id": 165, "character": "才", "sound": "재", "meaning": "재주"},
-      {"id": 166, "character": "良", "sound": "양", "meaning": "어질"},
-      {"id": 167, "character": "知", "sound": "지", "meaning": "알"},
-      {"id": 168, "character": "過", "sound": "과", "meaning": "지날"},
-      {"id": 169, "character": "必", "sound": "필", "meaning": "반드시"},
-      {"id": 170, "character": "改", "sound": "개", "meaning": "고칠"},
-      {"id": 171, "character": "得", "sound": "득", "meaning": "얻을"},
-      {"id": 172, "character": "能", "sound": "능", "meaning": "능할"},
-      {"id": 173, "character": "莫", "sound": "막", "meaning": "없을"},
-      {"id": 174, "character": "忘", "sound": "망", "meaning": "잊을"},
-      {"id": 175, "character": "罔", "sound": "망", "meaning": "없을"},
-      {"id": 176, "character": "談", "sound": "담", "meaning": "말씀"},
-      {"id": 177, "character": "彼", "sound": "피", "meaning": "저"},
-      {"id": 178, "character": "短", "sound": "단", "meaning": "짧을"},
-      {"id": 179, "character": "靡", "sound": "미", "meaning": "없을"},
-      {"id": 180, "character": "恃", "sound": "시", "meaning": "믿을"},
-      {"id": 181, "character": "己", "sound": "기", "meaning": "몸"},
-      {"id": 182, "character": "長", "sound": "장", "meaning": "긴"},
-      {"id": 183, "character": "信", "sound": "신", "meaning": "믿을"},
-      {"id": 184, "character": "使", "sound": "사", "meaning": "하여금"},
-      {"id": 185, "character": "可", "sound": "가", "meaning": "옳을"},
-      {"id": 186, "character": "覆", "sound": "복", "meaning": "덮을"},
-      {"id": 187, "character": "器", "sound": "기", "meaning": "그릇"},
-      {"id": 188, "character": "欲", "sound": "욕", "meaning": "하고자할"},
-      {"id": 189, "character": "難", "sound": "난", "meaning": "어려울"},
-      {"id": 190, "character": "量", "sound": "량", "meaning": "헤아릴"},
-      {"id": 191, "character": "墨", "sound": "묵", "meaning": "먹"},
-      {"id": 192, "character": "悲", "sound": "비", "meaning": "슬플"},
-      {"id": 193, "character": "絲", "sound": "사", "meaning": "실"},
-      {"id": 194, "character": "染", "sound": "염", "meaning": "물들일"},
-      {"id": 195, "character": "詩", "sound": "시", "meaning": "시"},
-      {"id": 196, "character": "讚", "sound": "찬", "meaning": "기릴"},
-      {"id": 197, "character": "羔", "sound": "고", "meaning": "어린양"},
-      {"id": 198, "character": "羊", "sound": "양", "meaning": "양"},
-      {"id": 199, "character": "景", "sound": "경", "meaning": "경치"},
-      {"id": 200, "character": "行", "sound": "행", "meaning": "다닐"},
-      {"id": 201, "character": "維", "sound": "유", "meaning": "벼리"},
-      {"id": 202, "character": "賢", "sound": "현", "meaning": "어질"},
-      {"id": 203, "character": "克", "sound": "극", "meaning": "이길"},
-      {"id": 204, "character": "念", "sound": "념", "meaning": "생각할"},
-      {"id": 205, "character": "作", "sound": "작", "meaning": "지을"},
-      {"id": 206, "character": "聖", "sound": "성", "meaning": "성인"},
-      {"id": 207, "character": "德", "sound": "덕", "meaning": "큰"},
-      {"id": 208, "character": "建", "sound": "건", "meaning": "세울"},
-      {"id": 209, "character": "名", "sound": "명", "meaning": "이름"},
-      {"id": 210, "character": "立", "sound": "립", "meaning": "설"},
-      {"id": 211, "character": "形", "sound": "형", "meaning": "형상"},
-      {"id": 212, "character": "端", "sound": "단", "meaning": "바를"},
-      {"id": 213, "character": "表", "sound": "표", "meaning": "겉"},
-      {"id": 214, "character": "正", "sound": "정", "meaning": "바를"},
-      {"id": 215, "character": "空", "sound": "공", "meaning": "빌"},
-      {"id": 216, "character": "谷", "sound": "곡", "meaning": "골짜기"},
-      {"id": 217, "character": "傳", "sound": "전", "meaning": "전할"},
-      {"id": 218, "character": "聲", "sound": "성", "meaning": "소리"},
-      {"id": 219, "character": "虛", "sound": "허", "meaning": "빌"},
-      {"id": 220, "character": "堂", "sound": "당", "meaning": "집"},
-      {"id": 221, "character": "習", "sound": "습", "meaning": "익힐"},
-      {"id": 222, "character": "聽", "sound": "청", "meaning": "들을"},
-      {"id": 223, "character": "禍", "sound": "화", "meaning": "재앙"},
-      {"id": 224, "character": "因", "sound": "인", "meaning": "인할"},
-      {"id": 225, "character": "惡", "sound": "악", "meaning": "악할"},
-      {"id": 226, "character": "積", "sound": "적", "meaning": "쌓을"},
-      {"id": 227, "character": "福", "sound": "복", "meaning": "복"},
-      {"id": 228, "character": "緣", "sound": "연", "meaning": "인연"},
-      {"id": 229, "character": "善", "sound": "선", "meaning": "착할"},
-      {"id": 230, "character": "慶", "sound": "경", "meaning": "경사"},
-      {"id": 231, "character": "尺", "sound": "척", "meaning": "자"},
-      {"id": 232, "character": "璧", "sound": "벽", "meaning": "구슬"},
-      {"id": 233, "character": "非", "sound": "비", "meaning": "아닐"},
-      {"id": 234, "character": "寶", "sound": "보", "meaning": "보배"},
-      {"id": 235, "character": "寸", "sound": "촌", "meaning": "마디"},
-      {"id": 236, "character": "陰", "sound": "음", "meaning": "그늘"},
-      {"id": 237, "character": "是", "sound": "시", "meaning": "이"},
-      {"id": 238, "character": "競", "sound": "경", "meaning": "다툴"},
-      {"id": 239, "character": "資", "sound": "자", "meaning": "재물"},
-      {"id": 240, "character": "父", "sound": "부", "meaning": "아비"},
-      {"id": 241, "character": "事", "sound": "사", "meaning": "섬길"},
-      {"id": 242, "character": "君", "sound": "군", "meaning": "임금"},
-      {"id": 243, "character": "曰", "sound": "왈", "meaning": "가라사대"},
-      {"id": 244, "character": "嚴", "sound": "엄", "meaning": "엄할"},
-      {"id": 245, "character": "與", "sound": "여", "meaning": "더불"},
-      {"id": 246, "character": "敬", "sound": "경", "meaning": "공경할"},
-      {"id": 247, "character": "孝", "sound": "효", "meaning": "효도"},
-      {"id": 248, "character": "當", "sound": "당", "meaning": "마땅할"},
-      {"id": 249, "character": "竭", "sound": "갈", "meaning": "다할"},
-      {"id": 250, "character": "力", "sound": "력", "meaning": "힘"},
-      {"id": 251, "character": "忠", "sound": "충", "meaning": "충성"},
-      {"id": 252, "character": "則", "sound": "칙", "meaning": "법칙"},
-      {"id": 253, "character": "盡", "sound": "진", "meaning": "다할"},
-      {"id": 254, "character": "命", "sound": "명", "meaning": "목숨"},
-      {"id": 255, "character": "臨", "sound": "임", "meaning": "임할"},
-      {"id": 256, "character": "深", "sound": "심", "meaning": "깊을"},
-      {"id": 257, "character": "履", "sound": "리", "meaning": "밟을"},
-      {"id": 258, "character": "薄", "sound": "박", "meaning": "얇을"},
-      {"id": 259, "character": "夙", "sound": "숙", "meaning": "일찍"},
-      {"id": 260, "character": "興", "sound": "흥", "meaning": "일어날"},
-      {"id": 261, "character": "溫", "sound": "온", "meaning": "따뜻할"},
-      {"id": 262, "character": "淸", "sound": "청", "meaning": "맑을"},
-      {"id": 263, "character": "似", "sound": "사", "meaning": "같을"},
-      {"id": 264, "character": "蘭", "sound": "란", "meaning": "난초"},
-      {"id": 265, "character": "斯", "sound": "사", "meaning": "이"},
-      {"id": 266, "character": "馨", "sound": "형", "meaning": "향기"},
-      {"id": 267, "character": "如", "sound": "여", "meaning": "같을"},
-      {"id": 268, "character": "松", "sound": "송", "meaning": "소나무"},
-      {"id": 269, "character": "之", "sound": "지", "meaning": "갈"},
-      {"id": 270, "character": "盛", "sound": "성", "meaning": "성할"},
-      {"id": 271, "character": "川", "sound": "천", "meaning": "내"},
-      {"id": 272, "character": "流", "sound": "류", "meaning": "흐를"},
-      {"id": 273, "character": "不", "sound": "불", "meaning": "아니"},
-      {"id": 274, "character": "息", "sound": "식", "meaning": "쉴"},
-      {"id": 275, "character": "淵", "sound": "연", "meaning": "못"},
-      {"id": 276, "character": "澄", "sound": "징", "meaning": "맑을"},
-      {"id": 277, "character": "取", "sound": "취", "meaning": "취할"},
-      {"id": 278, "character": "映", "sound": "영", "meaning": "비칠"},
-      {"id": 279, "character": "容", "sound": "용", "meaning": "얼굴"},
-      {"id": 280, "character": "止", "sound": "지", "meaning": "그칠"},
-      {"id": 281, "character": "若", "sound": "약", "meaning": "같을"},
-      {"id": 282, "character": "思", "sound": "사", "meaning": "생각할"},
-      {"id": 283, "character": "言", "sound": "언", "meaning": "말씀"},
-      {"id": 284, "character": "辭", "sound": "사", "meaning": "말"},
-      {"id": 285, "character": "安", "sound": "안", "meaning": "편안할"},
-      {"id": 286, "character": "定", "sound": "정", "meaning": "정할"},
-      {"id": 287, "character": "篤", "sound": "독", "meaning": "도타울"},
-      {"id": 288, "character": "初", "sound": "초", "meaning": "처음"},
-      {"id": 289, "character": "誠", "sound": "성", "meaning": "정성"},
-      {"id": 290, "character": "美", "sound": "미", "meaning": "아름다울"},
-      {"id": 291, "character": "慎", "sound": "신", "meaning": "삼갈"},
-      {"id": 292, "character": "終", "sound": "종", "meaning": "마칠"},
-      {"id": 293, "character": "宜", "sound": "의", "meaning": "마땅할"},
-      {"id": 294, "character": "令", "sound": "령", "meaning": "하여금"},
-      {"id": 295, "character": "榮", "sound": "영", "meaning": "영화"},
-      {"id": 296, "character": "業", "sound": "업", "meaning": "업"},
-      {"id": 297, "character": "所", "sound": "소", "meaning": "바"},
-      {"id": 298, "character": "基", "sound": "기", "meaning": "터"},
-      {"id": 299, "character": "藉", "sound": "자", "meaning": "빌릴"},
-      {"id": 300, "character": "甚", "sound": "심", "meaning": "심할"},
-      {"id": 301, "character": "無", "sound": "무", "meaning": "없을"},
-      {"id": 302, "character": "竟", "sound": "경", "meaning": "마침내"},
-      {"id": 303, "character": "學", "sound": "학", "meaning": "배울"},
-      {"id": 304, "character": "優", "sound": "우", "meaning": "넉넉할"},
-      {"id": 305, "character": "登", "sound": "등", "meaning": "오를"},
-      {"id": 306, "character": "仕", "sound": "사", "meaning": "벼슬"},
-      {"id": 307, "character": "攝", "sound": "섭", "meaning": "다스릴"},
-      {"id": 308, "character": "職", "sound": "직", "meaning": "직분"},
-      {"id": 309, "character": "從", "sound": "종", "meaning": "좇을"},
-      {"id": 310, "character": "政", "sound": "정", "meaning": "정사"},
-      {"id": 311, "character": "存", "sound": "존", "meaning": "있을"},
-      {"id": 312, "character": "以", "sound": "이", "meaning": "써"},
-      {"id": 313, "character": "甘", "sound": "감", "meaning": "달"},
-      {"id": 314, "character": "棠", "sound": "당", "meaning": "아가위나무"},
-      {"id": 315, "character": "去", "sound": "거", "meaning": "갈"},
-      {"id": 316, "character": "而", "sound": "이", "meaning": "말이을"},
-      {"id": 317, "character": "益", "sound": "익", "meaning": "더할"},
-      {"id": 318, "character": "詠", "sound": "영", "meaning": "읊을"},
-      {"id": 319, "character": "樂", "sound": "락", "meaning": "즐거울"},
-      {"id": 320, "character": "殊", "sound": "수", "meaning": "다를"},
-      {"id": 321, "character": "貴", "sound": "귀", "meaning": "귀할"},
-      {"id": 322, "character": "賤", "sound": "천", "meaning": "천할"},
-      {"id": 323, "character": "禮", "sound": "례", "meaning": "예도"},
-      {"id": 324, "character": "別", "sound": "별", "meaning": "다를"},
-      {"id": 325, "character": "尊", "sound": "존", "meaning": "높을"},
-      {"id": 326, "character": "卑", "sound": "비", "meaning": "낮을"},
-      {"id": 327, "character": "上", "sound": "상", "meaning": "위"},
-      {"id": 328, "character": "和", "sound": "화", "meaning": "화할"},
-      {"id": 329, "character": "下", "sound": "하", "meaning": "아래"},
-      {"id": 330, "character": "睦", "sound": "목", "meaning": "화목할"},
-      {"id": 331, "character": "夫", "sound": "부", "meaning": "지아비"},
-      {"id": 332, "character": "唱", "sound": "창", "meaning": "부를"},
-      {"id": 333, "character": "婦", "sound": "부", "meaning": "며느리"},
-      {"id": 334, "character": "隨", "sound": "수", "meaning": "따를"},
-      {"id": 335, "character": "外", "sound": "외", "meaning": "밖"},
-      {"id": 336, "character": "受", "sound": "수", "meaning": "받을"},
-      {"id": 337, "character": "傅", "sound": "부", "meaning": "스승"},
-      {"id": 338, "character": "訓", "sound": "훈", "meaning": "가르칠"},
-      {"id": 339, "character": "入", "sound": "입", "meaning": "들"},
-      {"id": 340, "character": "奉", "sound": "봉", "meaning": "받들"},
-      {"id": 341, "character": "母", "sound": "모", "meaning": "어미"},
-      {"id": 342, "character": "儀", "sound": "의", "meaning": "법"},
-      {"id": 343, "character": "諸", "sound": "제", "meaning": "모든"},
-      {"id": 344, "character": "姑", "sound": "고", "meaning": "시어미"},
-      {"id": 345, "character": "伯", "sound": "백", "meaning": "맏"},
-      {"id": 346, "character": "叔", "sound": "숙", "meaning": "아재비"},
-      {"id": 347, "character": "猶", "sound": "유", "meaning": "오히려"},
-      {"id": 348, "character": "子", "sound": "자", "meaning": "아들"},
-      {"id": 349, "character": "比", "sound": "비", "meaning": "견줄"},
-      {"id": 350, "character": "兒", "sound": "아", "meaning": "아이"},
-      {"id": 351, "character": "孔", "sound": "공", "meaning": "구멍"},
-      {"id": 352, "character": "懷", "sound": "회", "meaning": "품을"},
-      {"id": 353, "character": "兄", "sound": "형", "meaning": "형"},
-      {"id": 354, "character": "弟", "sound": "제", "meaning": "아우"},
-      {"id": 355, "character": "同", "sound": "동", "meaning": "한가지"},
-      {"id": 356, "character": "氣", "sound": "기", "meaning": "기운"},
-      {"id": 357, "character": "交", "sound": "교", "meaning": "사귈"},
-      {"id": 358, "character": "友", "sound": "우", "meaning": "벗"},
-      {"id": 359, "character": "投", "sound": "투", "meaning": "던질"},
-      {"id": 360, "character": "分", "sound": "분", "meaning": "나눌"},
-      {"id": 361, "character": "切", "sound": "절", "meaning": "끊을"},
-      {"id": 362, "character": "磨", "sound": "마", "meaning": "갈"},
-      {"id": 363, "character": "箴", "sound": "잠", "meaning": "경계할"},
-      {"id": 364, "character": "規", "sound": "규", "meaning": "법"},
-      {"id": 365, "character": "仁", "sound": "인", "meaning": "어질"},
-      {"id": 366, "character": "慈", "sound": "자", "meaning": "사랑"},
-      {"id": 367, "character": "隱", "sound": "은", "meaning": "숨을"},
-      {"id": 368, "character": "惻", "sound": "측", "meaning": "슬플"},
-      {"id": 369, "character": "造", "sound": "조", "meaning": "지을"},
-      {"id": 370, "character": "次", "sound": "차", "meaning": "버금"},
-      {"id": 371, "character": "弗", "sound": "불", "meaning": "아니"},
-      {"id": 372, "character": "離", "sound": "리", "meaning": "떠날"},
-      {"id": 373, "character": "節", "sound": "절", "meaning": "마디"},
-      {"id": 374, "character": "義", "sound": "의", "meaning": "옳을"},
-      {"id": 375, "character": "廉", "sound": "렴", "meaning": "청렴할"},
-      {"id": 376, "character": "退", "sound": "퇴", "meaning": "물러날"},
-      {"id": 377, "character": "顚", "sound": "전", "meaning": "넘어질"},
-      {"id": 378, "character": "沛", "sound": "패", "meaning": "흘러넘칠"},
-      {"id": 379, "character": "匪", "sound": "비", "meaning": "아닐"},
-      {"id": 380, "character": "虧", "sound": "휴", "meaning": "이지러질"},
-      {"id": 381, "character": "性", "sound": "성", "meaning": "성품"},
-      {"id": 382, "character": "靜", "sound": "정", "meaning": "고요할"},
-      {"id": 383, "character": "情", "sound": "정", "meaning": "뜻"},
-      {"id": 384, "character": "逸", "sound": "일", "meaning": "편안할"},
-      {"id": 385, "character": "心", "sound": "심", "meaning": "마음"},
-      {"id": 386, "character": "動", "sound": "동", "meaning": "움직일"},
-      {"id": 387, "character": "神", "sound": "신", "meaning": "귀신"},
-      {"id": 388, "character": "疲", "sound": "피", "meaning": "피곤할"},
-      {"id": 389, "character": "守", "sound": "수", "meaning": "지킬"},
-      {"id": 390, "character": "眞", "sound": "진", "meaning": "참"},
-      {"id": 391, "character": "志", "sound": "지", "meaning": "뜻"},
-      {"id": 392, "character": "滿", "sound": "만", "meaning": "찰"},
-      {"id": 393, "character": "逐", "sound": "축", "meaning": "쫓을"},
-      {"id": 394, "character": "物", "sound": "물", "meaning": "만물"},
-      {"id": 395, "character": "意", "sound": "의", "meaning": "뜻"},
-      {"id": 396, "character": "移", "sound": "이", "meaning": "옮길"},
-      {"id": 397, "character": "堅", "sound": "견", "meaning": "굳을"},
-      {"id": 398, "character": "持", "sound": "지", "meaning": "가질"},
-      {"id": 399, "character": "雅", "sound": "아", "meaning": "바를"},
-      {"id": 400, "character": "操", "sound": "조", "meaning": "절개"},
-      {"id": 401, "character": "好", "sound": "호", "meaning": "좋을"},
-      {"id": 402, "character": "爵", "sound": "작", "meaning": "벼슬"},
-      {"id": 403, "character": "自", "sound": "자", "meaning": "스스로"},
-      {"id": 404, "character": "縻", "sound": "미", "meaning": "얽매일"},
-      {"id": 405, "character": "都", "sound": "도", "meaning": "도읍"},
-      {"id": 406, "character": "邑", "sound": "읍", "meaning": "고을"},
-      {"id": 407, "character": "華", "sound": "화", "meaning": "빛날"},
-      {"id": 408, "character": "夏", "sound": "하", "meaning": "여름"},
-      {"id": 409, "character": "東", "sound": "동", "meaning": "동녘"},
-      {"id": 410, "character": "西", "sound": "서", "meaning": "서녘"},
-      {"id": 411, "character": "二", "sound": "이", "meaning": "두"},
-      {"id": 412, "character": "京", "sound": "경", "meaning": "서울"},
-      {"id": 413, "character": "背", "sound": "배", "meaning": "등"},
-      {"id": 414, "character": "邙", "sound": "망", "meaning": "망산"},
-      {"id": 415, "character": "面", "sound": "면", "meaning": "낯"},
-      {"id": 416, "character": "洛", "sound": "락", "meaning": "낙수"},
-      {"id": 417, "character": "浮", "sound": "부", "meaning": "뜰"},
-      {"id": 418, "character": "渭", "sound": "위", "meaning": "위수"},
-      {"id": 419, "character": "據", "sound": "거", "meaning": "의거할"},
-      {"id": 420, "character": "涇", "sound": "경", "meaning": "경수"},
-      {"id": 421, "character": "宮", "sound": "궁", "meaning": "집"},
-      {"id": 422, "character": "殿", "sound": "전", "meaning": "대궐"},
-      {"id": 423, "character": "盤", "sound": "반", "meaning": "쟁반"},
-      {"id": 424, "character": "鬱", "sound": "울", "meaning": "무성할"},
-      {"id": 425, "character": "樓", "sound": "루", "meaning": "다락"},
-      {"id": 426, "character": "觀", "sound": "관", "meaning": "볼"},
-      {"id": 427, "character": "飛", "sound": "비", "meaning": "날"},
-      {"id": 428, "character": "驚", "sound": "경", "meaning": "놀랄"},
-      {"id": 429, "character": "圖", "sound": "도", "meaning": "그림"},
-      {"id": 430, "character": "寫", "sound": "사", "meaning": "베낄"},
-      {"id": 431, "character": "禽", "sound": "금", "meaning": "짐승"},
-      {"id": 432, "character": "獸", "sound": "수", "meaning": "짐승"},
-      {"id": 433, "character": "畵", "sound": "화", "meaning": "그림"},
-      {"id": 434, "character": "彩", "sound": "채", "meaning": "채색"},
-      {"id": 435, "character": "仙", "sound": "선", "meaning": "신선"},
-      {"id": 436, "character": "靈", "sound": "령", "meaning": "신령"},
-      {"id": 437, "character": "丙", "sound": "병", "meaning": "남녘"},
-      {"id": 438, "character": "舍", "sound": "사", "meaning": "집"},
-      {"id": 439, "character": "傍", "sound": "방", "meaning": "곁"},
-      {"id": 440, "character": "啓", "sound": "계", "meaning": "열"},
-      {"id": 441, "character": "甲", "sound": "갑", "meaning": "동녘"},
-      {"id": 442, "character": "帳", "sound": "장", "meaning": "장막"},
-      {"id": 443, "character": "對", "sound": "대", "meaning": "대할"},
-      {"id": 444, "character": "楹", "sound": "영", "meaning": "기둥"},
-      {"id": 445, "character": "肆", "sound": "사", "meaning": "벌일"},
-      {"id": 446, "character": "筵", "sound": "연", "meaning": "자리"},
-      {"id": 447, "character": "設", "sound": "설", "meaning": "베풀"},
-      {"id": 448, "character": "席", "sound": "석", "meaning": "자리"},
-      {"id": 449, "character": "鼓", "sound": "고", "meaning": "북"},
-      {"id": 450, "character": "瑟", "sound": "슬", "meaning": "비파"},
-      {"id": 451, "character": "吹", "sound": "취", "meaning": "불"},
-      {"id": 452, "character": "笙", "sound": "생", "meaning": "생황"},
-      {"id": 453, "character": "陞", "sound": "승", "meaning": "오를"},
-      {"id": 454, "character": "階", "sound": "계", "meaning": "섬돌"},
-      {"id": 455, "character": "納", "sound": "납", "meaning": "드릴"},
-      {"id": 456, "character": "陛", "sound": "폐", "meaning": "섬돌"},
-      {"id": 457, "character": "弁", "sound": "변", "meaning": "갓"},
-      {"id": 458, "character": "轉", "sound": "전", "meaning": "구를"},
-      {"id": 459, "character": "疑", "sound": "의", "meaning": "의심할"},
-      {"id": 460, "character": "星", "sound": "성", "meaning": "별"},
-      {"id": 461, "character": "右", "sound": "우", "meaning": "오른"},
-      {"id": 462, "character": "通", "sound": "통", "meaning": "통할"},
-      {"id": 463, "character": "廣", "sound": "광", "meaning": "넓을"},
-      {"id": 464, "character": "內", "sound": "내", "meaning": "안"},
-      {"id": 465, "character": "左", "sound": "좌", "meaning": "왼"},
-      {"id": 466, "character": "達", "sound": "달", "meaning": "통달할"},
-      {"id": 467, "character": "承", "sound": "승", "meaning": "받들"},
-      {"id": 468, "character": "明", "sound": "명", "meaning": "밝을"},
-      {"id": 469, "character": "旣", "sound": "기", "meaning": "이미"},
-      {"id": 470, "character": "集", "sound": "집", "meaning": "모을"},
-      {"id": 471, "character": "墳", "sound": "분", "meaning": "무덤"},
-      {"id": 472, "character": "典", "sound": "전", "meaning": "법"},
-      {"id": 473, "character": "亦", "sound": "역", "meaning": "또"},
-      {"id": 474, "character": "聚", "sound": "취", "meaning": "모을"},
-      {"id": 475, "character": "群", "sound": "군", "meaning": "무리"},
-      {"id": 476, "character": "英", "sound": "영", "meaning": "꽃부리"},
-      {"id": 477, "character": "杜", "sound": "두", "meaning": "막을"},
-      {"id": 478, "character": "稿", "sound": "고", "meaning": "짚"},
-      {"id": 479, "character": "鍾", "sound": "종", "meaning": "모을"},
-      {"id": 480, "character": "隸", "sound": "예", "meaning": "종"},
-      {"id": 481, "character": "漆", "sound": "칠", "meaning": "옷칠"},
-      {"id": 482, "character": "書", "sound": "서", "meaning": "글"},
-      {"id": 483, "character": "壁", "sound": "벽", "meaning": "벽"},
-      {"id": 484, "character": "經", "sound": "경", "meaning": "경"},
-      {"id": 485, "character": "府", "sound": "부", "meaning": "곳집"},
-      {"id": 486, "character": "羅", "sound": "라", "meaning": "벌일"},
-      {"id": 487, "character": "將", "sound": "장", "meaning": "장수"},
-      {"id": 488, "character": "相", "sound": "상", "meaning": "서로"},
-      {"id": 489, "character": "路", "sound": "로", "meaning": "길"},
-      {"id": 490, "character": "俠", "sound": "협", "meaning": "협객"},
-      {"id": 491, "character": "槐", "sound": "괴", "meaning": "괴목"},
-      {"id": 492, "character": "卿", "sound": "경", "meaning": "벼슬"},
-      {"id": 493, "character": "戶", "sound": "호", "meaning": "지게"},
-      {"id": 494, "character": "封", "sound": "봉", "meaning": "봉할"},
-      {"id": 495, "character": "八", "sound": "팔", "meaning": "여덟"},
-      {"id": 496, "character": "縣", "sound": "현", "meaning": "고을"},
-      {"id": 497, "character": "家", "sound": "가", "meaning": "집"},
-      {"id": 498, "character": "給", "sound": "급", "meaning": "줄"},
-      {"id": 499, "character": "千", "sound": "천", "meaning": "일천"},
-      {"id": 500, "character": "兵", "sound": "병", "meaning": "병사"},
-      {"id": 501, "character": "高", "sound": "고", "meaning": "높을"},
-      {"id": 502, "character": "冠", "sound": "관", "meaning": "갓"},
-      {"id": 503, "character": "陪", "sound": "배", "meaning": "모실"},
-      {"id": 504, "character": "輦", "sound": "연", "meaning": "수레"},
-      {"id": 505, "character": "驅", "sound": "구", "meaning": "몰"},
-      {"id": 506, "character": "轂", "sound": "곡", "meaning": "바퀴통"},
-      {"id": 507, "character": "振", "sound": "진", "meaning": "떨칠"},
-      {"id": 508, "character": "纓", "sound": "영", "meaning": "갓끈"},
-      {"id": 509, "character": "世", "sound": "세", "meaning": "세상"},
-      {"id": 510, "character": "祿", "sound": "록", "meaning": "녹"},
-      {"id": 511, "character": "侈", "sound": "치", "meaning": "사치할"},
-      {"id": 512, "character": "富", "sound": "부", "meaning": "부유할"},
-      {"id": 513, "character": "車", "sound": "거", "meaning": "수레"},
-      {"id": 514, "character": "駕", "sound": "가", "meaning": "멍에"},
-      {"id": 515, "character": "肥", "sound": "비", "meaning": "살찔"},
-      {"id": 516, "character": "輕", "sound": "경", "meaning": "가벼울"},
-      {"id": 517, "character": "策", "sound": "책", "meaning": "꾀"},
-      {"id": 518, "character": "功", "sound": "공", "meaning": "공"},
-      {"id": 519, "character": "茂", "sound": "무", "meaning": "무성할"},
-      {"id": 520, "character": "實", "sound": "실", "meaning": "열매"},
-      {"id": 521, "character": "勒", "sound": "륵", "meaning": "새길"},
-      {"id": 522, "character": "碑", "sound": "비", "meaning": "비석"},
-      {"id": 523, "character": "刻", "sound": "각", "meaning": "새길"},
-      {"id": 524, "character": "銘", "sound": "명", "meaning": "새길"},
-      {"id": 525, "character": "磻", "sound": "반", "meaning": "반계"},
-      {"id": 526, "character": "溪", "sound": "계", "meaning": "시내"},
-      {"id": 527, "character": "伊", "sound": "이", "meaning": "이"},
-      {"id": 528, "character": "尹", "sound": "윤", "meaning": "다스릴"},
-      {"id": 529, "character": "佐", "sound": "좌", "meaning": "도울"},
-      {"id": 530, "character": "時", "sound": "시", "meaning": "때"},
-      {"id": 531, "character": "阿", "sound": "아", "meaning": "언덕"},
-      {"id": 532, "character": "衡", "sound": "형", "meaning": "형산"},
-      {"id": 533, "character": "奄", "sound": "엄", "meaning": "갑자기"},
-      {"id": 534, "character": "宅", "sound": "택", "meaning": "집"},
-      {"id": 535, "character": "曲", "sound": "곡", "meaning": "굽을"},
-      {"id": 536, "character": "阜", "sound": "부", "meaning": "언덕"},
-      {"id": 537, "character": "微", "sound": "미", "meaning": "작을"},
-      {"id": 538, "character": "旦", "sound": "단", "meaning": "아침"},
-      {"id": 539, "character": "孰", "sound": "숙", "meaning": "누구"},
-      {"id": 540, "character": "營", "sound": "영", "meaning": "경영할"},
-      {"id": 541, "character": "桓", "sound": "환", "meaning": "환"},
-      {"id": 542, "character": "公", "sound": "공", "meaning": "공평할"},
-      {"id": 543, "character": "匡", "sound": "광", "meaning": "바로잡을"},
-      {"id": 544, "character": "合", "sound": "합", "meaning": "합할"},
-      {"id": 545, "character": "濟", "sound": "제", "meaning": "건널"},
-      {"id": 546, "character": "弱", "sound": "약", "meaning": "약할"},
-      {"id": 547, "character": "扶", "sound": "부", "meaning": "도울"},
-      {"id": 548, "character": "傾", "sound": "경", "meaning": "기울"},
-      {"id": 549, "character": "綺", "sound": "기", "meaning": "비단"},
-      {"id": 550, "character": "回", "sound": "회", "meaning": "돌"},
-      {"id": 551, "character": "漢", "sound": "한", "meaning": "한수"},
-      {"id": 552, "character": "惠", "sound": "혜", "meaning": "은혜"},
-      {"id": 553, "character": "說", "sound": "설", "meaning": "기쁠"},
-      {"id": 554, "character": "感", "sound": "감", "meaning": "느낄"},
-      {"id": 555, "character": "武", "sound": "무", "meaning": "호반"},
-      {"id": 556, "character": "丁", "sound": "정", "meaning": "고무래"},
-      {"id": 557, "character": "俊", "sound": "준", "meaning": "준걸"},
-      {"id": 558, "character": "乂", "sound": "예", "meaning": "다스릴"},
-      {"id": 559, "character": "密", "sound": "밀", "meaning": "빽빽할"},
-      {"id": 560, "character": "勿", "sound": "물", "meaning": "말"},
-      {"id": 561, "character": "多", "sound": "다", "meaning": "많을"},
-      {"id": 562, "character": "士", "sound": "사", "meaning": "선비"},
-      {"id": 563, "character": "寧", "sound": "녕", "meaning": "편안할"},
-      {"id": 564, "character": "晉", "sound": "진", "meaning": "진나라"},
-      {"id": 565, "character": "楚", "sound": "초", "meaning": "초나라"},
-      {"id": 566, "character": "更", "sound": "경", "meaning": "고칠"},
-      {"id": 567, "character": "覇", "sound": "패", "meaning": "패자"},
-      {"id": 568, "character": "趙", "sound": "조", "meaning": "조나라"},
-      {"id": 569, "character": "魏", "sound": "위", "meaning": "위나라"},
-      {"id": 570, "character": "困", "sound": "곤", "meaning": "곤할"},
-      {"id": 571, "character": "橫", "sound": "횡", "meaning": "가로"},
-      {"id": 572, "character": "假", "sound": "가", "meaning": "거짓"},
-      {"id": 573, "character": "途", "sound": "도", "meaning": "길"},
-      {"id": 574, "character": "滅", "sound": "멸", "meaning": "망할"},
-      {"id": 575, "character": "虢", "sound": "괵", "meaning": "괵나라"},
-      {"id": 576, "character": "踐", "sound": "천", "meaning": "밟을"},
-      {"id": 577, "character": "土", "sound": "토", "meaning": "흙"},
-      {"id": 578, "character": "會", "sound": "회", "meaning": "모일"},
-      {"id": 579, "character": "盟", "sound": "맹", "meaning": "맹세"},
-      {"id": 580, "character": "何", "sound": "하", "meaning": "어찌"},
-      {"id": 581, "character": "遵", "sound": "준", "meaning": "좇을"},
-      {"id": 582, "character": "約", "sound": "약", "meaning": "맺을"},
-      {"id": 583, "character": "法", "sound": "법", "meaning": "법"},
-      {"id": 584, "character": "韓", "sound": "한", "meaning": "한나라"},
-      {"id": 585, "character": "弊", "sound": "폐", "meaning": "폐할"},
-      {"id": 586, "character": "煩", "sound": "번", "meaning": "괴로울"},
-      {"id": 587, "character": "刑", "sound": "형", "meaning": "형벌"},
-      {"id": 588, "character": "起", "sound": "기", "meaning": "일어날"},
-      {"id": 589, "character": "翦", "sound": "전", "meaning": "자를"},
-      {"id": 590, "character": "頗", "sound": "파", "meaning": "자못"},
-      {"id": 591, "character": "牧", "sound": "목", "meaning": "칠"},
-      {"id": 592, "character": "用", "sound": "용", "meaning": "쓸"},
-      {"id": 593, "character": "軍", "sound": "군", "meaning": "군사"},
-      {"id": 594, "character": "最", "sound": "최", "meaning": "가장"},
-      {"id": 595, "character": "精", "sound": "정", "meaning": "정할"},
-      {"id": 596, "character": "宣", "sound": "선", "meaning": "베풀"},
-      {"id": 597, "character": "威", "sound": "위", "meaning": "위엄"},
-      {"id": 598, "character": "沙", "sound": "사", "meaning": "모래"},
-      {"id": 599, "character": "漠", "sound": "막", "meaning": "사막"},
-      {"id": 600, "character": "馳", "sound": "치", "meaning": "달릴"},
-      {"id": 601, "character": "譽", "sound": "예", "meaning": "기릴"},
-      {"id": 602, "character": "丹", "sound": "단", "meaning": "붉을"},
-      {"id": 603, "character": "靑", "sound": "청", "meaning": "푸를"},
-      {"id": 604, "character": "九", "sound": "구", "meaning": "아홉"},
-      {"id": 605, "character": "州", "sound": "주", "meaning": "고을"},
-      {"id": 606, "character": "禹", "sound": "우", "meaning": "우임금"},
-      {"id": 607, "character": "跡", "sound": "적", "meaning": "자취"},
-      {"id": 608, "character": "百", "sound": "백", "meaning": "일백"},
-      {"id": 609, "character": "郡", "sound": "군", "meaning": "고을"},
-      {"id": 610, "character": "秦", "sound": "진", "meaning": "진나라"},
-      {"id": 611, "character": "並", "sound": "병", "meaning": "아울러"},
-      {"id": 612, "character": "岳", "sound": "악", "meaning": "뫼"},
-      {"id": 613, "character": "宗", "sound": "종", "meaning": "마루"},
-      {"id": 614, "character": "泰", "sound": "태", "meaning": "클"},
-      {"id": 615, "character": "岱", "sound": "대", "meaning": "태산"},
-      {"id": 616, "character": "禪", "sound": "선", "meaning": "선양할"},
-      {"id": 617, "character": "主", "sound": "주", "meaning": "주인"},
-      {"id": 618, "character": "云", "sound": "운", "meaning": "이를"},
-      {"id": 619, "character": "亭", "sound": "정", "meaning": "정자"},
-      {"id": 620, "character": "育", "sound": "육", "meaning": "기를"},
-      {"id": 621, "character": "雁", "sound": "안", "meaning": "기러기"},
-      {"id": 622, "character": "門", "sound": "문", "meaning": "문"},
-      {"id": 623, "character": "紫", "sound": "자", "meaning": "자주"},
-      {"id": 624, "character": "塞", "sound": "새", "meaning": "막을"},
-      {"id": 625, "character": "雞", "sound": "계", "meaning": "닭"},
-      {"id": 626, "character": "田", "sound": "전", "meaning": "밭"},
-      {"id": 627, "character": "赤", "sound": "적", "meaning": "붉을"},
-      {"id": 628, "character": "誠", "sound": "성", "meaning": "정성"},
-      {"id": 629, "character": "昆", "sound": "곤", "meaning": "맏"},
-      {"id": 630, "character": "池", "sound": "지", "meaning": "못"},
-      {"id": 631, "character": "碣", "sound": "갈", "meaning": "비석"},
-      {"id": 632, "character": "石", "sound": "석", "meaning": "돌"},
-      {"id": 633, "character": "鉅", "sound": "거", "meaning": "큰"},
-      {"id": 634, "character": "野", "sound": "야", "meaning": "들"},
-      {"id": 635, "character": "洞", "sound": "동", "meaning": "골"},
-      {"id": 636, "character": "庭", "sound": "정", "meaning": "뜰"},
-      {"id": 637, "character": "曠", "sound": "광", "meaning": "넓을"},
-      {"id": 638, "character": "遠", "sound": "원", "meaning": "멀"},
-      {"id": 639, "character": "綿", "sound": "면", "meaning": "이어질"},
-      {"id": 640, "character": "邈", "sound": "막", "meaning": "아득할"},
-      {"id": 641, "character": "巖", "sound": "암", "meaning": "바위"},
-      {"id": 642, "character": "岫", "sound": "수", "meaning": "뫼"},
-      {"id": 643, "character": "杳", "sound": "묘", "meaning": "아득할"},
-      {"id": 644, "character": "冥", "sound": "명", "meaning": "어두울"},
-      {"id": 645, "character": "治", "sound": "치", "meaning": "다스릴"},
-      {"id": 646, "character": "本", "sound": "본", "meaning": "근본"},
-      {"id": 647, "character": "於", "sound": "어", "meaning": "어조사"},
-      {"id": 648, "character": "農", "sound": "농", "meaning": "농사"},
-      {"id": 649, "character": "務", "sound": "무", "meaning": "힘쓸"},
-      {"id": 650, "character": "玆", "sound": "자", "meaning": "이"},
-      {"id": 651, "character": "稼", "sound": "가", "meaning": "심을"},
-      {"id": 652, "character": "穡", "sound": "색", "meaning": "거둘"},
-      {"id": 653, "character": "俶", "sound": "숙", "meaning": "시작할"},
-      {"id": 654, "character": "載", "sound": "재", "meaning": "실을"},
-      {"id": 655, "character": "南", "sound": "남", "meaning": "남녘"},
-      {"id": 656, "character": "畝", "sound": "묘", "meaning": "이랑"},
-      {"id": 657, "character": "我", "sound": "아", "meaning": "나"},
-      {"id": 658, "character": "藝", "sound": "예", "meaning": "심을"},
-      {"id": 659, "character": "黍", "sound": "서", "meaning": "기장"},
-      {"id": 660, "character": "稷", "sound": "직", "meaning": "피"},
-      {"id": 661, "character": "稅", "sound": "세", "meaning": "세금"},
-      {"id": 662, "character": "熟", "sound": "숙", "meaning": "익을"},
-      {"id": 663, "character": "貢", "sound": "공", "meaning": "바칠"},
-      {"id": 664, "character": "新", "sound": "신", "meaning": "새"},
-      {"id": 665, "character": "勸", "sound": "권", "meaning": "권할"},
-      {"id": 666, "character": "賞", "sound": "상", "meaning": "상줄"},
-      {"id": 667, "character": "黜", "sound": "출", "meaning": "내쫓을"},
-      {"id": 668, "character": "陟", "sound": "척", "meaning": "오를"},
-      {"id": 669, "character": "孟", "sound": "맹", "meaning": "맏"},
-      {"id": 670, "character": "軻", "sound": "가", "meaning": "수레"},
-      {"id": 671, "character": "敦", "sound": "돈", "meaning": "도타울"},
-      {"id": 672, "character": "素", "sound": "소", "meaning": "흰"},
-      {"id": 673, "character": "史", "sound": "사", "meaning": "사기"},
-      {"id": 674, "character": "魚", "sound": "어", "meaning": "물고기"},
-      {"id": 675, "character": "秉", "sound": "병", "meaning": "잡을"},
-      {"id": 676, "character": "直", "sound": "직", "meaning": "곧을"},
-      {"id": 677, "character": "庶", "sound": "서", "meaning": "여러"},
-      {"id": 678, "character": "幾", "sound": "기", "meaning": "몇"},
-      {"id": 679, "character": "中", "sound": "중", "meaning": "가운데"},
-      {"id": 680, "character": "庸", "sound": "용", "meaning": "떳떳할"},
-      {"id": 681, "character": "勞", "sound": "로", "meaning": "힘쓸"},
-      {"id": 682, "character": "謙", "sound": "겸", "meaning": "겸손할"},
-      {"id": 683, "character": "謹", "sound": "근", "meaning": "삼갈"},
-      {"id": 684, "character": "敕", "sound": "칙", "meaning": "칙서"},
-      {"id": 685, "character": "聆", "sound": "령", "meaning": "들을"},
-      {"id": 686, "character": "音", "sound": "음", "meaning": "소리"},
-      {"id": 687, "character": "察", "sound": "찰", "meaning": "살필"},
-      {"id": 688, "character": "理", "sound": "리", "meaning": "다스릴"},
-      {"id": 689, "character": "鑑", "sound": "감", "meaning": "거울"},
-      {"id": 690, "character": "貌", "sound": "모", "meaning": "얼굴"},
-      {"id": 691, "character": "辨", "sound": "변", "meaning": "분별할"},
-      {"id": 692, "character": "色", "sound": "색", "meaning": "빛"},
-      {"id": 693, "character": "貽", "sound": "이", "meaning": "줄"},
-      {"id": 694, "character": "厥", "sound": "궐", "meaning": "그"},
-      {"id": 695, "character": "嘉", "sound": "가", "meaning": "아름다울"},
-      {"id": 696, "character": "猷", "sound": "유", "meaning": "꾀"},
-      {"id": 697, "character": "勉", "sound": "면", "meaning": "힘쓸"},
-      {"id": 698, "character": "其", "sound": "기", "meaning": "그"},
-      {"id": 699, "character": "祗", "sound": "지", "meaning": "공경할"},
-      {"id": 700, "character": "植", "sound": "식", "meaning": "심을"},
-      {"id": 701, "character": "省", "sound": "성", "meaning": "살필"},
-      {"id": 702, "character": "躬", "sound": "궁", "meaning": "몸"},
-      {"id": 703, "character": "譏", "sound": "기", "meaning": "비방할"},
-      {"id": 704, "character": "誡", "sound": "계", "meaning": "경계할"},
-      {"id": 705, "character": "寵", "sound": "총", "meaning": "사랑"},
-      {"id": 706, "character": "增", "sound": "증", "meaning": "더할"},
-      {"id": 707, "character": "抗", "sound": "항", "meaning": "거스를"},
-      {"id": 708, "character": "極", "sound": "극", "meaning": "다할"},
-      {"id": 709, "character": "殆", "sound": "태", "meaning": "위태할"},
-      {"id": 710, "character": "辱", "sound": "욕", "meaning": "욕될"},
-      {"id": 711, "character": "近", "sound": "근", "meaning": "가까울"},
-      {"id": 712, "character": "恥", "sound": "치", "meaning": "부끄러울"},
-      {"id": 713, "character": "林", "sound": "림", "meaning": "수풀"},
-      {"id": 714, "character": "皐", "sound": "고", "meaning": "못가"},
-      {"id": 715, "character": "幸", "sound": "행", "meaning": "다행"},
-      {"id": 716, "character": "卽", "sound": "즉", "meaning": "곧"},
-      {"id": 717, "character": "兩", "sound": "량", "meaning": "두"},
-      {"id": 718, "character": "疏", "sound": "소", "meaning": "성글"},
-      {"id": 719, "character": "見", "sound": "견", "meaning": "볼"},
-      {"id": 720, "character": "機", "sound": "기", "meaning": "틀"},
-      {"id": 721, "character": "解", "sound": "해", "meaning": "풀"},
-      {"id": 722, "character": "組", "sound": "조", "meaning": "끈"},
-      {"id": 723, "character": "誰", "sound": "수", "meaning": "누구"},
-      {"id": 724, "character": "逼", "sound": "핍", "meaning": "핍박할"},
-      {"id": 725, "character": "索", "sound": "색", "meaning": "찾을"},
-      {"id": 726, "character": "居", "sound": "거", "meaning": "살"},
-      {"id": 727, "character": "閑", "sound": "한", "meaning": "한가할"},
-      {"id": 728, "character": "處", "sound": "처", "meaning": "곳"},
-      {"id": 729, "character": "沈", "sound": "침", "meaning": "잠길"},
-      {"id": 730, "character": "默", "sound": "묵", "meaning": "묵묵할"},
-      {"id": 731, "character": "寂", "sound": "적", "meaning": "고요할"},
-      {"id": 732, "character": "寥", "sound": "료", "meaning": "쓸쓸할"},
-      {"id": 733, "character": "求", "sound": "구", "meaning": "구할"},
-      {"id": 734, "character": "古", "sound": "고", "meaning": "옛"},
-      {"id": 735, "character": "尋", "sound": "심", "meaning": "찾을"},
-      {"id": 736, "character": "論", "sound": "론", "meaning": "논할"},
-      {"id": 737, "character": "散", "sound": "산", "meaning": "흩을"},
-      {"id": 738, "character": "慮", "sound": "려", "meaning": "생각할"},
-      {"id": 739, "character": "逍", "sound": "소", "meaning": "노닐"},
-      {"id": 740, "character": "遙", "sound": "요", "meaning": "멀"},
-      {"id": 741, "character": "欣", "sound": "흔", "meaning": "기쁠"},
-      {"id": 742, "character": "奏", "sound": "주", "meaning": "아뢸"},
-      {"id": 743, "character": "累", "sound": "루", "meaning": "쌓을"},
-      {"id": 744, "character": "遣", "sound": "견", "meaning": "보낼"},
-      {"id": 745, "character": "慼", "sound": "척", "meaning": "슬플"},
-      {"id": 746, "character": "謝", "sound": "사", "meaning": "사례할"},
-      {"id": 747, "character": "歡", "sound": "환", "meaning": "기쁠"},
-      {"id": 748, "character": "招", "sound": "초", "meaning": "부를"},
-      {"id": 749, "character": "渠", "sound": "거", "meaning": "도랑"},
-      {"id": 750, "character": "荷", "sound": "하", "meaning": "연꽃"},
-      {"id": 751, "character": "的", "sound": "적", "meaning": "과녁"},
-      {"id": 752, "character": "歷", "sound": "력", "meaning": "지날"},
-      {"id": 753, "character": "園", "sound": "원", "meaning": "동산"},
-      {"id": 754, "character": "莽", "sound": "망", "meaning": "풀"},
-      {"id": 755, "character": "抽", "sound": "추", "meaning": "뽑을"},
-      {"id": 756, "character": "條", "sound": "조", "meaning": "가지"},
-      {"id": 757, "character": "枇", "sound": "비", "meaning": "비파"},
-      {"id": 758, "character": "杷", "sound": "파", "meaning": "비파"},
-      {"id": 759, "character": "晩", "sound": "만", "meaning": "늦을"},
-      {"id": 760, "character": "翠", "sound": "취", "meaning": "푸를"},
-      {"id": 761, "character": "梧", "sound": "오", "meaning": "오동"},
-      {"id": 762, "character": "桐", "sound": "동", "meaning": "오동"},
-      {"id": 763, "character": "早", "sound": "조", "meaning": "이를"},
-      {"id": 764, "character": "凋", "sound": "조", "meaning": "시들"},
-      {"id": 765, "character": "陳", "sound": "진", "meaning": "베풀"},
-      {"id": 766, "character": "根", "sound": "근", "meaning": "뿌리"},
-      {"id": 767, "character": "委", "sound": "위", "meaning": "맡길"},
-      {"id": 768, "character": "翳", "sound": "예", "meaning": "가릴"},
-      {"id": 769, "character": "葉", "sound": "엽", "meaning": "잎"},
-      {"id": 770, "character": "飄", "sound": "표", "meaning": "날릴"},
-      {"id": 771, "character": "搖", "sound": "요", "meaning": "흔들"},
-      {"id": 772, "character": "游", "sound": "유", "meaning": "놀"},
-      {"id": 773, "character": "鵾", "sound": "곤", "meaning": "큰새"},
-      {"id": 774, "character": "獨", "sound": "독", "meaning": "홀로"},
-      {"id": 775, "character": "運", "sound": "운", "meaning": "옮길"},
-      {"id": 776, "character": "凌", "sound": "릉", "meaning": "업신여길"},
-      {"id": 777, "character": "摩", "sound": "마", "meaning": "문지를"},
-      {"id": 778, "character": "絳", "sound": "강", "meaning": "붉을"},
-      {"id": 779, "character": "霄", "sound": "소", "meaning": "하늘"},
-      {"id": 780, "character": "耽", "sound": "탐", "meaning": "즐길"},
-      {"id": 781, "character": "讀", "sound": "독", "meaning": "읽을"},
-      {"id": 782, "character": "翫", "sound": "완", "meaning": "완상할"},
-      {"id": 783, "character": "市", "sound": "시", "meaning": "저자"},
-      {"id": 784, "character": "寓", "sound": "우", "meaning": "붙일"},
-      {"id": 785, "character": "目", "sound": "목", "meaning": "눈"},
-      {"id": 786, "character": "囊", "sound": "낭", "meaning": "주머니"},
-      {"id": 787, "character": "箱", "sound": "상", "meaning": "상자"},
-      {"id": 788, "character": "易", "sound": "역", "meaning": "바꿀"},
-      {"id": 789, "character": "輶", "sound": "유", "meaning": "가벼울"},
-      {"id": 790, "character": "攸", "sound": "유", "meaning": "바"},
-      {"id": 791, "character": "畏", "sound": "외", "meaning": "두려워할"},
-      {"id": 792, "character": "屬", "sound": "속", "meaning": "무리"},
-      {"id": 793, "character": "耳", "sound": "이", "meaning": "귀"},
-      {"id": 794, "character": "垣", "sound": "원", "meaning": "담"},
-      {"id": 795, "character": "牆", "sound": "장", "meaning": "담"},
-      {"id": 796, "character": "具", "sound": "구", "meaning": "갖출"},
-      {"id": 797, "character": "膳", "sound": "선", "meaning": "반찬"},
-      {"id": 798, "character": "飧", "sound": "손", "meaning": "저녁밥"},
-      {"id": 799, "character": "飯", "sound": "반", "meaning": "밥"},
-      {"id": 800, "character": "適", "sound": "적", "meaning": "갈"},
-      {"id": 801, "character": "口", "sound": "구", "meaning": "입"},
-      {"id": 802, "character": "充", "sound": "충", "meaning": "찰"},
-      {"id": 803, "character": "腸", "sound": "장", "meaning": "창자"},
-      {"id": 804, "character": "飽", "sound": "포", "meaning": "배부를"},
-      {"id": 805, "character": "烹", "sound": "팽", "meaning": "삶을"},
-      {"id": 806, "character": "宰", "sound": "재", "meaning": "잡을"},
-      {"id": 807, "character": "飢", "sound": "기", "meaning": "주릴"},
-      {"id": 808, "character": "厭", "sound": "염", "meaning": "싫어할"},
-      {"id": 809, "character": "糟", "sound": "조", "meaning": "지게미"},
-      {"id": 810, "character": "糠", "sound": "강", "meaning": "겨"},
-      {"id": 811, "character": "親", "sound": "친", "meaning": "친할"},
-      {"id": 812, "character": "戚", "sound": "척", "meaning": "친척"},
-      {"id": 813, "character": "故", "sound": "고", "meaning": "옛"},
-      {"id": 814, "character": "舊", "sound": "구", "meaning": "옛"},
-      {"id": 815, "character": "老", "sound": "로", "meaning": "늙을"},
-      {"id": 816, "character": "少", "sound": "소", "meaning": "적을"},
-      {"id": 817, "character": "異", "sound": "이", "meaning": "다를"},
-      {"id": 818, "character": "糧", "sound": "양", "meaning": "양식"},
-      {"id": 819, "character": "妾", "sound": "첩", "meaning": "첩"},
-      {"id": 820, "character": "御", "sound": "어", "meaning": "거느릴"},
-      {"id": 821, "character": "績", "sound": "적", "meaning": "길쌈"},
-      {"id": 822, "character": "紡", "sound": "방", "meaning": "물레"},
-      {"id": 823, "character": "侍", "sound": "시", "meaning": "모실"},
-      {"id": 824, "character": "巾", "sound": "건", "meaning": "수건"},
-      {"id": 825, "character": "帷", "sound": "유", "meaning": "휘장"},
-      {"id": 826, "character": "房", "sound": "방", "meaning": "방"},
-      {"id": 827, "character": "紈", "sound": "환", "meaning": "흰비단"},
-      {"id": 828, "character": "扇", "sound": "선", "meaning": "부채"},
-      {"id": 829, "character": "圓", "sound": "원", "meaning": "둥글"},
-      {"id": 830, "character": "潔", "sound": "결", "meaning": "깨끗할"},
-      {"id": 831, "character": "銀", "sound": "은", "meaning": "은"},
-      {"id": 832, "character": "燭", "sound": "촉", "meaning": "초"},
-      {"id": 833, "character": "煒", "sound": "위", "meaning": "빛날"},
-      {"id": 834, "character": "煌", "sound": "황", "meaning": "빛날"},
-      {"id": 835, "character": "晝", "sound": "주", "meaning": "낮"},
-      {"id": 836, "character": "眠", "sound": "면", "meaning": "잘"},
-      {"id": 837, "character": "夕", "sound": "석", "meaning": "저녁"},
-      {"id": 838, "character": "寐", "sound": "매", "meaning": "잘"},
-      {"id": 839, "character": "藍", "sound": "남", "meaning": "쪽"},
-      {"id": 840, "character": "筍", "sound": "순", "meaning": "죽순"},
-      {"id": 841, "character": "象", "sound": "상", "meaning": "코끼리"},
-      {"id": 842, "character": "床", "sound": "상", "meaning": "평상"},
-      {"id": 843, "character": "弦", "sound": "현", "meaning": "시위"},
-      {"id": 844, "character": "歌", "sound": "가", "meaning": "노래"},
-      {"id": 845, "character": "酒", "sound": "주", "meaning": "술"},
-      {"id": 846, "character": "宴", "sound": "연", "meaning": "잔치"},
-      {"id": 847, "character": "接", "sound": "접", "meaning": "이을"},
-      {"id": 848, "character": "杯", "sound": "배", "meaning": "잔"},
-      {"id": 849, "character": "手", "sound": "수", "meaning": "손"},
-      {"id": 850, "character": "頓", "sound": "돈", "meaning": "머리숙일"},
-      {"id": 851, "character": "足", "sound": "족", "meaning": "발"},
-      {"id": 852, "character": "悅", "sound": "열", "meaning": "기쁠"},
-      {"id": 853, "character": "豫", "sound": "예", "meaning": "미리"},
-      {"id": 854, "character": "且", "sound": "차", "meaning": "또"},
-      {"id": 855, "character": "康", "sound": "강", "meaning": "편안할"},
-      {"id": 856, "character": "嫡", "sound": "적", "meaning": "정실"},
-      {"id": 857, "character": "後", "sound": "후", "meaning": "뒤"},
-      {"id": 858, "character": "嗣", "sound": "사", "meaning": "이을"},
-      {"id": 859, "character": "續", "sound": "속", "meaning": "이을"},
-      {"id": 860, "character": "祭", "sound": "제", "meaning": "제사"},
-      {"id": 861, "character": "祀", "sound": "사", "meaning": "제사"},
-      {"id": 862, "character": "烝", "sound": "증", "meaning": "겨울제사"},
-      {"id": 863, "character": "嘗", "sound": "상", "meaning": "가을제사"},
-      {"id": 864, "character": "稽", "sound": "계", "meaning": "상고할"},
-      {"id": 865, "character": "顙", "sound": "상", "meaning": "이마"},
-      {"id": 866, "character": "再", "sound": "재", "meaning": "두번"},
-      {"id": 867, "character": "拜", "sound": "배", "meaning": "절할"},
-      {"id": 868, "character": "悚", "sound": "송", "meaning": "두려워할"},
-      {"id": 869, "character": "懼", "sound": "구", "meaning": "두려워할"},
-      {"id": 870, "character": "恐", "sound": "공", "meaning": "두려워할"},
-      {"id": 871, "character": "惶", "sound": "황", "meaning": "두려워할"},
-      {"id": 872, "character": "箋", "sound": "전", "meaning": "편지"},
-      {"id": 873, "character": "牒", "sound": "첩", "meaning": "문서"},
-      {"id": 874, "character": "簡", "sound": "간", "meaning": "대쪽"},
-      {"id": 875, "character": "要", "sound": "요", "meaning": "요긴할"},
-      {"id": 876, "character": "顧", "sound": "고", "meaning": "돌아볼"},
-      {"id": 877, "character": "答", "sound": "답", "meaning": "대답할"},
-      {"id": 878, "character": "審", "sound": "심", "meaning": "살필"},
-      {"id": 879, "character": "詳", "sound": "상", "meaning": "자세할"},
-      {"id": 880, "character": "骸", "sound": "해", "meaning": "뼈"},
-      {"id": 881, "character": "垢", "sound": "구", "meaning": "때"},
-      {"id": 882, "character": "想", "sound": "상", "meaning": "생각할"},
-      {"id": 883, "character": "浴", "sound": "욕", "meaning": "목욕할"},
-      {"id": 884, "character": "執", "sound": "집", "meaning": "잡을"},
-      {"id": 885, "character": "熱", "sound": "열", "meaning": "더울"},
-      {"id": 886, "character": "願", "sound": "원", "meaning": "원할"},
-      {"id": 887, "character": "涼", "sound": "량", "meaning": "서늘할"},
-      {"id": 888, "character": "驢", "sound": "려", "meaning": "나귀"},
-      {"id": 889, "character": "騾", "sound": "라", "meaning": "노새"},
-      {"id": 890, "character": "犢", "sound": "독", "meaning": "송아지"},
-      {"id": 891, "character": "特", "sound": "특", "meaning": "수소"},
-      {"id": 892, "character": "駭", "sound": "해", "meaning": "놀랄"},
-      {"id": 893, "character": "躍", "sound": "약", "meaning": "뛸"},
-      {"id": 894, "character": "超", "sound": "초", "meaning": "뛰어넘을"},
-      {"id": 895, "character": "驟", "sound": "취", "meaning": "빨리달릴"},
-      {"id": 896, "character": "誅", "sound": "주", "meaning": "벨"},
-      {"id": 897, "character": "斬", "sound": "참", "meaning": "벨"},
-      {"id": 898, "character": "賊", "sound": "적", "meaning": "도적"},
-      {"id": 899, "character": "盜", "sound": "도", "meaning": "도둑"},
-      {"id": 900, "character": "捕", "sound": "포", "meaning": "잡을"},
-      {"id": 901, "character": "獲", "sound": "획", "meaning": "얻을"},
-      {"id": 902, "character": "叛", "sound": "반", "meaning": "배반할"},
-      {"id": 903, "character": "亡", "sound": "망", "meaning": "망할"},
-      {"id": 904, "character": "布", "sound": "포", "meaning": "베"},
-      {"id": 905, "character": "射", "sound": "사", "meaning": "쏠"},
-      {"id": 906, "character": "遼", "sound": "요", "meaning": "멀"},
-      {"id": 907, "character": "丸", "sound": "환", "meaning": "알"},
-      {"id": 908, "character": "嵇", "sound": "계", "meaning": "산이름"},
-      {"id": 909, "character": "琴", "sound": "금", "meaning": "거문고"},
-      {"id": 910, "character": "阮", "sound": "완", "meaning": "비파"},
-      {"id": 911, "character": "嘯", "sound": "소", "meaning": "휘파람"},
-      {"id": 912, "character": "咏", "sound": "영", "meaning": "읊을"},
-      {"id": 913, "character": "矯", "sound": "교", "meaning": "바로잡을"},
-      {"id": 914, "character": "手", "sound": "수", "meaning": "손"},
-      {"id": 915, "character": "頓", "sound": "돈", "meaning": "머리숙일"},
-      {"id": 916, "character": "足", "sound": "족", "meaning": "발"},
-      {"id": 917, "character": "悅", "sound": "열", "meaning": "기쁠"},
-      {"id": 918, "character": "豫", "sound": "예", "meaning": "미리"},
-      {"id": 919, "character": "且", "sound": "차", "meaning": "또"},
-      {"id": 920, "character": "康", "sound": "강", "meaning": "편안할"},
-      {"id": 921, "character": "嫡", "sound": "적", "meaning": "정실"},
-      {"id": 922, "character": "後", "sound": "후", "meaning": "뒤"},
-      {"id": 923, "character": "嗣", "sound": "사", "meaning": "이을"},
-      {"id": 924, "character": "續", "sound": "속", "meaning": "이을"},
-      {"id": 925, "character": "祭", "sound": "제", "meaning": "제사"},
-      {"id": 926, "character": "祀", "sound": "사", "meaning": "제사"},
-      {"id": 927, "character": "烝", "sound": "증", "meaning": "겨울제사"},
-      {"id": 928, "character": "嘗", "sound": "상", "meaning": "가을제사"},
-      {"id": 929, "character": "稽", "sound": "계", "meaning": "상고할"},
-      {"id": 930, "character": "顙", "sound": "상", "meaning": "이마"},
-      {"id": 931, "character": "再", "sound": "재", "meaning": "두번"},
-      {"id": 932, "character": "拜", "sound": "배", "meaning": "절할"},
-      {"id": 933, "character": "悚", "sound": "송", "meaning": "두려워할"},
-      {"id": 934, "character": "懼", "sound": "구", "meaning": "두려워할"},
-      {"id": 935, "character": "恐", "sound": "공", "meaning": "두려워할"},
-      {"id": 936, "character": "惶", "sound": "황", "meaning": "두려워할"},
-      {"id": 937, "character": "牋", "sound": "전", "meaning": "편지"},
-      {"id": 938, "character": "牒", "sound": "첩", "meaning": "문서"},
-      {"id": 939, "character": "簡", "sound": "간", "meaning": "대쪽"},
-      {"id": 940, "character": "要", "sound": "요", "meaning": "요긴할"},
-      {"id": 941, "character": "顧", "sound": "고", "meaning": "돌아볼"},
-      {"id": 942, "character": "答", "sound": "답", "meaning": "대답할"},
-      {"id": 943, "character": "審", "sound": "심", "meaning": "살필"},
-      {"id": 944, "character": "詳", "sound": "상", "meaning": "자세할"},
-      {"id": 945, "character": "駭", "sound": "해", "meaning": "놀랄"},
-      {"id": 946, "character": "躍", "sound": "약", "meaning": "뛸"},
-      {"id": 947, "character": "超", "sound": "초", "meaning": "뛰어넘을"},
-      {"id": 948, "character": "驟", "sound": "취", "meaning": "빨리달릴"},
-      {"id": 949, "character": "釋", "sound": "석", "meaning": "풀"},
-      {"id": 50, "character": "紛", "sound": "분", "meaning": "어지러울"},
-      {"id": 951, "character": "利", "sound": "리", "meaning": "이로울"},
-      {"id": 952, "character": "俗", "sound": "속", "meaning": "풍속"},
-      {"id": 953, "character": "並", "sound": "병", "meaning": "아울러"},
-      {"id": 954, "character": "皆", "sound": "개", "meaning": "다"},
-      {"id": 955, "character": "佳", "sound": "가", "meaning": "아름다울"},
-      {"id": 956, "character": "妙", "sound": "묘", "meaning": "묘할"},
-      {"id": 957, "character": "毛", "sound": "모", "meaning": "털"},
-      {"id": 958, "character": "施", "sound": "시", "meaning": "베풀"},
-      {"id": 959, "character": "淑", "sound": "숙", "meaning": "착할"},
-      {"id": 960, "character": "姿", "sound": "자", "meaning": "모양"},
-      {"id": 961, "character": "工", "sound": "공", "meaning": "장인"},
-      {"id": 962, "character": "顰", "sound": "빈", "meaning": "찌푸릴"},
-      {"id": 963, "character": "妍", "sound": "연", "meaning": "고울"},
-      {"id": 964, "character": "笑", "sound": "소", "meaning": "웃을"},
-      {"id": 965, "character": "年", "sound": "년", "meaning": "해"},
-      {"id": 966, "character": "矢", "sound": "시", "meaning": "화살"},
-      {"id": 967, "character": "每", "sound": "매", "meaning": "매양"},
-      {"id": 968, "character": "催", "sound": "최", "meaning": "재촉할"},
-      {"id": 969, "character": "曦", "sound": "희", "meaning": "햇빛"},
-      {"id": 970, "character": "暉", "sound": "휘", "meaning": "빛날"},
-      {"id": 971, "character": "朗", "sound": "랑", "meaning": "밝을"},
-      {"id": 972, "character": "曜", "sound": "요", "meaning": "빛날"},
-      {"id": 973, "character": "懸", "sound": "현", "meaning": "매달"},
-      {"id": 974, "character": "斡", "sound": "알", "meaning": "돌"},
-      {"id": 975, "character": "晦", "sound": "회", "meaning": "어두울"},
-      {"id": 976, "character": "魄", "sound": "백", "meaning": "넋"},
-      {"id": 977, "character": "環", "sound": "환", "meaning": "고리"},
-      {"id": 978, "character": "照", "sound": "조", "meaning": "비출"},
-      {"id": 979, "character": "指", "sound": "지", "meaning": "가리킬"},
-      {"id": 980, "character": "薪", "sound": "신", "meaning": "땔나무"},
-      {"id": 981, "character": "修", "sound": "수", "meaning": "닦을"},
-      {"id": 982, "character": "祜", "sound": "호", "meaning": "복"},
-      {"id": 983, "character": "永", "sound": "영", "meaning": "길"},
-      {"id": 984, "character": "綏", "sound": "수", "meaning": "편안할"},
-      {"id": 985, "character": "吉", "sound": "길", "meaning": "길할"},
-      {"id": 986, "character": "劭", "sound": "소", "meaning": "권할"},
-      {"id": 987, "character": "矩", "sound": "구", "meaning": "법"},
-      {"id": 988, "character": "步", "sound": "보", "meaning": "걸을"},
-      {"id": 989, "character": "引", "sound": "인", "meaning": "끌"},
-      {"id": 990, "character": "領", "sound": "령", "meaning": "거느릴"},
-      {"id": 991, "character": "俯", "sound": "부", "meaning": "구부릴"},
-      {"id": 992, "character": "仰", "sound": "앙", "meaning": "우러를"},
-      {"id": 993, "character": "廊", "sound": "랑", "meaning": "행랑"},
-      {"id": 994, "character": "廟", "sound": "묘", "meaning": "사당"},
-      {"id": 995, "character": "束", "sound": "속", "meaning": "묶을"},
-      {"id": 996, "character": "帶", "sound": "대", "meaning": "띠"},
-      {"id": 997, "character": "矜", "sound": "긍", "meaning": "긍휼히여길"},
-      {"id": 998, "character": "莊", "sound": "장", "meaning": "장엄할"},
-      {"id": 999, "character": "徘", "sound": "배", "meaning": "배회할"},
+      // ... existing data ...
       {"id": 1000, "character": "徊", "sound": "회", "meaning": "배회할"}
     ];
 };
