@@ -9,7 +9,7 @@ interface TopNavProps {
 
 const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
   const getButtonClass = (mode: LearningMode) => {
-    const baseClass = 'w-1/4 py-4 px-2 text-center text-xs md:text-lg font-bold transition-colors duration-300 focus:outline-none';
+    const baseClass = 'flex-1 py-4 px-1 text-center text-[10px] md:text-sm lg:text-base font-bold transition-colors duration-300 focus:outline-none whitespace-nowrap';
     if (activeMode === mode) {
       return `${baseClass} text-white bg-slate-700/80 border-b-4 border-blue-500`;
     }
@@ -17,7 +17,7 @@ const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
   };
 
   return (
-    <nav className="flex w-full bg-slate-800 rounded-t-lg shadow-md mb-6">
+    <nav className="flex w-full bg-slate-800 rounded-t-lg shadow-md mb-6 overflow-x-auto">
       <button
         onClick={() => onModeChange('ENGLISH')}
         className={getButtonClass('ENGLISH')}
@@ -38,6 +38,13 @@ const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
         aria-pressed={activeMode === 'PRIORITY'}
       >
         우선순위영단어
+      </button>
+      <button
+        onClick={() => onModeChange('IDIOM')}
+        className={getButtonClass('IDIOM')}
+        aria-pressed={activeMode === 'IDIOM'}
+      >
+        우선순위영숙어
       </button>
       <button
         onClick={() => onModeChange('HANJA')}

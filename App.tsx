@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { AppView, UserStats, Word, HanjaCharacter, LearningMode, Conversation, ConversationProgress, WordProgress, HanjaCharacterProgress } from './types';
+import { AppView, UserStats, Word, HanjaCharacter, LearningMode, Conversation, ConversationProgress, WordProgress, HanjaCharacterProgress, Idiom, IdiomProgress } from './types';
 import Dashboard from './components/Dashboard';
 import FlashcardView from './components/FlashcardView';
 import QuizGame from './components/QuizGame';
@@ -34,6 +34,9 @@ const App: React.FC = () => {
   
   const [priorityWordToEdit, setPriorityWordToEdit] = useState<Word | null>(null);
   const [singlePriorityWordForFlashcard, setSinglePriorityWordForFlashcard] = useState<Word[]>([]);
+
+  const [idiomToEdit, setIdiomToEdit] = useState<Idiom | null>(null);
+  const [singleIdiomForFlashcard, setSingleIdiomForFlashcard] = useState<Idiom[]>([]);
 
   const { 
     userStats, 
@@ -77,6 +80,14 @@ const App: React.FC = () => {
     deletePriorityWord,
     updatePriorityWordProgress,
     learnedPriorityWords,
+    allIdioms,
+    idiomProgress,
+    idiomsForLesson,
+    learnedIdioms,
+    addIdiom,
+    updateIdiom,
+    deleteIdiom,
+    updateIdiomProgress,
   } = useLearningData();
 
   const handleNavigate = useCallback((view: AppView) => {
@@ -113,6 +124,11 @@ const App: React.FC = () => {
     setCurrentView(AppView.PRIORITY_LIST);
   }, [addXpAndCoins]);
   
+  const handleReviewIdiomSessionComplete = useCallback((xp: number, coins: number) => {
+    addXpAndCoins(xp, coins);
+    setCurrentView(AppView.IDIOM_LIST);
+  }, [addXpAndCoins]);
+  
   const handleBack = useCallback(() => {
     setCurrentView(AppView.DASHBOARD);
   }, []);
@@ -131,6 +147,11 @@ const App: React.FC = () => {
     addPriorityWord(word);
     setCurrentView(AppView.DASHBOARD);
   }, [addPriorityWord]);
+
+  const handleIdiomAdded = useCallback((idiom: Omit<Idiom, 'id'>) => {
+    addIdiom(idiom);
+    setCurrentView(AppView.DASHBOARD);
+  }, [addIdiom]);
 
   const handleNavigateToEdit = useCallback((wordId: number) => {
     const word = allWords.find(w => w.id === wordId);
@@ -155,6 +176,14 @@ const App: React.FC = () => {
       setCurrentView(AppView.EDIT_PRIORITY_WORD);
     }
   }, [allPriorityWords]);
+
+  const handleNavigateToEditIdiom = useCallback((idiomId: number) => {
+    const idiom = allIdioms.find(i => i.id === idiomId);
+    if (idiom) {
+      setIdiomToEdit(idiom);
+      setCurrentView(AppView.EDIT_IDIOM);
+    }
+  }, [allIdioms]);
 
 
   const handleStartSingleWordFlashcard = useCallback((wordId: number) => {
@@ -186,6 +215,14 @@ const App: React.FC = () => {
     }
   }, [allPriorityWords]);
 
+  const handleStartSingleIdiomFlashcard = useCallback((idiomId: number) => {
+    const idiom = allIdioms.find(i => i.id === idiomId);
+    if (idiom) {
+        setSingleIdiomForFlashcard([idiom]);
+        setCurrentView(AppView.REVIEW_SINGLE_IDIOM_FLASHCARD);
+    }
+  }, [allIdioms]);
+
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
     setCurrentView(AppView.WORD_LIST);
@@ -201,6 +238,11 @@ const App: React.FC = () => {
     setCurrentView(AppView.PRIORITY_LIST);
   }, [updatePriorityWord]);
 
+  const handleIdiomUpdated = useCallback((idiom: Idiom) => {
+    updateIdiom(idiom);
+    setCurrentView(AppView.IDIOM_LIST);
+  }, [updateIdiom]);
+
   const handleBackToWordList = useCallback(() => {
     setCurrentView(AppView.WORD_LIST);
   }, []);
@@ -211,6 +253,10 @@ const App: React.FC = () => {
 
   const handleBackToPriorityList = useCallback(() => {
     setCurrentView(AppView.PRIORITY_LIST);
+  }, []);
+
+  const handleBackToIdiomList = useCallback(() => {
+    setCurrentView(AppView.IDIOM_LIST);
   }, []);
 
 
@@ -232,6 +278,12 @@ const App: React.FC = () => {
     }
   }, [deletePriorityWord]);
 
+  const handleDeleteIdiom = useCallback((idiomId: number) => {
+    if (window.confirm('이 숙어를 정말로 삭제하시겠습니까? 학습 기록도 함께 사라집니다.')) {
+        deleteIdiom(idiomId);
+    }
+  }, [deleteIdiom]);
+
   const handleBackupData = useCallback(() => {
     try {
       const backupData: {
@@ -244,6 +296,8 @@ const App: React.FC = () => {
         conversationProgress?: Record<number, ConversationProgress>;
         priorityWords?: Word[];
         priorityProgress?: Record<number, WordProgress>;
+        idioms?: Idiom[];
+        idiomProgress?: Record<number, IdiomProgress>;
       } = {};
 
       const words = localStorage.getItem('danzzak-words');
@@ -272,6 +326,12 @@ const App: React.FC = () => {
 
       const priorityProgress = localStorage.getItem('danzzak-priority-progress');
       if(priorityProgress) backupData.priorityProgress = JSON.parse(priorityProgress);
+
+      const idioms = localStorage.getItem('danzzak-idioms');
+      if(idioms) backupData.idioms = JSON.parse(idioms);
+
+      const idiomProgress = localStorage.getItem('danzzak-idiom-progress');
+      if(idiomProgress) backupData.idiomProgress = JSON.parse(idiomProgress);
 
 
       if (Object.keys(backupData).length === 0) {
@@ -325,6 +385,8 @@ const App: React.FC = () => {
           if (restoredData.conversationProgress) { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(restoredData.conversationProgress)); dataRestored = true; }
           if (restoredData.priorityWords) { localStorage.setItem('danzzak-priority-words', JSON.stringify(restoredData.priorityWords)); dataRestored = true; }
           if (restoredData.priorityProgress) { localStorage.setItem('danzzak-priority-progress', JSON.stringify(restoredData.priorityProgress)); dataRestored = true; }
+          if (restoredData.idioms) { localStorage.setItem('danzzak-idioms', JSON.stringify(restoredData.idioms)); dataRestored = true; }
+          if (restoredData.idiomProgress) { localStorage.setItem('danzzak-idiom-progress', JSON.stringify(restoredData.idiomProgress)); dataRestored = true; }
             
           if (dataRestored) {
             alert('데이터를 성공적으로 가져왔습니다. 앱을 새로고침합니다.');
@@ -354,6 +416,15 @@ const App: React.FC = () => {
   const gameConversationsForUser = useMemo(() => {
     return [...learnedConversations].sort(() => 0.5 - Math.random()).slice(0, 10);
   }, [learnedConversations]);
+
+  const gameIdiomsForUser = useMemo(() => {
+    // Using 'Word' type structure for compatibility with QuizGame
+    return [...learnedIdioms].map(i => ({
+        id: i.id,
+        word: i.expression,
+        meaning: i.meaning
+    })).sort(() => 0.5 - Math.random()).slice(0, 10);
+  }, [learnedIdioms]);
 
   const quizHanjaCharacters = useMemo(() => {
     return [...learnedCharacters].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -534,6 +605,40 @@ const App: React.FC = () => {
             onBack={() => setCurrentView(AppView.PRIORITY_LIST)}
             sessionTitle="단어 복습"
         />;
+      case AppView.ADD_IDIOM:
+        // Reusing AddConversationView since Idioms share similar structure (Expression/Meaning)
+        return <AddConversationView onAddConversation={(val) => handleIdiomAdded(val)} onBack={handleBack} />;
+      case AppView.IDIOM_FLASHCARDS:
+        // Reusing ConversationFlashcardView as Idioms structure matches (expression/meaning)
+        // Casting type as Conversation[] since structure is compatible for display
+        return <ConversationFlashcardView conversations={idiomsForLesson as unknown as Conversation[]} updateConversationProgress={updateIdiomProgress} onComplete={handleSessionComplete} onBack={handleBack} sessionTitle="플래시 카드 학습" />;
+      case AppView.IDIOM_QUIZ:
+        // Reusing QuizGame since we mapped idioms to Word structure
+        return <QuizGame words={gameIdiomsForUser} onComplete={handleSessionComplete} onBack={handleBack} />;
+      case AppView.IDIOM_LIST:
+        // Reusing ConversationListView as Idioms share similar structure
+        return <ConversationListView 
+          conversations={allIdioms as unknown as Conversation[]} 
+          progress={idiomProgress as unknown as Record<number, ConversationProgress>} 
+          onBack={handleBack}
+          onEdit={handleNavigateToEditIdiom}
+          onDelete={handleDeleteIdiom}
+          onFlashcard={handleStartSingleIdiomFlashcard}
+        />;
+      case AppView.EDIT_IDIOM:
+        return idiomToEdit ? <EditConversationView 
+          conversationToEdit={idiomToEdit as unknown as Conversation}
+          onUpdateConversation={(conv) => handleIdiomUpdated(conv as unknown as Idiom)}
+          onBack={handleBackToIdiomList}
+        /> : null;
+      case AppView.REVIEW_SINGLE_IDIOM_FLASHCARD:
+        return <ConversationFlashcardView
+            conversations={singleIdiomForFlashcard as unknown as Conversation[]}
+            updateConversationProgress={updateIdiomProgress}
+            onComplete={handleReviewIdiomSessionComplete}
+            onBack={() => setCurrentView(AppView.IDIOM_LIST)}
+            sessionTitle="숙어 복습"
+        />;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
@@ -559,6 +664,10 @@ const App: React.FC = () => {
           priorityWordsForLessonCount={priorityWordsForLesson.length}
           allPriorityWordsCount={allPriorityWords.length}
           learnedPriorityWordsCount={learnedPriorityWords.length}
+          idiomStats={learningStats.idiomStats}
+          idiomsForLessonCount={idiomsForLesson.length}
+          allIdiomsCount={allIdioms.length}
+          learnedIdiomsCount={learnedIdioms.length}
         />;
     }
   };

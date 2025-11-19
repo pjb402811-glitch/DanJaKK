@@ -24,6 +24,14 @@ export interface Conversation {
   isUserAdded?: boolean;
 }
 
+export interface Idiom {
+  id: number;
+  expression: string;
+  meaning: string;
+  example?: string;
+  isUserAdded?: boolean;
+}
+
 export interface WordProgress {
   wordId: number;
   correct: number;
@@ -44,6 +52,15 @@ export interface HanjaCharacterProgress {
 
 export interface ConversationProgress {
   conversationId: number;
+  correct: number;
+  incorrect: number;
+  lastReviewed: string | null;
+  nextReview: string | null;
+  streak: number;
+}
+
+export interface IdiomProgress {
+  idiomId: number;
   correct: number;
   incorrect: number;
   lastReviewed: string | null;
@@ -89,6 +106,13 @@ export enum AppView {
   PRIORITY_LIST = 'PRIORITY_LIST',
   EDIT_PRIORITY_WORD = 'EDIT_PRIORITY_WORD',
   REVIEW_SINGLE_PRIORITY_WORD_FLASHCARD = 'REVIEW_SINGLE_PRIORITY_WORD_FLASHCARD',
+
+  ADD_IDIOM = 'ADD_IDIOM',
+  IDIOM_FLASHCARDS = 'IDIOM_FLASHCARDS',
+  IDIOM_QUIZ = 'IDIOM_QUIZ',
+  IDIOM_LIST = 'IDIOM_LIST',
+  EDIT_IDIOM = 'EDIT_IDIOM',
+  REVIEW_SINGLE_IDIOM_FLASHCARD = 'REVIEW_SINGLE_IDIOM_FLASHCARD',
 }
 
-export type LearningMode = 'ENGLISH' | 'HANJA' | 'CONVERSATION' | 'PRIORITY';
+export type LearningMode = 'ENGLISH' | 'HANJA' | 'CONVERSATION' | 'PRIORITY' | 'IDIOM';

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Word, WordProgress, HanjaCharacter, HanjaCharacterProgress, UserStats, Conversation, ConversationProgress } from '../types';
-import { generateInitialWords, generateInitialCharacters, generateInitialConversations, generateInitialPriorityWords } from '../services/geminiService';
+import { Word, WordProgress, HanjaCharacter, HanjaCharacterProgress, UserStats, Conversation, ConversationProgress, Idiom, IdiomProgress } from '../types';
+import { generateInitialWords, generateInitialCharacters, generateInitialConversations, generateInitialPriorityWords, generateInitialIdioms } from '../services/geminiService';
 
 const NEW_ITEMS_PER_LESSON = 5;
 const CHARACTERS_PER_GROUP = 4;
@@ -51,6 +51,10 @@ const useLearningData = () => {
 
   const [allPriorityWords, setAllPriorityWords] = useState<Word[]>([]);
   const [priorityWordProgress, setPriorityWordProgress] = useState<Record<number, WordProgress>>({});
+
+  const [allIdioms, setAllIdioms] = useState<Idiom[]>([]);
+  const [idiomProgress, setIdiomProgress] = useState<Record<number, IdiomProgress>>({});
+
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -125,6 +129,22 @@ const useLearningData = () => {
         setPriorityWordProgress(initialProgress);
       }
 
+      // Load Idioms
+      const savedIdioms = localStorage.getItem('danzzak-idioms');
+      const savedIdiomProgress = localStorage.getItem('danzzak-idiom-progress');
+      if (savedIdioms && savedIdiomProgress) {
+        setAllIdioms(JSON.parse(savedIdioms));
+        setIdiomProgress(JSON.parse(savedIdiomProgress));
+      } else {
+        const initialIdioms = generateInitialIdioms();
+        setAllIdioms(initialIdioms);
+        const initialProgress: Record<number, IdiomProgress> = {};
+        initialIdioms.forEach(idiom => {
+          initialProgress[idiom.id] = { idiomId: idiom.id, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 };
+        });
+        setIdiomProgress(initialProgress);
+      }
+
     } catch (e) {
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
       console.error(e);
@@ -142,6 +162,9 @@ const useLearningData = () => {
   useEffect(() => { localStorage.setItem('danzzak-conversation-progress', JSON.stringify(conversationProgress)); }, [conversationProgress]);
   useEffect(() => { localStorage.setItem('danzzak-priority-words', JSON.stringify(allPriorityWords)); }, [allPriorityWords]);
   useEffect(() => { localStorage.setItem('danzzak-priority-progress', JSON.stringify(priorityWordProgress)); }, [priorityWordProgress]);
+  useEffect(() => { localStorage.setItem('danzzak-idioms', JSON.stringify(allIdioms)); }, [allIdioms]);
+  useEffect(() => { localStorage.setItem('danzzak-idiom-progress', JSON.stringify(idiomProgress)); }, [idiomProgress]);
+
 
   const updateWordProgress = useCallback((wordId: number, isCorrect: boolean) => {
     setWordProgress(prev => {
@@ -214,6 +237,24 @@ const useLearningData = () => {
     });
   }, []);
 
+  const updateIdiomProgress = useCallback((idiomId: number, isCorrect: boolean) => {
+    setIdiomProgress(prev => {
+      const progress = { ...prev[idiomId] };
+      const now = new Date().toISOString();
+      progress.lastReviewed = now;
+
+      if (isCorrect) {
+        progress.correct++;
+        progress.streak++;
+      } else {
+        progress.incorrect++;
+        progress.streak = 0;
+      }
+      progress.nextReview = getNextReviewDate(progress.streak);
+      return { ...prev, [idiomId]: progress };
+    });
+  }, []);
+
   const addXpAndCoins = useCallback((xp: number, coins: number) => {
     setUserStats(prev => ({ ...prev, xp: prev.xp + xp, coins: prev.coins + coins }));
   }, []);
@@ -260,6 +301,20 @@ const useLearningData = () => {
     });
   }, []);
 
+  const addIdiom = useCallback((idiom: Omit<Idiom, 'id'>) => {
+    setAllIdioms(prev => {
+      const newId = Math.max(0, ...prev.map(i => i.id)) + 1;
+      const newIdiom = { ...idiom, id: newId, isUserAdded: true };
+      
+      setIdiomProgress(progPrev => ({
+        ...progPrev,
+        [newId]: { idiomId: newId, correct: 0, incorrect: 0, lastReviewed: null, nextReview: null, streak: 0 }
+      }));
+
+      return [...prev, newIdiom];
+    });
+  }, []);
+
   const updateUserWord = useCallback((word: Word) => {
     setAllWords(prev => prev.map(w => w.id === word.id ? word : w));
   }, []);
@@ -271,6 +326,11 @@ const useLearningData = () => {
   const updateUserConversation = useCallback((convo: Conversation) => {
     setAllConversations(prev => prev.map(c => c.id === convo.id ? convo : c));
   }, []);
+
+  const updateIdiom = useCallback((idiom: Idiom) => {
+    setAllIdioms(prev => prev.map(i => i.id === idiom.id ? idiom : i));
+  }, []);
+
 
   const deleteUserWord = useCallback((wordId: number) => {
     setAllWords(prev => prev.filter(w => w.id !== wordId));
@@ -295,6 +355,15 @@ const useLearningData = () => {
     setConversationProgress(prev => {
         const newProgress = {...prev};
         delete newProgress[conversationId];
+        return newProgress;
+    });
+  }, []);
+  
+  const deleteIdiom = useCallback((idiomId: number) => {
+    setAllIdioms(prev => prev.filter(i => i.id !== idiomId));
+    setIdiomProgress(prev => {
+        const newProgress = {...prev};
+        delete newProgress[idiomId];
         return newProgress;
     });
   }, []);
@@ -324,6 +393,14 @@ const useLearningData = () => {
       .slice(0, NEW_ITEMS_PER_LESSON);
   }, [allConversations, conversationProgress]);
 
+  const userAddedIdioms = useMemo(() => allIdioms.filter(i => i.isUserAdded), [allIdioms]);
+
+  const idiomsForLesson = useMemo(() => {
+    return allIdioms
+      .filter(idiom => !idiomProgress[idiom.id]?.lastReviewed)
+      .slice(0, NEW_ITEMS_PER_LESSON);
+  }, [allIdioms, idiomProgress]);
+
   const charactersForLesson = useMemo(() => {
     const firstUnlearned = allCharacters.find(char => (characterProgress[char.id]?.streak || 0) === 0);
     if (!firstUnlearned) return [];
@@ -344,6 +421,10 @@ const useLearningData = () => {
   const learnedPriorityWords = useMemo(() => {
     return allPriorityWords.filter(w => (priorityWordProgress[w.id]?.lastReviewed));
   }, [allPriorityWords, priorityWordProgress]);
+  
+  const learnedIdioms = useMemo(() => {
+    return allIdioms.filter(i => (idiomProgress[i.id]?.lastReviewed));
+  }, [allIdioms, idiomProgress]);
 
   const learnedGroups = useMemo(() => {
     const learnedCharacterIds = new Set(learnedCharacters.map(c => c.id));
@@ -362,6 +443,7 @@ const useLearningData = () => {
     const hanjaStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const conversationStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
     const priorityStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
+    const idiomStats = { learnedToday: 0, learnedThisWeek: 0, totalLearned: 0 };
 
     (Object.values(wordProgress) as WordProgress[]).forEach(p => {
       if (p.lastReviewed) {
@@ -395,8 +477,16 @@ const useLearningData = () => {
         }
       });
 
-    return { englishStats, hanjaStats, conversationStats, priorityStats };
-  }, [wordProgress, characterProgress, conversationProgress, priorityWordProgress]);
+    (Object.values(idiomProgress) as IdiomProgress[]).forEach(p => {
+      if (p.lastReviewed) {
+          idiomStats.totalLearned++;
+          if(isToday(p.lastReviewed)) idiomStats.learnedToday++;
+          if(isThisWeek(p.lastReviewed)) idiomStats.learnedThisWeek++;
+      }
+    });
+
+    return { englishStats, hanjaStats, conversationStats, priorityStats, idiomStats };
+  }, [wordProgress, characterProgress, conversationProgress, priorityWordProgress, idiomProgress]);
 
   const unlearnedCharactersCount = useMemo(() => {
     return allCharacters.filter(c => (characterProgress[c.id]?.streak || 0) === 0).length;
@@ -458,6 +548,14 @@ const useLearningData = () => {
     deletePriorityWord,
     updatePriorityWordProgress,
     learnedPriorityWords,
+    allIdioms,
+    idiomProgress,
+    idiomsForLesson,
+    learnedIdioms,
+    addIdiom,
+    updateIdiom,
+    deleteIdiom,
+    updateIdiomProgress
   };
 };
 

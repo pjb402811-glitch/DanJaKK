@@ -1,5 +1,5 @@
 
-import { Word, HanjaCharacter, Conversation } from '../types';
+import { Word, HanjaCharacter, Conversation, Idiom } from '../types';
 
 // This function is kept for structure but now returns an empty array to prevent adding default words.
 export const generateInitialWords = (): Word[] => {
@@ -902,7 +902,7 @@ limit|제한, 한계
 spirit|정신, 마음
 quarter|4분의 1, 15분, 25센트 동전 
 direction|방향, 지시 
-cartoon|만화, 만화 영화
+cartoon|manhwa, manhwah yeonghwa
 documentary|다큐멘터리, 기록물; 다큐멘터리의 
 century|세기, 100년
 pole|기둥, 극(極)
@@ -1012,156 +1012,6 @@ certain|확실한, 어떤 (=one)
 contrary|반대의; 반대 
 nuclear|원자력의, 핵의
 endangered|멸종 위기에 처한, 위험에 처한
-selfish|이기적인
-opposite|반대편의, 정반대의 
-extreme|극도의, 극한의
-valuable|귀중한, 가치 있는
-impressive|인상적인, 인상[감명] 깊은 
-stormy|폭풍우 치는
-independent|독립한, 자주적인 
-tight|단단한, 꽉 끼는
-rough|거친, 힘든
-sticky|끈적끈적한
-extra|추가의; 추가로 
-gentle|부드러운, 다정한
-exotic|이국적인, 외국의
-raw|날것의, 원재료의
-lazy|게으른, 느긋한
-native|태어난 곳의, 모국어의
-due|~로 인한, 지불 기일이 된 
-medium|중간의; 매체 (복수형은 media) 
-worldwide|전 세계적인; 세계적으로 
-whole|전체의, 모든; 전체, 전부 
-essential|필수적인, 본질적인
-typical|전형적인, 보통의
-idle|게으른 (= lazy), 놀고 있는 
-messy|어질러진, 지저분한
-dear|친애하는 
-disabled|장애가 있는
-instant|즉시의, 인스턴트의; 순간 
-particular|특정한, 특별한
-terrific|멋진, 굉장한
-weekly|매주의, 주 단위의; 매주 
-electronic|전자의
-cheerful|쾌활한, 명랑한
-severe|엄한, 극심한
-awkward|어색한, 불편한
-smooth|매끄러운 
-military|군의, 육군의
-tropical|열대의
-maximum|최대의, 최고의
-active|활동적인, 적극적인
-local|지방의, 현지의
-ambitious|야망을 품은
-charming|매력적인 (=attractive)
-fancy|멋진, 고급의
-mobile|이동식의, 고정되어 있지 않은
-part-time|(근무가) 파트타임인, 시간제인; 시간제로 
-strict|엄격한
-western|서쪽의, 서양의
-neat|깔끔한, 잘 정돈된
-tiny|아주 작은
-challenging|도전적인, 힘든
-selfish|이기적인
-opposite|반대편의, 정반대의 
-extreme|극도의, 극한의
-valuable|귀중한, 가치 있는
-impressive|인상적인, 인상[감명] 깊은 
-stormy|폭풍우 치는
-independent|독립한, 자주적인 
-tight|단단한, 꽉 끼는
-rough|거친, 힘든
-sticky|끈적끈적한
-extra|추가의; 추가로 
-gentle|부드러운, 다정한
-exotic|이국적인, 외국의
-raw|날것의, 원재료의
-lazy|게으른, 느긋한
-native|태어난 곳의, 모국어의
-due|~로 인한, 지불 기일이 된 
-medium|중간의; 매체 (복수형은 media) 
-worldwide|전 세계적인; 세계적으로 
-whole|전체의, 모든; 전체, 전부 
-essential|필수적인, 본질적인
-typical|전형적인, 보통의
-idle|게으른 (= lazy), 놀고 있는 
-messy|어질러진, 지저분한
-dear|친애하는 
-disabled|장애가 있는
-instant|즉시의, 인스턴트의; 순간 
-particular|특정한, 특별한
-terrific|멋진, 굉장한
-weekly|매주의, 주 단위의; 매주 
-electronic|전자의
-cheerful|쾌활한, 명랑한
-severe|엄한, 극심한
-awkward|어색한, 불편한
-smooth|매끄러운 
-military|군의, 육군의
-tropical|열대의
-maximum|최대의, 최고의
-active|활동적인, 적극적인
-local|지방의, 현지의
-ambitious|야망을 품은
-charming|매력적인 (=attractive)
-fancy|멋진, 고급의
-mobile|이동식의, 고정되어 있지 않은
-part-time|(근무가) 파트타임인, 시간제인; 시간제로 
-strict|엄격한
-western|서쪽의, 서양의
-neat|깔끔한, 잘 정돈된
-tiny|아주 작은
-challenging|도전적인, 힘든
-selfish|이기적인
-opposite|반대편의, 정반대의 
-extreme|극도의, 극한의
-valuable|귀중한, 가치 있는
-impressive|인상적인, 인상[감명] 깊은 
-stormy|폭풍우 치는
-independent|독립한, 자주적인 
-tight|단단한, 꽉 끼는
-rough|거친, 힘든
-sticky|끈적끈적한
-extra|추가의; 추가로 
-gentle|부드러운, 다정한
-exotic|이국적인, 외국의
-raw|날것의, 원재료의
-lazy|게으른, 느긋한
-native|태어난 곳의, 모국어의
-due|~로 인한, 지불 기일이 된 
-medium|중간의; 매체 (복수형은 media) 
-worldwide|전 세계적인; 세계적으로 
-whole|전체의, 모든; 전체, 전부 
-essential|필수적인, 본질적인
-typical|전형적인, 보통의
-idle|게으른 (= lazy), 놀고 있는 
-messy|어질러진, 지저분한
-dear|친애하는 
-disabled|장애가 있는
-instant|즉시의, 인스턴트의; 순간 
-particular|특정한, 특별한
-terrific|멋진, 굉장한
-weekly|매주의, 주 단위의; 매주 
-electronic|전자의
-cheerful|쾌활한, 명랑한
-severe|엄한, 극심한
-awkward|어색한, 불편한
-smooth|매끄러운 
-military|군의, 육군의
-tropical|열대의
-maximum|최대의, 최고의
-active|활동적인, 적극적인
-local|지방의, 현지의
-ambitious|야망을 품은
-charming|매력적인 (=attractive)
-fancy|멋진, 고급의
-mobile|이동식의, 고정되어 있지 않은
-part-time|(근무가) 파트타임인, 시간제인; 시간제로 
-strict|엄격한
-western|서쪽의, 서양의
-neat|깔끔한, 잘 정돈된
-tiny|아주 작은
-challenging|도전적인, 힘든
 selfish|이기적인
 opposite|반대편의, 정반대의 
 extreme|극도의, 극한의
@@ -1686,6 +1536,518 @@ export const generateInitialConversations = (): Conversation[] => {
     { id: 199, expression: "Remember this.", meaning: "이걸 기억하세요." },
     { id: 200, expression: "Throw it.", meaning: "물건을 던져요." }
   ];
+};
+
+export const generateInitialIdioms = (): Idiom[] => {
+  const rawIdioms = [
+    {n:1, e:"There are a lot of parks in Seoul.", k:"서울에는 공원이 많이 있다."},
+    {n:2, e:"I am going to write a letter.", k:"나는 편지를 쓸 작정이다."},
+    {n:3, e:"You have to go at once.", k:"너는 곧 가야 한다."},
+    {n:4, e:"It is hard to learn.", k:"배우는 것은 어렵다."},
+    {n:5, e:"He is able to speak English.", k:"그는 영어를 말할 수 있다."},
+    {n:6, e:"I know nothing of his personality.", k:"나는 그의 성격을 알지 못한다."},
+    {n:7, e:"May I ask a favor of you?", k:"한 가지 부탁을 해도 될까요?"},
+    {n:8, e:"I was so tired that I fell asleep quickly.", k:"나는 너무 피곤해서 빨리 잠들었다."},
+    {n:9, e:"The baby lives on milk.", k:"그 갓난아이는 우유를 먹고 산다."},
+    {n:10, e:"I get up at seven every morning.", k:"나는 아침마다 7시에 일어난다."},
+    {n:11, e:"I wake up at six every morning.", k:"나는 매일 아침 6시에 깬다."},
+    {n:12, e:"She called on her uncle on her way home from school yesterday.", k:"그녀는 어제 학교에서 집으로 돌아오는 도중에 아저씨를 방문했다."},
+    {n:13, e:"She did not give up the idea of going to America to study.", k:"그녀는 공부하러 미국에 갈 생각을 버리지 않았다."},
+    {n:14, e:"He turned up an hour later.", k:"그는 한 시간이나 늦게 나타났다."},
+    {n:15, e:"I am so happy that I can't believe it!", k:"나는 너무 기뻐서 그것을 믿을 수 없어!"},
+    {n:16, e:"We have gone through many changes.", k:"우리는 많은 변화를 겪어 왔다."},
+    {n:17, e:"The oil is all used up.", k:"석유가 다 떨어졌다."},
+    {n:18, e:"Pay attention to me, please.", k:"저에게 주목해 주세요."},
+    {n:19, e:"My grandmother passed away last year.", k:"할머니는 작년에 돌아가셨다."},
+    {n:20, e:"Cheer up and be happy.", k:"기운 내고 행복해."},
+    {n:21, e:"She is too young to understand it.", k:"그녀는 너무 어려서 그것을 이해할 수 없다."},
+    {n:22, e:"I am interested in music.", k:"나는 음악에 흥미가 있다."},
+    {n:23, e:"The bus is about to leave.", k:"버스가 막 떠나려고 한다."},
+    {n:24, e:"I arrived at the station just in time.", k:"나는 딱 제시간에 역에 도착했다."},
+    {n:25, e:"She introduced me to her family.", k:"그녀는 나를 그녀의 가족에게 소개했다."},
+    {n:26, e:"Above all, be honest.", k:"무엇보다도 먼저 정직하라."},
+    {n:27, e:"He is familiar with the Internet.", k:"그는 인터넷에 익숙하다."},
+    {n:28, e:"At last, we found it.", k:"마침내 우리는 그것을 찾았다."},
+    {n:29, e:"We must take care of our children.", k:"우리는 어린이들을 돌봐 주어야 한다."},
+    {n:30, e:"Mother is waiting for her son.", k:"어머니는 아들을 기다리고 있다."},
+    {n:31, e:"Some boys are running after a dog.", k:"몇 명의 소년들이 개의 뒤를 쫓아 뛰어가고 있다."},
+    {n:32, e:"She got to the station in time.", k:"그녀는 제시간에 역에 도착했다."},
+    {n:33, e:"I have wanted to see you for a long time.", k:"나는 오랫동안 너를 만나보고 싶었다."},
+    {n:34, e:"I have waited for him for an hour.", k:"나는 한 시간 동안 그를 기다렸다/찾았다."},
+    {n:35, e:"I met Jane on my way to school.", k:"나는 학교에 가는 도중에 제인을 만났다."},
+    {n:36, e:"He came back at once.", k:"그는 곧 돌아왔다."},
+    {n:37, e:"I forget as soon as I learn.", k:"나는 배우자마자 곧 잊어버린다."},
+    {n:38, e:"Let’s go skating after school.", k:"방과 후에 스케이트 타러 가자."},
+    {n:39, e:"Where do you come from?", k:"당신은 어디 출신입니까?"},
+    {n:40, e:"There is a bridge in front of the house.", k:"그 집 앞에 다리가 있다."},
+    {n:41, e:"He was not strong at first.", k:"그는 처음에는 힘이 세지 않았다."},
+    {n:42, e:"You don't have to do so.", k:"너는 그렇게 할 필요가 없다."},
+    {n:43, e:"We took pictures in the park.", k:"우리는 공원에서 사진을 찍었다."},
+    {n:44, e:"She read as many books as she could.", k:"그녀는 할 수 있는 대로 많은 책을 읽었다."},
+    {n:45, e:"... I met a foreigner and I spoke to him in English.", k:"... 나는 영어로 그에게 말을 걸어 보았다."},
+    {n:46, e:"All at once, it began to rain then.", k:"그런데 그때 비가 내리기 시작했다."},
+    {n:47, e:"Air is a kind of gas.", k:"공기는 기체의 일종이다."},
+    {n:48, e:"I’ll leave for school at eight.", k:"나는 8시에 학교로 출발한다."},
+    {n:49, e:"He is good at tennis.", k:"그는 테니스를 잘 친다."},
+    {n:50, e:"She gave me a sheet of paper ...", k:"그녀는 나에게 종이 한 장을 주며..."},
+    {n:51, e:"She picked up a book.", k:"그녀는 책을 집어 들었다."},
+    {n:52, e:"I am staying with my uncle.", k:"나는 삼촌 집에 머물고 있다."},
+    {n:53, e:"The boy said to himself...", k:"...하고 소년은 마음속으로 생각했다."},
+    {n:54, e:"You had better go now.", k:"너는 지금 가는 편이 좋다."},
+    {n:55, e:"Every room is full of many books.", k:"방마다 많은 책들로 가득 차 있다."},
+    {n:56, e:"She smiled at us.", k:"그녀는 우리를 보고 미소 지었다."},
+    {n:57, e:"The plant looks like a butterfly.", k:"그 식물은 나비처럼 보인다."},
+    {n:58, e:"She looked at me with a smile.", k:"그녀는 미소를 지으며 나를 보았다."},
+    {n:59, e:"She can speak both English and French freely.", k:"그녀는 영어도, 불어도 유창하게 말할 수 있다."},
+    {n:60, e:"She works for an oil company.", k:"그녀는 석유 회사에서 일하고 있다."},
+    {n:61, e:"He was able to swim at last.", k:"그는 마침내 헤엄칠 수 있게 되었다."},
+    {n:62, e:"We started for New York.", k:"우리는 뉴욕을 향해 출발했다."},
+    {n:63, e:"I’ve had such a good time.", k:"나는 정말 재미있는 시간을 보냈다."},
+    {n:64, e:"I made a mistake in reading.", k:"나는 읽기에서 한 군데 틀렸다."},
+    {n:65, e:"She grew up in Seoul.", k:"그녀는 서울에서 자랐다."},
+    {n:66, e:"We went home as soon as school was over at three.", k:"우리는 3시에 수업이 끝나자 곧 집으로 갔다."},
+    {n:67, e:"We have plenty of books to read.", k:"우리는 읽을 책이 많이 있다."},
+    {n:68, e:"I can't run any more.", k:"나는 더 이상 달릴 수 없다."},
+    {n:69, e:"A gentleman came up to me.", k:"한 신사가 나 있는 데까지 다가왔다."},
+    {n:70, e:"I took out a book from a bag.", k:"나는 가방에서 책 한 권을 꺼냈다."},
+    {n:71, e:"I paid for the books.", k:"나는 책값을 치렀다."},
+    {n:72, e:"Why don't you come with me?", k:"나와 함께 가는 게 어때요?"},
+    {n:73, e:"The fine weather went on for five days.", k:"맑은 날씨가 5일 간 계속되었다."},
+    {n:74, e:"A gentleman came up and talked to me.", k:"한 신사가 다가와서 내게 말을 걸었다."},
+    {n:75, e:"We waited for him for a while.", k:"우리는 잠시 그를 기다렸다."},
+    {n:76, e:"Look up the word in your dictionary.", k:"그 낱말을 네 사전에서 찾아보아라."},
+    {n:77, e:"I often looked out of the window.", k:"나는 가끔 창 밖을 내다보았다."},
+    {n:78, e:"I usually go to bed at 10.", k:"나는 보통 10시에 잔다."},
+    {n:79, e:"I did not hear the news yet.", k:"나는 아직 그 소식을 듣지 못했다."},
+    {n:80, e:"We got on the train at Seoul station.", k:"우리는 서울역에서 기차를 탔다."},
+    {n:81, e:"I put on my clothes in a hurry.", k:"나는 서둘러 옷을 입었다."},
+    {n:82, e:"He went skiing for the first time.", k:"그는 처음으로 스키 타러 갔다."},
+    {n:83, e:"Whom does this book belong to?", k:"이 책은 누구의 것이지?"},
+    {n:84, e:"Say hello to your father.", k:"당신 아버님께 안부 전해 주세요."},
+    {n:85, e:"I was very pleased to hear that...", k:"나는 ... 듣고 매우 기뻤다."},
+    {n:86, e:"I couldn’t go out because of the rain.", k:"나는 비 때문에 외출하지 않았다."},
+    {n:87, e:"... or you’ll be late for the train.", k:"... 기차 시간에 늦을 것이다."},
+    {n:88, e:"I will study English harder from now on.", k:"나는 이제부터 영어를 더욱 열심히 공부하겠다."},
+    {n:89, e:"Here you are.", k:"자, 여기 있습니다."},
+    {n:90, e:"She took a book out.", k:"그녀는 책 한 권을 꺼냈다."},
+    {n:91, e:"We are looking forward to the summer holidays.", k:"우리는 여름 방학이 오기를 손꼽아 기다리고 있다."},
+    {n:92, e:"He fell down and got hurt.", k:"그는 넘어져서 상처를 입었다."},
+    {n:93, e:"The girls took the man for the singer Rain.", k:"소녀들은 그 남자를 가수 비라고 생각했다."},
+    {n:94, e:"You must get rid of bad habits.", k:"나쁜 습관을 버려야 한다."},
+    {n:95, e:"Please help yourself to a tea.", k:"차를 마음대로 드세요."},
+    {n:96, e:"The young girl looked after them.", k:"그 젊은 아가씨가 그들을 돌보았다."},
+    {n:97, e:"Do you know what it is made of?", k:"너는 그것이 무엇으로 만들어졌는지 아니?"},
+    {n:98, e:"More and more people began to gather...", k:"더욱 더 많은 사람들이..."},
+    {n:99, e:"She put a flower in the vase.", k:"그녀는 꽃 한 송이를 꽃병에 꽂았다."},
+    {n:100, e:"The man went away.", k:"그 남자는 가버렸다."},
+    {n:101, e:"We were surprised at the news.", k:"우리는 그 소식을 듣고 놀랐다."},
+    {n:102, e:"Count from one to a hundred in Japanese.", k:"일본어로 1에서 100까지 세어봐."},
+    {n:103, e:"Not only she but also I am tall.", k:"그녀뿐만 아니라 나도 키가 크다."},
+    {n:104, e:"I like to study English, history, music and so on.", k:"나는 영어, 역사, 음악 등등을 공부하기 좋아한다."},
+    {n:105, e:"She stayed in bed with a cold all day.", k:"그녀는 감기로 하루 종일 누워 있었다."},
+    {n:106, e:"As a result, I got full marks.", k:"그 결과, 나는 만점 받았다."},
+    {n:107, e:"They were supposed to be here an hour ago.", k:"그들은 1시간 전에 여기 오기로 되어 있었다."},
+    {n:108, e:"I was at a loss what to do.", k:"나는 무엇을 해야 할지 몰랐다."},
+    {n:109, e:"You can rely on me 100%.", k:"저를 100% 믿으셔도 좋습니다."},
+    {n:110, e:"We can’t do without water.", k:"우리는 물 없이 지낼 수 없다."},
+    {n:111, e:"My sister handed down old clothes to me.", k:"언니가 내게 헌옷을 물려주었다."},
+    {n:112, e:"I have something to do with the accident.", k:"나는 그 사고와 관계가 있다."},
+    {n:113, e:"I’m sorry to be a trouble to you.", k:"폐를 끼쳐 죄송합니다."},
+    {n:114, e:"The Korean War broke out in 1950.", k:"한국전쟁은 1950년에 일어났다."},
+    {n:115, e:"I will do anything but that.", k:"나는 그 밖의 것이라면 무엇이든지 하겠다."},
+    {n:116, e:"Nothing but science can save the world.", k:"과학만이 이 세상을 구할 수 있다."},
+    {n:117, e:"Cows feed on grass.", k:"소는 풀을 먹고 산다."},
+    {n:118, e:"In fact, the movie is not that good.", k:"사실, 그 영화는 그렇게 좋지는 않다."},
+    {n:119, e:"You cannot be too diligent.", k:"아무리 근면해도 지나치지 않다."},
+    {n:120, e:"We can keep in touch with the world through the Internet.", k:"우리는 인터넷을 통해 세계와 접촉할 수 있다."},
+    {n:121, e:"The girl takes after her mother.", k:"그 소녀는 어머니를 닮았다."},
+    {n:122, e:"She is in charge of sales.", k:"그녀는 판매담당이다."},
+    {n:123, e:"I got the better of him at table tennis.", k:"나는 탁구에서 그를 이겼다."},
+    {n:124, e:"I care about you a lot.", k:"나는 너에게 관심이 많다."},
+    {n:125, e:"He took a real pains with his work.", k:"그는 자신의 일에 정말로 힘을 다했다."},
+    {n:126, e:"Make use of every chance to speak English.", k:"영어를 말할 수 있는 기회를 최대한 이용하도록 노력해라."},
+    {n:127, e:"You had better go to bed.", k:"너는 자는 것이 좋다."},
+    {n:128, e:"We took turns driving each week.", k:"우리는 주마다 교대로 운전했다."},
+    {n:129, e:"She turned him down.", k:"그녀는 그를 거절했다."},
+    {n:130, e:"The problem doesn’t work out.", k:"그 문제가 풀리지 않는다."},
+    {n:131, e:"Most children look up to their parents.", k:"대부분의 어린이들은 부모님을 존경한다."},
+    {n:132, e:"I stayed up last night.", k:"나는 어젯밤 늦게까지 자지 않고 있었다."},
+    {n:133, e:"Take your time and look around.", k:"천천히 둘러보세요."},
+    {n:134, e:"She is very funny at times.", k:"그녀는 때때로 매우 재미있다."},
+    {n:135, e:"We must find out how to do it.", k:"그것을 하는 방법을 알아내야 한다."},
+    {n:136, e:"I could not but tell a lie", k:"나는 거짓말을 하지 않을 수 없었다."},
+    {n:137, e:"The sooner, the better.", k:"빠르면 빠를수록 더 좋다."},
+    {n:138, e:"In general, they work from nine to five.", k:"일반적으로 그들은 9시부터 5시까지 일한다."},
+    {n:139, e:"Where did the accident take place?", k:"그 사고는 어디서 일어났지?"},
+    {n:140, e:"The trees provide us with fruit.", k:"그 나무들은 우리에게 과일을 준다."},
+    {n:141, e:"No one is free from stress.", k:"스트레스가 없는 사람은 아무도 없다."},
+    {n:142, e:"In the end, the war broke out.", k:"결국 전쟁이 일어났다."},
+    {n:143, e:"You should set a goal and achieve it.", k:"목표를 세워서 달성해야 한다."},
+    {n:144, e:"He applied for the job.", k:"그는 그 일자리에 지원했다."},
+    {n:145, e:"A thief broke into his house.", k:"도둑이 그의 집에 침입했다."},
+    {n:146, e:"He likes to stand out.", k:"그는 눈에 띄는 것을 좋아한다."},
+    {n:147, e:"Most of them are looking for a new leader.", k:"대부분의 사람들은 새로운 지도자를 찾고 있다."},
+    {n:148, e:"Pay attention to what your teacher says.", k:"선생님이 말씀하시는 것을 주의해서 들어라."},
+    {n:149, e:"What do you say to a walk in the park?", k:"공원을 산책하는 게 어떨까?"},
+    {n:150, e:"Please keep this request in mind.", k:"이 부탁을 부디 명심하세요."},
+    {n:151, e:"She burst into laughter.", k:"그녀는 갑자기 웃기 시작했다."},
+    {n:152, e:"The horse tried to jump over the fence.", k:"그 말은 울타리를 뛰어넘으려고 했다."},
+    {n:153, e:"... come to me to get them back.", k:"... 그녀는 지금 그 책들을 찾으러 왔다."},
+    {n:154, e:"They ran out of the classroom in a hurry.", k:"그들은 급히 교실에서 나왔다."},
+    {n:155, e:"I am afraid of spiders.", k:"나는 거미가 무섭다."},
+    {n:156, e:"... In other words, you are wrong.", k:"... 다시 말해서 네가 틀렸어."},
+    {n:157, e:"It takes more than an hour.", k:"한 시간 이상 걸린다."},
+    {n:158, e:"I found out where he had gone.", k:"나는 그가 어디로 갔는지 알아냈다."},
+    {n:159, e:"Father was angry with his son.", k:"아버지는 아들에게 화를 냈다."},
+    {n:160, e:"She looked around for a while.", k:"그녀는 잠시 둘러보았다."},
+    {n:161, e:"They ran away as soon as they saw their teacher.", k:"그들은 선생님을 보자마자 도망쳤다."},
+    {n:162, e:"She is fond of children.", k:"그녀는 아이들을 좋아한다."},
+    {n:163, e:"I am not so tall as his brother.", k:"나는 그의 형만큼 키가 크지 않다."},
+    {n:164, e:"Everyone should do his or her best.", k:"모두 최선을 다해야 한다."},
+    {n:165, e:"... For example, roses are beautiful!", k:"... 예를 들면 장미가 아름답다!"},
+    {n:166, e:"You are welcome.", k:"천만에요."},
+    {n:167, e:"A table is in the middle of the room.", k:"방 한가운데에 탁자가 있다."},
+    {n:168, e:"Don’t get angry with me so often.", k:"내게 그렇게 자주 화를 내지 마라."},
+    {n:169, e:"She put some roses in the vase.", k:"그녀는 장미 몇 송이를 꽃병에 꽂았다."},
+    {n:170, e:"He cannot speak English at all.", k:"그는 영어를 전혀 말하지 못한다."},
+    {n:171, e:"She looked at me for a while.", k:"그녀는 잠시 나를 바라보았다."},
+    {n:172, e:"She came up to him in the streets.", k:"그녀는 거리에서 그에게 다가갔다."},
+    {n:173, e:"I shook hands with him.", k:"나는 그와 악수했다."},
+    {n:174, e:"She has kept writing for an hour.", k:"그녀는 한 시간 동안 계속 쓰고 있다."},
+    {n:175, e:"A bird ... flew far away.", k:"새 한 마리가 ... 멀리 날아가 버렸다."},
+    {n:176, e:"After a while, it began to rain.", k:"잠시 후에 비가 내리기 시작했다."},
+    {n:177, e:"I held up my hand to stop the car.", k:"나는 그 차를 세우기 위해 손을 들었다."},
+    {n:178, e:"He was very busy at that time.", k:"그는 그때 몹시 바빴다."},
+    {n:179, e:"They asked for some food.", k:"그들은 먹을 것을 요구했다."},
+    {n:180, e:"We’ll have a party at the end of the contest.", k:"대회의 끝에는 파티가 열린다."},
+    {n:181, e:"Nothing happened to him.", k:"그에게 아무 일도 일어나지 않았다."},
+    {n:182, e:"We are ready to start.", k:"우리는 출발할 준비가 되어 있다."},
+    {n:183, e:"She turned around and began to cry.", k:"그녀는 돌아서서 울기 시작했다."},
+    {n:184, e:"She made up her mind to marry.", k:"그녀는 결혼하기로 결심했다."},
+    {n:185, e:"I get off the bus here every day.", k:"나는 매일 여기서 버스에서 내린다."},
+    {n:186, e:"I would like to help you.", k:"나는 너를 돕고 싶다."},
+    {n:187, e:"Would you like to see her?", k:"그녀를 만나시겠습니까?"},
+    {n:188, e:"She will get well soon.", k:"그녀는 곧 몸이 회복될 것이다."},
+    {n:189, e:"They got married in Seoul.", k:"그들은 서울에서 결혼했다."},
+    {n:190, e:"He took off his shoes.", k:"그는 신발을 벗었다."},
+    {n:191, e:"He takes a walk every morning.", k:"그는 아침마다 산책한다."},
+    {n:192, e:"He came running all the way.", k:"그는 줄곧 뛰어서 왔다."},
+    {n:193, e:"We cut down the tree.", k:"우리는 나무를 베어 넘어뜨렸다."},
+    {n:194, e:"I am proud of being a Korean.", k:"나는 한국 사람임을 자랑스럽게 여긴다."},
+    {n:195, e:"Have you ever been to London?", k:"런던에 가 본 적이 있니?"},
+    {n:196, e:"I found out that our opinions differed from theirs.", k:"나는 우리의 의견이 그들의 의견과 다르다는 것을 발견했다."},
+    {n:197, e:"We learned German instead of French.", k:"우리는 프랑스어 대신에 독일어를 배웠다."},
+    {n:198, e:"My mother is sick in bed today.", k:"어머니는 오늘 병으로 누워 있다."},
+    {n:199, e:"I feel sorry for him.", k:"나는 그를 가엾게 여긴다."},
+    {n:200, e:"I’m getting ready for dinner.", k:"나는 저녁 식사 준비를 하고 있다."},
+    {n:201, e:"Cheese is made from milk.", k:"치즈는 우유로 만든다."},
+    {n:202, e:"I made friends with her.", k:"나는 그녀와 친해졌다."},
+    {n:203, e:"A car passed by at full speed.", k:"차 한 대가 전속력으로 지나갔다."},
+    {n:204, e:"A bear ran out of the woods.", k:"곰 한 마리가 숲에서 달려 나왔다."},
+    {n:205, e:"A bird flew in through the window.", k:"새 한 마리가 창문으로 들어갔다."},
+    {n:206, e:"I listened to his speech on the radio.", k:"나는 라디오로 그의 연설을 들었다."},
+    {n:207, e:"They looked at me at the same time.", k:"그들은 동시에 나를 바라보았다."},
+    {n:208, e:"We can see many people passing by here.", k:"우리는 많은 사람들이 이곳을 지나가는 것을 볼 수 있다."},
+    {n:209, e:"He went out in a hurry.", k:"그는 급히 밖으로 나갔다."},
+    {n:210, e:"I make it a rule to take a bath every day.", k:"매일 목욕하는 것이 나의 습관이다."},
+    {n:211, e:"... saving money as well as earning it.", k:"너는 돈을 버는 것뿐만 아니라 저축하는 것에 대해서도 생각해 보는 것이 좋다."},
+    {n:212, e:"What are you going to be in the future?", k:"너는 장래에 어떤 사람이 될 거니?"},
+    {n:213, e:"One is black, and the other is white.", k:"한쪽은 검고, 다른 한쪽은 희다."},
+    {n:214, e:"We went on a trip to Japan.", k:"우리는 일본으로 여행을 떠났다."},
+    {n:215, e:"I’ve studied all my life.", k:"나는 평생 공부해 오고 있다."},
+    {n:216, e:"I was surprised to see the scene.", k:"나는 그 광경을 보고 놀랐다."},
+    {n:217, e:"He went to Seoul on business.", k:"그는 용무가 있어 서울에 갔다."},
+    {n:218, e:"It takes half an hour to go to school.", k:"학교에 가는 데 30분이 걸린다."},
+    {n:219, e:"I did it by myself.", k:"나는 혼자서 그 일을 했다."},
+    {n:220, e:"There is a house on the top of a hill.", k:"언덕 꼭대기에 집 한 채가 있다."},
+    {n:221, e:"I’d like to lie down on the grass.", k:"나는 풀 위에 눕고 싶다."},
+    {n:222, e:"The vending machine was out of order.", k:"음료수 자판기는 고장이 나 있었다."},
+    {n:223, e:"You will soon come to understand its meaning.", k:"너는 곧 그 뜻을 알게 될 것이다."},
+    {n:224, e:"Thanks to you, I had a very good time.", k:"당신 덕분에 매우 재미있게 지냈습니다."},
+    {n:225, e:"We all went into the classroom.", k:"우리는 모두 교실로 들어갔다."},
+    {n:226, e:"He is busy doing something.", k:"그는 무엇인가 하느라 바쁘다."},
+    {n:227, e:"A small village is at the foot of the mountain.", k:"산기슭에 작은 마을이 있다."},
+    {n:228, e:"The train arrived on time.", k:"기차는 정각에 도착했다."},
+    {n:229, e:"He brought back a lot of books from the library.", k:"그는 도서관에서 많은 책을 갖고 돌아왔다."},
+    {n:230, e:"The book will cost at least 10 dollars.", k:"그 책은 적어도 10달러는 할 것이다."},
+    {n:231, e:"He worked hard in order to succeed.", k:"그는 성공하기 위해 열심히 공부했다."},
+    {n:232, e:"The top is covered with snow.", k:"꼭대기는 눈으로 덮여 있다."},
+    {n:233, e:"She seemed to get better little by little.", k:"그녀는 몸이 조금씩 나아지는 것 같았다."},
+    {n:234, e:"He ran up to his father.", k:"그는 아버지에게 뛰어 다가갔다."},
+    {n:235, e:"She was absent from school yesterday.", k:"그녀는 어제 학교에 결석했다."},
+    {n:236, e:"Do it as quickly as possible.", k:"할 수 있는 대로 빨리 하세요."},
+    {n:237, e:"I have left my bag behind.", k:"나는 가방을 두고 왔다."},
+    {n:238, e:"How are you getting along?", k:"어떻게 지내십니까?"},
+    {n:239, e:"She brought up three children.", k:"그녀는 세 아이를 길렀다."},
+    {n:240, e:"I wanted to see him above all.", k:"나는 그 중에서도 그를 만나고 싶었다."},
+    {n:241, e:"There is a hill at the back of my house.", k:"나의 집 뒤에 언덕이 있다."},
+    {n:242, e:"He had to do the work for himself.", k:"그는 혼자 힘으로 그 일을 해야만 했다."},
+    {n:243, e:"They cried out for help.", k:"그들은 도와 달라고 큰소리로 외쳤다."},
+    {n:244, e:"... try it on.", k:"... 입어 보아라."},
+    {n:245, e:"Someone has taken away all my books from the bag.", k:"누군가 가방에서 내 책을 모두 가져가 버렸다."},
+    {n:246, e:"We all took part in the party.", k:"우리는 모두 파티에 참가했다."},
+    {n:247, e:"I took a rest for a while.", k:"나는 잠시 휴식했다."},
+    {n:248, e:"We all went on a picnic last Sunday.", k:"우리 모두 지난 일요일에 소풍을 갔다."},
+    {n:249, e:"They laughed at a funny story.", k:"그들은 재미있는 이야기를 듣고 웃었다."},
+    {n:250, e:"I pointed out his mistakes.", k:"나는 그의 잘못을 지적했다."},
+    {n:251, e:"I was in time for the train.", k:"나는 기차 시간에 대었다."},
+    {n:252, e:"Either you or I must go.", k:"당신이든 나든 어느 한 사람은 가야 한다."},
+    {n:253, e:"We make milk into butter.", k:"우리는 우유로 버터를 만든다."},
+    {n:254, e:"I agree with my teacher.", k:"나는 선생님의 의견에 동의합니다."},
+    {n:255, e:"He picked up a book and began to read.", k:"그는 책 한 권을 집어 들고 읽기 시작했다."},
+    {n:256, e:"She fell asleep late last night.", k:"그녀는 어젯밤 늦게 잠들었다."},
+    {n:257, e:"He will make a speech on the radio tonight.", k:"그는 오늘 밤 라디오로 연설한다."},
+    {n:258, e:"Father stayed at the hotel in New York.", k:"아버지는 뉴욕의 호텔에 묵으셨다."},
+    {n:259, e:"The glass is full of water.", k:"잔은 물로 가득 차 있다."},
+    {n:260, e:"Don’t worry about it.", k:"그것을 걱정하지 마라."},
+    {n:261, e:"A cat was brought in yesterday.", k:"어제 고양이 한 마리를 들여왔다."},
+    {n:262, e:"They sent for the doctor.", k:"그들은 의사를 데리러 보냈다."},
+    {n:263, e:"I was quite young back in those days.", k:"그때에 나는 매우 어렸다."},
+    {n:264, e:"He bought a new car the other day.", k:"그는 요전 날 새 차를 샀다."},
+    {n:265, e:"He had to be away from home for a week...", k:"그는 일 때문에 1주일 동안 집을 떠나 있어야만 했다."},
+    {n:266, e:"It is foolish of him to do such a thing.", k:"그런 일을 하다니 그는 어리석다."},
+    {n:267, e:"I drew up the schedule for a trip.", k:"나는 여행 예정표를 만들었다."},
+    {n:268, e:"They were anxious for his safety.", k:"그들은 그가 무사하기를 간절히 바라고 있었다."},
+    {n:269, e:"I go for a walk every morning.", k:"나는 아침마다 산책을 나간다."},
+    {n:270, e:"They came out of the school.", k:"그들은 학교에서 나왔다."},
+    {n:271, e:"I caught a cold last week.", k:"나는 지난주에 감기에 걸렸다."},
+    {n:272, e:"I was tired with teaching.", k:"나는 수업으로 피곤했다."},
+    {n:273, e:"Do you mind opening the window?", k:"창문을 열어 주시지 않겠습니까?"},
+    {n:274, e:"... very well before long if you study it harder.", k:"... 머지않아 영어를 매우 잘 말하게 될 것이다."},
+    {n:275, e:"A wolf ran away with a sheep.", k:"늑대가 양을 채어 갔다."},
+    {n:276, e:"He set out for London.", k:"그는 런던을 향해 출발했다."},
+    {n:277, e:"You are no longer a child.", k:"너는 이제 어린아이가 아니다."},
+    {n:278, e:"Don’t make a noise in the classroom.", k:"교실에서 떠들지 마라."},
+    {n:279, e:"Count up to ten in English.", k:"영어로 10까지 세어 보세요."},
+    {n:280, e:"We called at her house.", k:"우리는 그녀의 집을 방문했다."},
+    {n:281, e:"He is sure of success.", k:"그는 성공을 확신한다."},
+    {n:282, e:"I am used to that sort of thing.", k:"나는 그런 일에 익숙해졌다."},
+    {n:283, e:"He threw away a piece of paper.", k:"그는 종이 한 장을 내던졌다."},
+    {n:284, e:"Any member can make use of the reading room.", k:"어떤 회원이든 독서실을 이용할 수 있다."},
+    {n:285, e:"Mother will soon come back from shopping.", k:"어머니는 쇼핑에서 곧 돌아오실 것이다."},
+    {n:286, e:"All of a sudden, it began to rain.", k:"갑자기 비가 내리기 시작했다."},
+    {n:287, e:"He came over to say goodbye to me.", k:"그는 나에게 작별 인사를 하러 왔다."},
+    {n:288, e:"He thought for a moment.", k:"그는 잠깐 생각했다."},
+    {n:289, e:"I have to change dollars into won at the bank.", k:"나는 은행에서 달러화를 원화로 바꿔야겠다."},
+    {n:290, e:"He has read many books so far.", k:"그는 지금까지 많은 책을 읽어 왔다."},
+    {n:291, e:"She is suffering from a cold now.", k:"그녀는 지금 감기에 걸려 있다."},
+    {n:292, e:"People set up a statue in memory of him...", k:"사람들은 그를 기념하기 위해 공원에 동상을 세웠다."},
+    {n:293, e:"Turn on the lights.", k:"전등을 켜라."},
+    {n:294, e:"They came to the airport to see me off.", k:"그들은 나를 전송하러 공항에 왔다."},
+    {n:295, e:"I’ll call up my parents as soon as I get there.", k:"그곳에 도착하면 곧 부모님께 전화를 걸겠습니다."},
+    {n:296, e:"They are in trouble now.", k:"그들은 지금 곤란을 겪고 있다."},
+    {n:297, e:"What does “W” stand for?", k:"‘W’자는 무엇을 나타냅니까?"},
+    {n:298, e:"You had better start at once.", k:"너는 지금 곧 출발하는 것이 좋겠다."},
+    {n:299, e:"London is famous for its fog.", k:"런던은 안개로 유명하다."},
+    {n:300, e:"He looked in the window.", k:"그는 창문 안쪽을 들여다보았다."},
+    {n:301, e:"We go to school on foot.", k:"우리는 걸어서 학교에 간다."},
+    {n:302, e:"I went on a trip to Europe.", k:"나는 유럽으로 여행 갔다."},
+    {n:303, e:"Hurry up, or you’ll be late for school.", k:"서둘러라. 그렇지 않으면 학교에 늦는다."},
+    {n:304, e:"He went up and down the hill.", k:"그는 언덕을 위아래로 오르내렸다."},
+    {n:305, e:"He went away saying “Goodbye.”", k:"그는‘안녕’이라고 말하며 떠나갔다."},
+    {n:306, e:"Learn this sentence by heart.", k:"이 문장을 외워라."},
+    {n:307, e:"I’ll fight to the end.", k:"나는 최후까지 싸우겠다."},
+    {n:308, e:"I have the same watch as you.", k:"나는 네 것과 같은 시계를 갖고 있다."},
+    {n:309, e:"He was very busy all the time.", k:"그는 그 동안 줄곧 매우 바빴다."},
+    {n:310, e:"Study English harder first of all.", k:"첫째로 영어를 더욱 열심히 공부해라."},
+    {n:311, e:"To my surprise, I won the prize.", k:"놀랍게도 나는 상을 탔다."},
+    {n:312, e:"The child is pleased with the toy.", k:"그 아이는 그 장난감이 마음에 든다."},
+    {n:313, e:"What for?", k:"왜?"},
+    {n:314, e:"Put your hands up!", k:"손들어!"},
+    {n:315, e:"She made up her mind to get away from the noisy city.", k:"그녀는 시끄러운 도시를 떠나기로 결심했다."},
+    {n:316, e:"I have heard of him, but I have never seen him.", k:"나는 그의 소문을 들은 적이 있지만 아직 만난 적은 없다."},
+    {n:317, e:"You were right after all.", k:"결국 네가 옳았다."},
+    {n:318, e:"The waves turned over our boat.", k:"파도가 우리 배를 뒤집어엎었다."},
+    {n:319, e:"He found it difficult to do two things at a time.", k:"그는 한번에 두 가지 일을 하기는 어렵다는 것을 알았다."},
+    {n:320, e:"They were at table then.", k:"그때 그들은 식사 중이었다."},
+    {n:321, e:"He is not my son, but my nephew.", k:"그는 내 아들이 아니고 조카다."},
+    {n:322, e:"He held out his hand for some money...", k:"그는 아버지를 보자 돈을 좀 달라고 손을 내밀었다."},
+    {n:323, e:"The alphabet begins with A.", k:"알파벳은 A로부터 시작한다."},
+    {n:324, e:"His name is known to everybody in the world.", k:"그의 이름은 세계의 모든 사람에게 알려져 있다."},
+    {n:325, e:"I walked as far as my hometown.", k:"나는 고향까지 걸어갔다."},
+    {n:326, e:"You should carry out your first plan.", k:"당신은 첫 번째 계획을 실행에 옮겨야 한다."},
+    {n:327, e:"The star gave off a strong light.", k:"그 별은 강한 빛을 발하였다."},
+    {n:328, e:"My car broke down on the way.", k:"내 차는 도중에 고장 났다."},
+    {n:329, e:"Please turn off the radio.", k:"라디오를 좀 꺼 주세요."},
+    {n:330, e:"He lives next door to us.", k:"그는 우리 이웃에 살고 있다."},
+    {n:331, e:"Once upon a time, there lived a queen.", k:"옛날 옛적에 한 여왕이 살고 있었다."},
+    {n:332, e:"People gathered round the beggar.", k:"사람들이 거지 주위에 모였다."},
+    {n:333, e:"People will remember his name for ever.", k:"사람들은 영원히 그의 이름을 기억할 것이다."},
+    {n:334, e:"A number of people watched the game.", k:"많은 사람들이 그 경기를 봤다."},
+    {n:335, e:"It rained from time to time.", k:"때때로 비가 내렸다."},
+    {n:336, e:"She was late, as usual.", k:"여느 때처럼 그녀는 늦었다."},
+    {n:337, e:"There are millions of miles of highways.", k:"수백만 마일에 이르는 고속도로가 있다."},
+    {n:338, e:"They had to fight against hunger.", k:"그들은 굶주림과 싸워야만 했다."},
+    {n:339, e:"Come in one by one.", k:"차례로 들어오세요."},
+    {n:340, e:"I need a sheet of newspaper.", k:"나는 신문 한 장이 필요하다."},
+    {n:341, e:"Please take a seat.", k:"자리에 앉아 주세요."},
+    {n:342, e:"Mt. Halla is three times as high as this mountain.", k:"한라산은 이 산보다 3배나 높다."},
+    {n:343, e:"It is very hot here all the year round.", k:"이곳은 일 년 내내 매우 덥다."},
+    {n:344, e:"We handed in our reports.", k:"우리는 보고서를 제출했다."},
+    {n:345, e:"Who takes care of the sick?", k:"누가 환자를 돌보고 있습니까?"},
+    {n:346, e:"Can you give me a hand?", k:"도와 줄 수 있어?"},
+    {n:347, e:"Christmas falls on Sunday this year.", k:"올해 크리스마스는 일요일이다."},
+    {n:348, e:"Walk fast so as to be in time for the train.", k:"기차 시간에 맞추기 위해서 빨리 걸어라."},
+    {n:349, e:"The man has difficulty walking in the snow.", k:"남자가 눈길을 걸어가는 데 어려움이 있다."},
+    {n:350, e:"I do not invite both of them.", k:"나는 그들을 둘 다 초대하지는 않는다."},
+    {n:351, e:"It is no use crying over spilt milk.", k:"엎질러진 우유 때문에 울어 봐야 소용없다."},
+    {n:352, e:"We went out in spite of the rain.", k:"우리는 비가 오는데도 불구하고 외출을 했다."},
+    {n:353, e:"I didn’t put out a candle before leaving the house.", k:"집에서 나오기 전에 촛불을 끄지 않았다."},
+    {n:354, e:"I got the ticket for nothing.", k:"나는 공짜로 그 표를 얻었다."},
+    {n:355, e:"The men robbed the passengers of their money.", k:"그 남자들이 승객들에게서 돈을 빼앗았다."},
+    {n:356, e:"They have a lot in common.", k:"그들은 공통점이 많다."},
+    {n:357, e:"I met an old friend by chance.", k:"나는 옛 친구를 우연히 만났다."},
+    {n:358, e:"We had to put off our trip.", k:"우리는 여행을 연기해야 했다."},
+    {n:359, e:"I’m trying to lose weight.", k:"나는 체중을 줄이려 한다."},
+    {n:360, e:"I ran across an old friend yesterday.", k:"나는 어제 옛 친구를 우연히 만났다."},
+    {n:361, e:"She is proud of her son.", k:"그녀는 아들을 자랑스러워한다."},
+    {n:362, e:"The police were looking for thieves.", k:"경찰이 도둑들을 찾고 있었다."},
+    {n:363, e:"She picked out the most expensive pair of shoes.", k:"그녀는 가장 비싼 구두를 골랐다."},
+    {n:364, e:"The two boys stood side by side.", k:"두 소년은 나란히 서 있었다."},
+    {n:365, e:"You’d better see a doctor about that cough.", k:"그렇게 기침을 하니 의사에게 진찰받는 게 좋겠다."},
+    {n:366, e:"At the sight of a policeman, the thief ran away.", k:"경찰관을 보고 도둑은 달아나 버렸다."},
+    {n:367, e:"I believe in your word.", k:"나는 당신의 말을 믿는다."},
+    {n:368, e:"We see things by means of light.", k:"우리는 빛으로 사물을 본다."},
+    {n:369, e:"I had him cut my hair.", k:"나는 그에게 내 머리를 자르게 시켰다."},
+    {n:370, e:"What is the weather like?", k:"날씨가 어떻습니까?"},
+    {n:371, e:"The new government took over on March 25.", k:"새 정부가 3월 25일에 인계를 받았다."},
+    {n:372, e:"Don’t lose heart yet.", k:"아직은 낙심하지 마라."},
+    {n:373, e:"Watch out!", k:"위험해, 조심해라!"},
+    {n:374, e:"Let’s go to the movies on Saturday.", k:"토요일에 영화 보러 가자."},
+    {n:375, e:"I like hanging out with my friends in the mall.", k:"나는 친구들과 쇼핑몰에 어울려 다니는 것을 좋아한다."},
+    {n:376, e:"Don’t compare yourself with others.", k:"자신을 다른 사람과 비교하지 마라."},
+    {n:377, e:"I’ll give you a ride in the new car.", k:"당신을 새 차에 태워 주겠습니다."},
+    {n:378, e:"As a rule, I’m home by five.", k:"대개 나는 5시에 집에 도착한다."},
+    {n:379, e:"The examination was suddenly called off.", k:"시험이 갑자기 취소되었다."},
+    {n:380, e:"I’ll find a way sooner or later.", k:"조만간 나는 방법을 찾을 것이다."},
+    {n:381, e:"He fell asleep during the class.", k:"그는 수업 도중 잠이 들었다."},
+    {n:382, e:"Please come in and make yourself at home.", k:"들어오셔서 편히 쉬세요."},
+    {n:383, e:"I cannot make myself understood in English.", k:"나는 영어로 말이 통하지 않는다."},
+    {n:384, e:"She is down with flu.", k:"그녀는 유행성 감기를 앓고 있다."},
+    {n:385, e:"The picture is upside down.", k:"그림이 거꾸로 걸려 있다."},
+    {n:386, e:"Come on, enjoy yourself!", k:"자, 즐기라고!"},
+    {n:387, e:"Parents will always show off their children.", k:"부모는 언제나 자기 자식들을 자랑하려고 한다."},
+    {n:388, e:"I’ll give you three days to think it over.", k:"그것을 깊이 생각하도록 네게 3일 간의 여유를 주겠다."},
+    {n:389, e:"I used to get up at 6 every morning.", k:"나는 아침마다 6시에 일어나곤 했다."},
+    {n:390, e:"Drop in on me at any time.", k:"언제든지 내게 들러."},
+    {n:391, e:"I’ve never met him in person.", k:"나는 그를 직접 만난 적이 없다."},
+    {n:392, e:"A piano plays an important role in this film.", k:"피아노가 이 영화에서 중요한 역할을 한다."},
+    {n:393, e:"You will get used to it by and by.", k:"차차 익숙해질 거야."},
+    {n:394, e:"According to the fairy tale...", k:"동화에 따르면..."},
+    {n:395, e:"He set the bird free from the cage.", k:"그는 새장에서 새를 놓아 주었다."},
+    {n:396, e:"Make sure that all the doors are locked.", k:"문이 모두 잠겼는지 확인을 해라."},
+    {n:397, e:"Your answer doesn’t make sense.", k:"네 대답은 말이 안 된다."},
+    {n:398, e:"This will only add to your problem.", k:"이것은 네게 문제를 더할 뿐이다."},
+    {n:399, e:"We must get through with our work.", k:"우리는 곧 일을 끝내야 한다."},
+    {n:400, e:"He almost went mad with worry.", k:"그는 걱정 때문에 거의 미칠 지경이었다."},
+    {n:401, e:"How many people are there in your family?", k:"너의 가족은 몇 사람이니?"},
+    {n:402, e:"He has a few friends in America.", k:"그는 미국에 친구가 몇 사람 있다."},
+    {n:403, e:"Look at that beautiful rainbow!", k:"저 아름다운 무지개를 보아라!"},
+    {n:404, e:"We began to listen to his speech on the radio.", k:"우리는 라디오로 그의 연설을 듣기 시작했다."},
+    {n:405, e:"We talked with him for an hour.", k:"우리는 그와 한 시간 동안 이야기했다."},
+    {n:406, e:"How long did it take to finish it?", k:"그것을 끝마치는 데 시간이 얼마나 걸렸니?"},
+    {n:407, e:"One day, I went to the museum with her.", k:"어느 날 나는 그녀와 함께 박물관에 갔다."},
+    {n:408, e:"I think that he is honest.", k:"나는 그가 정직하다고 생각한다."},
+    {n:409, e:"She will soon come back.", k:"그녀는 곧 돌아올 것이다."},
+    {n:410, e:"All right / Sounds good.", k:"좋아."},
+    {n:411, e:"I want a little money.", k:"나는 돈이 좀 필요하다."},
+    {n:412, e:"She got up early this morning.", k:"그녀는 오늘 아침 일찍 일어났다."},
+    {n:413, e:"She was talking with her neighbor about it.", k:"그녀는 그것에 대해 이웃 사람과 이야기하고 있었다."},
+    {n:414, e:"Do you know how to count in English?", k:"영어로 수를 셀 줄 아니?"},
+    {n:415, e:"He talked about his father.", k:"그는 자기 아버지에 대해 이야기했다."},
+    {n:416, e:"Tom is as honest as John.", k:"톰은 존만큼 정직하다."},
+    {n:417, e:"We enjoyed music.", k:"우리는 음악을 즐겼다."},
+    {n:418, e:"There is a lot to learn about it.", k:"그것에 대해 배울 것이 많다."},
+    {n:419, e:"How about a cup of coffee?", k:"커피 한 잔 하면 어떨까요?"},
+    {n:420, e:"Let’s go swimming.", k:"수영하러 가자."},
+    {n:421, e:"I go to school by bus.", k:"나는 버스로 학교에 간다."},
+    {n:422, e:"We are learning English at school.", k:"우리는 학교에서 영어를 배우고 있다."},
+    {n:423, e:"We had a lot of rain last night.", k:"어젯밤에 비가 많이 왔다."},
+    {n:424, e:"Of course, he’ll come.", k:"물론 그는 옵니다."},
+    {n:425, e:"I am glad to hear that.", k:"나는 그 말을 들으니 기쁘다."},
+    {n:426, e:"I need to see him at once.", k:"나는 곧 그를 만나 볼 필요가 있다."},
+    {n:427, e:"He has hundreds of English books.", k:"그는 수백 권의 영어 책을 갖고 있다."},
+    {n:428, e:"A group of boys are skating there.", k:"한 무리의 소년들이 그곳에서 스케이트를 타고 있다."},
+    {n:429, e:"Thousands of students joined the mass game.", k:"수천 명의 학생들이 매스게임에 참가했다."},
+    {n:430, e:"How many times have you been to London?", k:"당신은 런던에 몇 번 가 본 적이 있습니까?"},
+    {n:431, e:"He is old enough to go to school.", k:"그는 학교에 갈 만큼 충분한 나이가 되었다."},
+    {n:432, e:"It is not good to ask about people’s age.", k:"사람들의 나이에 대해서 묻는 것은 좋지 않다."},
+    {n:433, e:"Thanks for your kindness.", k:"당신의 친절에 감사합니다."},
+    {n:434, e:"Mother thinks of her son day and night.", k:"어머니는 밤낮으로 자기 아들을 생각한다."},
+    {n:435, e:"He got lost in the woods.", k:"그는 숲속에서 길을 잃었다."},
+    {n:436, e:"A boy cried out for help.", k:"한 소년이 도와 달라고 큰소리로 외쳤다."},
+    {n:437, e:"His dream came true.", k:"그의 꿈이 실현되었다."},
+    {n:438, e:"A pair of shoes cost 10 dollars.", k:"신발 한 켤레가 10달러이다."},
+    {n:439, e:"She was very tired and stopped studying.", k:"그녀는 몹시 피곤해서 공부를 멈추었다."},
+    {n:440, e:"Someday, I want to go around the world.", k:"나는 언젠가 세계 일주를 하고 싶다."},
+    {n:441, e:"All of the students in our class work hard.", k:"우리 반 학생들은 모두 열심히 공부한다."},
+    {n:442, e:"What time do you go to school?", k:"너는 몇 시에 학교에 가니?"},
+    {n:443, e:"Will you help me with the homework?", k:"내 숙제를 도와주시겠어요?"},
+    {n:444, e:"Our school is known all over Korea.", k:"우리 학교는 전국에 알려져 있다."},
+    {n:445, e:"I don’t know what to do.", k:"나는 무엇을 하면 좋을지 모르겠다."},
+    {n:446, e:"We went into the classroom.", k:"우리는 교실로 들어갔다."},
+    {n:447, e:"We loved each other.", k:"우리는 서로 사랑했다."},
+    {n:448, e:"The train runs between Seoul and Busan.", k:"그 기차는 서울과 부산 사이를 달린다."},
+    {n:449, e:"May I help you?", k:"도와 드릴까요?"},
+    {n:450, e:"He seems to be happy.", k:"그는 행복한 것처럼 보인다."},
+    {n:451, e:"No one is absent today.", k:"오늘은 아무도 결석하지 않았다."},
+    {n:452, e:"We arrived in London the next day.", k:"우리는 그 다음날 런던에 도착했다."},
+    {n:453, e:"Can I help you?", k:"도와 드릴까요?"},
+    {n:454, e:"Most of the students are busy with exams.", k:"학생의 대부분이 시험으로 바쁘다."},
+    {n:455, e:"They went back home as soon as school was over.", k:"그들은 수업이 끝나자 곧 집으로 돌아갔다."},
+    {n:456, e:"We can see our school over there.", k:"저쪽에 우리 학교가 보인다."},
+    {n:457, e:"He studied English all day.", k:"그는 하루 종일 영어 공부를 했다."},
+    {n:458, e:"We visited the museum many times.", k:"우리는 그 박물관을 여러 번 방문했다."},
+    {n:459, e:"How much water is there in the vase?", k:"꽃병에 물이 얼마쯤 있습니까?"},
+    {n:460, e:"She went out shopping.", k:"그녀는 쇼핑하러 외출했다."},
+    {n:461, e:"I am going to stay home tomorrow.", k:"나는 내일 집에 있을 거야."},
+    {n:462, e:"He will pass the examination this time.", k:"그는 이번에는 시험에 합격할 것이다."},
+    {n:463, e:"I read the lesson again and again.", k:"나는 그 과(課)를 몇 번이고 읽었다."},
+    {n:464, e:"We usually leave home for school at seven.", k:"우리는 보통 7시에 학교에 가기 위해 집을 나온다."},
+    {n:465, e:"Stand up, everybody.", k:"여러분, 일어서 주십시오."},
+    {n:466, e:"Just then, a fire broke out.", k:"바로 그때 화재가 일어났다."},
+    {n:467, e:"She is one of the greatest scientists.", k:"그녀는 가장 위대한 과학자들 중의 한 사람이다."},
+    {n:468, e:"You must not study English in this way.", k:"너는 영어 공부를 이렇게 해서는 안된다."},
+    {n:469, e:"Prices are going up every day.", k:"물가가 날마다 오르고 있다."},
+    {n:470, e:"I haven’t heard from him for a long time.", k:"나는 오랫동안 그에게서 소식을 듣지 못했다."},
+    {n:471, e:"What time is it by your watch?", k:"네 시계로 몇 시니?"},
+    {n:472, e:"Get me a cup of coffee.", k:"커피 한 잔 주세요."},
+    {n:473, e:"Sit down, please.", k:"앉으세요."},
+    {n:474, e:"She finished writing a letter.", k:"그녀는 편지 쓰기를 끝마쳤다."},
+    {n:475, e:"How old are you?", k:"너는 몇 살이니?"},
+    {n:476, e:"We played baseball last Sunday.", k:"우리는 지난 일요일에 야구를 했다."},
+    {n:477, e:"I dreamed all night.", k:"나는 밤새도록 꿈을 꾸었다."},
+    {n:478, e:"I sat next to her.", k:"나는 그녀의 옆에 앉았다."},
+    {n:479, e:"We looked down from Namsan.", k:"우리는 남산에서 내려다보았다."},
+    {n:480, e:"Prices went down.", k:"물가가 내렸다."},
+    {n:481, e:"I’ll tell you an interesting story next time.", k:"다음에 재미있는 이야기를 해 주겠다."},
+    {n:482, e:"Don’t run around in the classroom.", k:"교실에서는 뛰어 돌아다니지 마라."},
+    {n:483, e:"I watch TV every day.", k:"나는 날마다 텔레비전을 본다."},
+    {n:484, e:"He came home by bus.", k:"그는 버스로 귀가했다."},
+    {n:485, e:"They went across the field covered with snow.", k:"그들은 눈으로 덮여 있는 들을 가로질러 갔다."},
+    {n:486, e:"The book will come out soon.", k:"그 책은 곧 나올 것이다."},
+    {n:487, e:"How far is it from here to the school?", k:"여기에서 학교까지의 거리는 얼마나 됩니까?"},
+    {n:488, e:"Get me a glass of water.", k:"물 한잔 주세요."},
+    {n:489, e:"We have lunch at noon.", k:"우리는 정오에 점심을 먹는다."},
+    {n:490, e:"Each of us has his or her opinion.", k:"우리들은 각자의 의견이 있다."},
+    {n:491, e:"How often have you been to the zoo?", k:"너는 그 동물원에 몇 번 가 본 적이 있니?"},
+    {n:492, e:"Come on, stop it!", k:"자, 그만둬!"},
+    {n:493, e:"I visited London long ago.", k:"나는 오래 전에 런던을 방문했다."},
+    {n:494, e:"Some students write down every word...", k:"어떤 학생들은 선생님이 말하는 한마디 한마디를 모두 적어 둔다."},
+    {n:495, e:"He went out day after day.", k:"그는 날마다 외출했다."},
+    {n:496, e:"Read it once more.", k:"한 번 더 읽어라."},
+    {n:497, e:"Her parents had come over from England.", k:"그녀의 부모는 영국에서 건너왔다."},
+    {n:498, e:"How tall are you?", k:"키가 얼마쯤 되세요?"},
+    {n:499, e:"They were running here and there.", k:"그들은 여기저기에서 뛰어다니고 있었다."},
+    {n:500, e:"Come down to dinner.", k:"저녁 먹으러 내려오세요."}
+  ];
+
+  return rawIdioms.map(item => ({
+    id: item.n,
+    expression: item.e.replace(/<[^>]*>?/gm, ''), // Strip HTML tags
+    meaning: item.k,
+    isUserAdded: true,
+  }));
 };
 
 export const generateInitialCharacters = (): HanjaCharacter[] => {

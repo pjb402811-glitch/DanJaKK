@@ -31,6 +31,10 @@ interface DashboardProps {
   priorityWordsForLessonCount: number;
   allPriorityWordsCount: number;
   learnedPriorityWordsCount: number;
+  idiomStats: ModeStats;
+  idiomsForLessonCount: number;
+  allIdiomsCount: number;
+  learnedIdiomsCount: number;
 }
 
 const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string; children?: React.ReactNode; }> = ({ icon, label, value, color, children }) => (
@@ -88,7 +92,11 @@ const Dashboard: React.FC<DashboardProps> = ({
   priorityStats,
   priorityWordsForLessonCount,
   allPriorityWordsCount,
-  learnedPriorityWordsCount
+  learnedPriorityWordsCount,
+  idiomStats,
+  idiomsForLessonCount,
+  allIdiomsCount,
+  learnedIdiomsCount
 }) => {
   const [isEditingDailyGoal, setIsEditingDailyGoal] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(stats.dailyGoal);
@@ -112,12 +120,13 @@ const Dashboard: React.FC<DashboardProps> = ({
         case 'HANJA': return hanjaStats;
         case 'CONVERSATION': return conversationStats;
         case 'PRIORITY': return priorityStats;
+        case 'IDIOM': return idiomStats;
         default: return englishStats;
     }
   };
 
   const currentModeStats = getCurrentModeStats();
-  const itemType = activeMode === 'HANJA' ? '한자' : (activeMode === 'CONVERSATION' ? '문장' : '단어');
+  const itemType = activeMode === 'HANJA' ? '한자' : (activeMode === 'CONVERSATION' || activeMode === 'IDIOM' ? '문장' : '단어');
 
   return (
     <div className="space-y-8">
@@ -331,6 +340,44 @@ const Dashboard: React.FC<DashboardProps> = ({
               color="bg-gradient-to-br from-sky-500 to-sky-600"
               count={allPriorityWordsCount}
               disabled={allPriorityWordsCount === 0}
+            />
+          </>
+        )}
+
+        {activeMode === 'IDIOM' && (
+          <>
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="숙어 추가 하기"
+              subtitle="우선순위 숙어 목록에 새 숙어 등록"
+              onClick={() => onNavigate(AppView.ADD_IDIOM)}
+              color="bg-gradient-to-br from-gray-700 to-gray-800"
+            />
+            <ActionButton 
+              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
+              title="플래시 카드 학습"
+              subtitle="우선순위 숙어 배우기"
+              onClick={() => onNavigate(AppView.IDIOM_FLASHCARDS)}
+              color="bg-gradient-to-br from-teal-500 to-teal-600"
+              count={idiomsForLessonCount}
+              disabled={idiomsForLessonCount === 0}
+            />
+            <ActionButton 
+              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
+              title="숙어 퀴즈"
+              subtitle={learnedIdiomsCount < 4 ? "숙어를 4개 이상 학습해주세요" : "학습한 숙어로 뜻 맞추기"}
+              onClick={() => onNavigate(AppView.IDIOM_QUIZ)}
+              color="bg-gradient-to-br from-purple-500 to-purple-600"
+              disabled={learnedIdiomsCount < 4}
+            />
+            <ActionButton 
+              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
+              title="우선순위 숙어 목록"
+              subtitle="내 숙어장 전체 보기"
+              onClick={() => onNavigate(AppView.IDIOM_LIST)}
+              color="bg-gradient-to-br from-sky-500 to-sky-600"
+              count={allIdiomsCount}
+              disabled={allIdiomsCount === 0}
             />
           </>
         )}
