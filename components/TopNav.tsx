@@ -19,6 +19,13 @@ const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
   return (
     <nav className="flex w-full bg-slate-800 rounded-t-lg shadow-md mb-6 overflow-x-auto">
       <button
+        onClick={() => onModeChange('PRIORITY')}
+        className={getButtonClass('PRIORITY')}
+        aria-pressed={activeMode === 'PRIORITY'}
+      >
+        우선순위영단어
+      </button>
+      <button
         onClick={() => onModeChange('ENGLISH')}
         className={getButtonClass('ENGLISH')}
         aria-pressed={activeMode === 'ENGLISH'}
@@ -31,13 +38,6 @@ const TopNav: React.FC<TopNavProps> = ({ activeMode, onModeChange }) => {
         aria-pressed={activeMode === 'CONVERSATION'}
       >
         영어회화학습
-      </button>
-      <button
-        onClick={() => onModeChange('PRIORITY')}
-        className={getButtonClass('PRIORITY')}
-        aria-pressed={activeMode === 'PRIORITY'}
-      >
-        우선순위영단어
       </button>
       <button
         onClick={() => onModeChange('IDIOM')}

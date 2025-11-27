@@ -38,6 +38,8 @@ const App: React.FC = () => {
   const [idiomToEdit, setIdiomToEdit] = useState<Idiom | null>(null);
   const [singleIdiomForFlashcard, setSingleIdiomForFlashcard] = useState<Idiom[]>([]);
 
+  const [customStudyWords, setCustomStudyWords] = useState<Word[]>([]);
+
   const { 
     userStats, 
     wordsForUserLesson,
@@ -106,8 +108,13 @@ const App: React.FC = () => {
 
   const handleReviewSessionComplete = useCallback((xp: number, coins: number) => {
     addXpAndCoins(xp, coins);
-    setCurrentView(AppView.WORD_LIST);
-  }, [addXpAndCoins]);
+    // Go back to list based on active mode
+    if (activeMode === 'PRIORITY') setCurrentView(AppView.PRIORITY_LIST);
+    else if (activeMode === 'IDIOM') setCurrentView(AppView.IDIOM_LIST);
+    else if (activeMode === 'CONVERSATION') setCurrentView(AppView.CONVERSATION_LIST);
+    else if (activeMode === 'ENGLISH') setCurrentView(AppView.WORD_LIST);
+    else setCurrentView(AppView.DASHBOARD);
+  }, [addXpAndCoins, activeMode]);
   
   const handleReviewHanjaSessionComplete = useCallback((xp: number, coins: number) => {
     addXpAndCoins(xp, coins);
@@ -222,6 +229,11 @@ const App: React.FC = () => {
         setCurrentView(AppView.REVIEW_SINGLE_IDIOM_FLASHCARD);
     }
   }, [allIdioms]);
+
+  const handleStudySelectedWords = useCallback((selectedWords: Word[]) => {
+    setCustomStudyWords(selectedWords);
+    setCurrentView(AppView.CUSTOM_STUDY_FLASHCARDS);
+  }, []);
 
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
@@ -490,6 +502,7 @@ const App: React.FC = () => {
           onEdit={handleNavigateToEdit}
           onDelete={handleDeleteWord}
           onFlashcard={handleStartSingleWordFlashcard}
+          onStudySelected={handleStudySelectedWords}
         />;
       case AppView.EDIT_WORD:
         return wordToEdit ? <EditWordView 
@@ -590,6 +603,7 @@ const App: React.FC = () => {
           onEdit={handleNavigateToEditPriority}
           onDelete={handleDeletePriorityWord}
           onFlashcard={handleStartSinglePriorityFlashcard}
+          onStudySelected={handleStudySelectedWords}
         />;
       case AppView.EDIT_PRIORITY_WORD:
         return priorityWordToEdit ? <EditWordView 
@@ -639,6 +653,19 @@ const App: React.FC = () => {
             onBack={() => setCurrentView(AppView.IDIOM_LIST)}
             sessionTitle="숙어 복습"
         />;
+      case AppView.CUSTOM_STUDY_FLASHCARDS:
+          let updateProgressFunc: (id: number, correct: boolean) => void;
+          if (activeMode === 'ENGLISH') updateProgressFunc = updateWordProgress;
+          else if (activeMode === 'PRIORITY') updateProgressFunc = updatePriorityWordProgress;
+          else updateProgressFunc = () => {}; // For safety, though this mode mainly targets word lists for now
+
+          return <FlashcardView
+              words={customStudyWords}
+              updateWordProgress={updateProgressFunc}
+              onComplete={handleReviewSessionComplete} // Return to list on complete
+              onBack={handleReviewSessionComplete} // Return to list on back
+              sessionTitle="선택 단어 학습"
+          />;
       case AppView.DASHBOARD:
       default:
         return <Dashboard 
