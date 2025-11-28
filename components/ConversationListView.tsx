@@ -1,6 +1,7 @@
-import React from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { Conversation, ConversationProgress } from '../types';
-import { ChevronLeftIcon, BookOpenIcon, PencilIcon, TrashIcon } from './icons/Icons';
+import { ChevronLeftIcon, BookOpenIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon, CheckCircleIcon } from './icons/Icons';
 
 interface ConversationListViewProps {
   conversations: Conversation[];
@@ -9,12 +10,51 @@ interface ConversationListViewProps {
   onEdit: (conversationId: number) => void;
   onDelete: (conversationId: number) => void;
   onFlashcard: (conversationId: number) => void;
+  onStudySelected?: (selectedConversations: Conversation[]) => void;
 }
 
-const ConversationListView: React.FC<ConversationListViewProps> = ({ conversations, progress, onBack, onEdit, onDelete, onFlashcard }) => {
+const ConversationListView: React.FC<ConversationListViewProps> = ({ conversations, progress, onBack, onEdit, onDelete, onFlashcard, onStudySelected }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+  const filteredConversations = useMemo(() => {
+    if (!searchTerm.trim()) return conversations;
+    const lowerTerm = searchTerm.toLowerCase();
+    return conversations.filter(convo => 
+      convo.expression.toLowerCase().includes(lowerTerm) || 
+      convo.meaning.toLowerCase().includes(lowerTerm)
+    );
+  }, [conversations, searchTerm]);
+
+  const handleToggleSelect = (id: number) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === filteredConversations.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredConversations.map(c => c.id)));
+    }
+  };
+
+  const handleStudySelectedAction = () => {
+    if (onStudySelected) {
+      const selected = conversations.filter(c => selectedIds.has(c.id));
+      onStudySelected(selected);
+    }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto pb-24 relative">
       <div className="mb-8">
         <button onClick={onBack} className="inline-flex items-center gap-2 px-6 py-3 text-xl font-bold text-white bg-slate-500 rounded-xl shadow-md hover:bg-slate-600 transition-all transform hover:scale-105">
           <ChevronLeftIcon className="w-6 h-6" />
@@ -27,37 +67,82 @@ const ConversationListView: React.FC<ConversationListViewProps> = ({ conversatio
             <div className="p-4 bg-sky-500 rounded-full mb-4">
                 <BookOpenIcon className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-extrabold text-white">학습 문장 목록</h2>
-            <p className="text-slate-400 mt-1">지금까지 학습한 모든 문장입니다.</p>
+            <h2 className="text-3xl font-extrabold text-white">숙어 목록</h2>
+            <p className="text-slate-400 mt-1">목록에서 원하는 숙어를 선택해 집중 학습하세요.</p>
         </div>
 
-        {conversations.length > 0 ? (
+        <div className="mb-6 flex gap-4">
+            <div className="relative flex-1">
+                <input 
+                    type="text" 
+                    placeholder="숙어 또는 뜻으로 검색..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-3 pl-12 rounded-lg bg-slate-700 text-white border border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                />
+                <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400" />
+            </div>
+        </div>
+
+        {filteredConversations.length > 0 && (
+            <div className="mb-4 bg-slate-700/30 p-4 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-3 border border-slate-600/50">
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span className="font-bold text-lg text-white">학습할 숙어 선택</span>
+                    <span className="text-sm text-slate-400">({selectedIds.size}개 선택됨)</span>
+                </div>
+
+                <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white transition-colors select-none self-end sm:self-auto bg-slate-800/50 px-3 py-1.5 rounded-md border border-slate-600 hover:border-slate-500">
+                    <div className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${selectedIds.size === filteredConversations.length && filteredConversations.length > 0 ? 'bg-blue-500 border-blue-500' : 'border-slate-500'}`}>
+                        {selectedIds.size === filteredConversations.length && filteredConversations.length > 0 && <CheckCircleIcon className="w-3.5 h-3.5 text-white" />}
+                    </div>
+                    <input 
+                        type="checkbox" 
+                        className="hidden"
+                        checked={selectedIds.size === filteredConversations.length && filteredConversations.length > 0}
+                        onChange={handleSelectAll}
+                    />
+                    <span className="text-sm font-medium">전체 선택 ({filteredConversations.length}개)</span>
+                </label>
+            </div>
+        )}
+
+        {filteredConversations.length > 0 ? (
           <div className="space-y-3">
-            {conversations.map(convo => {
+            {filteredConversations.map(convo => {
               const convoProgress = progress[convo.id];
+              const isSelected = selectedIds.has(convo.id);
               if (!convoProgress) return null;
 
               return (
-                <div key={convo.id} className="bg-slate-700/50 p-4 rounded-lg flex items-center gap-4 justify-between">
-                  <div className="flex-1 flex flex-col gap-2">
-                    <p className="font-bold text-lg text-white">{convo.expression}</p>
-                    <p className="text-md text-slate-300">{convo.meaning}</p>
+                <div 
+                    key={convo.id} 
+                    className={`p-4 rounded-lg flex items-center gap-4 justify-between transition-all border-2 cursor-pointer ${isSelected ? 'bg-blue-900/30 border-blue-500 shadow-inner' : 'bg-slate-700/50 border-transparent hover:border-slate-600'}`}
+                    onClick={() => handleToggleSelect(convo.id)}
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                      <div className={`w-6 h-6 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-slate-500'}`}>
+                          {isSelected && <CheckCircleIcon className="w-4 h-4 text-white" />}
+                      </div>
+                      <div className="flex-1 flex flex-col gap-2">
+                        <p className={`font-bold text-lg ${isSelected ? 'text-blue-200' : 'text-white'}`}>{convo.expression}</p>
+                        <p className={`text-md ${isSelected ? 'text-blue-100' : 'text-slate-300'}`}>{convo.meaning}</p>
+                      </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                     <button 
                         onClick={() => onFlashcard(convo.id)} 
                         className="p-2 rounded-full hover:bg-slate-600 transition-colors" 
-                        title="플래시 카드 학습"
+                        title="이 숙어만 바로 학습하기"
                     >
                         <BookOpenIcon className="w-5 h-5 text-sky-400" />
                     </button>
                     {convo.isUserAdded && (
                       <>
-                        <button onClick={() => onEdit(convo.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="문장 수정">
+                        <button onClick={() => onEdit(convo.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="숙어 수정">
                           <PencilIcon className="w-5 h-5 text-yellow-500" />
                         </button>
-                        <button onClick={() => onDelete(convo.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="문장 삭제">
+                        <button onClick={() => onDelete(convo.id)} className="p-2 rounded-full hover:bg-slate-600 transition-colors" aria-label="숙어 삭제">
                           <TrashIcon className="w-5 h-5 text-red-500" />
                         </button>
                       </>
@@ -69,11 +154,26 @@ const ConversationListView: React.FC<ConversationListViewProps> = ({ conversatio
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-slate-400">아직 학습한 문장이 없습니다.</p>
-            <p className="text-slate-400 mt-2">학습을 시작하여 문장장을 채워보세요!</p>
+            <p className="text-slate-400">
+                {searchTerm ? `'${searchTerm}'에 대한 검색 결과가 없습니다.` : "아직 숙어가 없습니다."}
+            </p>
+            {!searchTerm && <p className="text-slate-400 mt-2">학습을 시작하여 숙어장을 채워보세요!</p>}
           </div>
         )}
       </div>
+
+      {/* Floating Action Button for Bulk Study */}
+      {selectedIds.size > 0 && onStudySelected && (
+          <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4 animate-bounce-in">
+              <button 
+                  onClick={handleStudySelectedAction}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-3 transition-transform transform hover:scale-105 border-2 border-green-400/50"
+              >
+                  <BookOpenIcon className="w-6 h-6" />
+                  <span className="text-lg">선택한 숙어 학습하기 ({selectedIds.size}개)</span>
+              </button>
+          </div>
+      )}
     </div>
   );
 };

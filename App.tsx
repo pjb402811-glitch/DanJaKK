@@ -26,7 +26,7 @@ import EditConversationView from './components/EditConversationView';
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [wordToEdit, setWordToEdit] = useState<Word | null>(null);
-  const [activeMode, setActiveMode] = useState<LearningMode>('ENGLISH');
+  const [activeMode, setActiveMode] = useState<LearningMode>('PRIORITY');
   const [singleWordForFlashcard, setSingleWordForFlashcard] = useState<Word[]>([]);
   const [singleHanjaGroupForFlashcard, setSingleHanjaGroupForFlashcard] = useState<HanjaCharacter[]>([]);
   const [conversationToEdit, setConversationToEdit] = useState<Conversation | null>(null);
@@ -39,6 +39,8 @@ const App: React.FC = () => {
   const [singleIdiomForFlashcard, setSingleIdiomForFlashcard] = useState<Idiom[]>([]);
 
   const [customStudyWords, setCustomStudyWords] = useState<Word[]>([]);
+  const [customStudyIdioms, setCustomStudyIdioms] = useState<Idiom[]>([]);
+
 
   const { 
     userStats, 
@@ -234,6 +236,13 @@ const App: React.FC = () => {
     setCustomStudyWords(selectedWords);
     setCurrentView(AppView.CUSTOM_STUDY_FLASHCARDS);
   }, []);
+  
+  const handleStudySelectedIdioms = useCallback((selectedIdioms: Conversation[]) => {
+      // Casting Conversation[] back to Idiom[] as they are structurally compatible
+      setCustomStudyIdioms(selectedIdioms as unknown as Idiom[]);
+      setCurrentView(AppView.CUSTOM_STUDY_FLASHCARDS);
+  }, []);
+
 
   const handleWordUpdated = useCallback((word: Word) => {
     updateUserWord(word);
@@ -638,6 +647,7 @@ const App: React.FC = () => {
           onEdit={handleNavigateToEditIdiom}
           onDelete={handleDeleteIdiom}
           onFlashcard={handleStartSingleIdiomFlashcard}
+          onStudySelected={handleStudySelectedIdioms}
         />;
       case AppView.EDIT_IDIOM:
         return idiomToEdit ? <EditConversationView 
@@ -654,10 +664,23 @@ const App: React.FC = () => {
             sessionTitle="숙어 복습"
         />;
       case AppView.CUSTOM_STUDY_FLASHCARDS:
+          if (activeMode === 'IDIOM' || activeMode === 'CONVERSATION') {
+             let updateProgressFunc: (id: number, correct: boolean) => void;
+             if (activeMode === 'IDIOM') updateProgressFunc = updateIdiomProgress;
+             else updateProgressFunc = updateConversationProgress;
+
+              return <ConversationFlashcardView 
+                  conversations={customStudyIdioms as unknown as Conversation[]}
+                  updateConversationProgress={updateProgressFunc}
+                  onComplete={handleReviewSessionComplete}
+                  onBack={handleReviewSessionComplete}
+                  sessionTitle="선택 숙어 학습"
+              />
+          }
+          
           let updateProgressFunc: (id: number, correct: boolean) => void;
-          if (activeMode === 'ENGLISH') updateProgressFunc = updateWordProgress;
-          else if (activeMode === 'PRIORITY') updateProgressFunc = updatePriorityWordProgress;
-          else updateProgressFunc = () => {}; // For safety, though this mode mainly targets word lists for now
+          if (activeMode === 'PRIORITY') updateProgressFunc = updatePriorityWordProgress;
+          else updateProgressFunc = updateWordProgress;
 
           return <FlashcardView
               words={customStudyWords}

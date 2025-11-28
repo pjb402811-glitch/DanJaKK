@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { AppView, UserStats, LearningMode } from '../types';
-import { BookOpenIcon, SparklesIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon, PaintBrushIcon, QuestionMarkCircleIcon, Squares2X2Icon } from './icons/Icons';
+import { BookOpenIcon, TargetIcon, ChartBarIcon, PlusCircleIcon, PencilIcon, CalendarIcon, PaintBrushIcon, QuestionMarkCircleIcon, Squares2X2Icon } from './icons/Icons';
 
 interface ModeStats {
   learnedToday: number;
@@ -73,22 +73,14 @@ const ActionButton: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
 const Dashboard: React.FC<DashboardProps> = ({ 
   stats, 
   onNavigate, 
-  userWordCount, 
-  userAddedWordsCount, 
   onSetDailyGoal, 
   onSetWeeklyGoal, 
-  allWordsCount, 
   cheonjamunLearnCount, 
   allCharactersCount,
   activeMode,
   englishStats,
   hanjaStats,
   hanjaLearnedCount,
-  conversationStats,
-  userConversationCount,
-  userAddedConversationsCount,
-  allConversationsCount,
-  learnedConversationsCount,
   priorityStats,
   priorityWordsForLessonCount,
   allPriorityWordsCount,
@@ -116,9 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const getCurrentModeStats = () => {
     switch (activeMode) {
-        case 'ENGLISH': return englishStats;
         case 'HANJA': return hanjaStats;
-        case 'CONVERSATION': return conversationStats;
         case 'PRIORITY': return priorityStats;
         case 'IDIOM': return idiomStats;
         default: return englishStats;
@@ -175,52 +165,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {activeMode === 'ENGLISH' && (
-          <>
-            <ActionButton 
-              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-              title="단어추가 하기"
-              subtitle="학습 목록에 새 단어 등록"
-              onClick={() => onNavigate(AppView.ADD_WORD)}
-              color="bg-gradient-to-br from-gray-700 to-gray-800"
-            />
-            <ActionButton 
-              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-              title="플래시 카드 학습"
-              subtitle="내가 추가한 단어 배우기"
-              onClick={() => onNavigate(AppView.USER_WORD_FLASHCARDS)}
-              color="bg-gradient-to-br from-teal-500 to-teal-600"
-              count={userWordCount}
-              disabled={userWordCount === 0}
-            />
-            <ActionButton 
-              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
-              title="단어 퀴즈"
-              subtitle={userAddedWordsCount < 4 ? "단어를 4개 이상 추가해주세요" : "추가한 단어로 뜻 맞추기"}
-              onClick={() => onNavigate(AppView.QUIZ)}
-              color="bg-gradient-to-br from-purple-500 to-purple-600"
-              disabled={userAddedWordsCount < 4}
-            />
-            <ActionButton 
-              icon={<PencilIcon className="w-8 h-8 text-white/50" />}
-              title="철자 맞추기 퀴즈"
-              subtitle={userAddedWordsCount === 0 ? "단어를 1개 이상 추가해주세요" : "추가한 단어로 조합하기"}
-              onClick={() => onNavigate(AppView.SPELLING_BEE)}
-              color="bg-gradient-to-br from-red-500 to-red-600"
-              disabled={userAddedWordsCount === 0}
-            />
-            <ActionButton 
-              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
-              title="학습 영단어 목록"
-              subtitle="내 단어장 전체 보기"
-              onClick={() => onNavigate(AppView.WORD_LIST)}
-              color="bg-gradient-to-br from-sky-500 to-sky-600"
-              count={allWordsCount}
-              disabled={allWordsCount === 0}
-            />
-          </>
-        )}
-
         {activeMode === 'HANJA' && (
           <>
             <ActionButton 
@@ -256,44 +200,6 @@ const Dashboard: React.FC<DashboardProps> = ({
               color="bg-gradient-to-br from-orange-500 to-orange-600"
               count={allCharactersCount}
               disabled={allCharactersCount === 0}
-            />
-          </>
-        )}
-
-        {activeMode === 'CONVERSATION' && (
-          <>
-            <ActionButton 
-              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-              title="문장 추가하기"
-              subtitle="학습 목록에 새 문장 등록"
-              onClick={() => onNavigate(AppView.ADD_CONVERSATION)}
-              color="bg-gradient-to-br from-gray-700 to-gray-800"
-            />
-            <ActionButton 
-              icon={<PlusCircleIcon className="w-8 h-8 text-white/50" />}
-              title="플래시 카드 학습"
-              subtitle="내가 추가한 문장 배우기"
-              onClick={() => onNavigate(AppView.CONVERSATION_FLASHCARDS)}
-              color="bg-gradient-to-br from-teal-500 to-teal-600"
-              count={userConversationCount}
-              disabled={userConversationCount === 0}
-            />
-            <ActionButton 
-              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>}
-              title="문장 퀴즈"
-              subtitle={learnedConversationsCount < 4 ? "문장을 4개 이상 학습해주세요" : "학습한 문장으로 뜻 맞추기"}
-              onClick={() => onNavigate(AppView.CONVERSATION_QUIZ)}
-              color="bg-gradient-to-br from-purple-500 to-purple-600"
-              disabled={learnedConversationsCount < 4}
-            />
-            <ActionButton 
-              icon={<ChartBarIcon className="w-8 h-8 text-white/50" />}
-              title="학습 문장 목록"
-              subtitle="내 문장장 전체 보기"
-              onClick={() => onNavigate(AppView.CONVERSATION_LIST)}
-              color="bg-gradient-to-br from-sky-500 to-sky-600"
-              count={allConversationsCount}
-              disabled={allConversationsCount === 0}
             />
           </>
         )}
